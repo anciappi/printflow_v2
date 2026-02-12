@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+
+{% block breadcrumbs %} Inventory / Altas / Definición de Material {% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto pb-10">
+    
+    <div class="mb-6">
+        <h2 class="text-xl font-bold text-white tracking-tight">INGRESO NUEVO MATERIAL</h2>
+        <p class="text-s text-slate-500 mt-1">Configura las especificaciones técnicas para el control de stock.</p>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <!-- DETECTAR ERRORES GENERALES -->
+        {% if form.errors %}
+        <div class="mb-6 p-4 bg-red-900/20 border border-red-800 text-red-400 rounded-sm">
+            <p class="font-bold text-xs uppercase tracking-wider mb-2">Por favor corrige los siguientes errores:</p>
+            <ul class="list-disc list-inside text-sm">
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <!-- SECCIÓN 1: Identificación -->
+        <div class="bg-[#1a1d23] border border-[#2d333b] p-6 shadow-lg mb-6">
+            <h3 class="text-xs font-bold text-blue-400 uppercase tracking-widest mb-4 border-b border-[#2d333b] pb-2">Identificación Básica</h3>
+            <!-- Cambiamos a 3 columnas para que entre el nuevo campo -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- Columna 1: Tipo -->
+            <div>
+                <label class="block text-[10px] text-slate-500 uppercase mb-2">{{ form.material_type.label }}</label>
+                {{ form.material_type }}
+            </div>
+
+            <!-- Columna 2: Marca -->
+            <div>
+                <label class="block text-[10px] text-slate-500 uppercase mb-2">{{ form.brand.label }}</label>
+                {{ form.brand }}
+            </div>
+
+            <!-- Columna 3: STOCK MÍNIMO (El que faltaba) -->
+            <div>
+                <label class="block text-[10px] text-slate-500 uppercase mb-2">{{ form.standard_quantity.label }}</label>
+                {{ form.standard_quantity }}
+                <p class="text-[9px] text-slate-600 mt-1">Punto de reposición ideal.</p>
+            </div>
+
+            <!-- Fila completa: Nombre -->
+            <div class="md:col-span-3">
+                <label class="block text-[10px] text-slate-500 uppercase mb-2">{{ form.name.label }}</label>
+                {{ form.name }}
+            </div>
+        </div>
+
+        <!-- SECCIÓN 2: Especificaciones Físicas -->
+        <div class="bg-[#1a1d23] border border-[#2d333b] p-6 shadow-lg mb-6 mt-6">
+            <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-4 border-b border-[#2d333b] pb-2">Dimensiones</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                    <label class="block text-[10px] text-slate-500 uppercase mb-2">{{ form.width.label }}</label>
+                    {{ form.width }}
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-500 uppercase mb-2">{{ form.length.label }}</label>
+                    {{ form.length }}
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-500 uppercase mb-2">{{ form.grammage.label }}</label>
+                    {{ form.grammage }}
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-500 uppercase mb-2">{{ form.package_weight.label }}</label>
+                    {{ form.package_weight }}
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 3: Tecnología (Chips/Bandas) -->
+        <div class="bg-[#1a1d23] border border-[#2d333b] p-6 shadow-lg mb-6">
+            <h3 class="text-xs font-bold text-purple-400 uppercase tracking-widest mb-4 border-b border-[#2d333b] pb-2">Chips</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-[10px] text-slate-500 uppercase mb-2">{{ form.technology.label }}</label>
+                    {{ form.technology }}
+                    <p class="text-[9px] text-slate-600 mt-1">Ej: Mifare 1K, EM4102, HiCo 2750oe</p>
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-500 uppercase mb-2">Posición / Ancho Banda</label>
+                    <div class="flex gap-2">
+                        {{ form.position }}
+                        {{ form.mag_stripe_width }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="flex justify-end gap-4">
+            <a href="{% url 'inventory:dashboard' %}" class="px-6 py-2.5 text-xs font-bold text-slate-500 hover:text-white transition-colors uppercase tracking-wider">
+                Cancelar
+            </a>
+            <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-2.5 px-8 shadow-lg shadow-blue-900/20 transition-all uppercase tracking-wider">
+                Registrar Material
+            </button>
+        </div>
+
+    </form>
+</div>
+{% endblock %}

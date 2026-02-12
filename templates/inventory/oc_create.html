@@ -1,0 +1,174 @@
+{% extends 'base.html' %}
+
+{% block breadcrumbs %} Inventory / Nueva Orden de Compra {% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto pb-10">
+    
+    <div class="mb-6 border-b border-[#2d333b] pb-4">
+        <h2 class="text-xl font-bold text-white tracking-tight">Generar Orden de Compra</h2>
+        <p class="text-s text-slate-500 mt-1">Ingresa los datos de la materia prima.</p>
+    </div>
+
+    <form method="POST" id="po-form">
+        {% csrf_token %}
+
+        <!-- CABECERA (DATOS GENERALES) -->
+        <div class="bg-[#1a1d23] border border-[#2d333b] p-6 shadow-lg mb-6">
+            <h3 class="text-xs font-bold text-blue-400 uppercase tracking-widest mb-4">Datos</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {% for field in form %}
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+                        {{ field.label }}
+                    </label>
+                    {{ field }}
+                    {% if field.errors %}
+                        <p class="text-red-500 text-xs mt-1">{{ field.errors.0 }}</p>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- DETALLE (ÍTEMS) -->
+        <div class="bg-[#1a1d23] border border-[#2d333b] p-6 shadow-lg">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xs font-bold text-blue-400 uppercase tracking-widest">Seleccione el Material</h3>
+                <button type="button" id="add-item" class="text-xs bg-[#2d333b] hover:bg-blue-600 text-slate-300 hover:text-white px-3 py-1.5 rounded transition-colors flex items-center gap-1">
+                    <span>+</span> Agregar Ítem
+                </button>
+            </div>
+
+            <!-- Management Form (Necesario para Django Formsets) -->
+            {{ formset.management_form }}
+
+            <div id="items-container" class="space-y-2">
+                {% for form in formset %}
+                <div class="item-row grid grid-cols-12 gap-3 items-end bg-[#0f1115]/50 p-3 border border-[#2d333b] rounded-sm">
+                    <!-- Campo Oculto ID (necesario para edición/borrado) -->
+                    {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+
+                    <div class="col-span-5">
+                        <label class="block text-[10px] text-slate-500 uppercase mb-1">Material</label>
+                        {{ form.material }}
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-[10px] text-slate-500 uppercase mb-1">Cant. Bobina/Paq.</label>
+                        {{ form.quantity_ordered }}
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-[10px] text-slate-500 uppercase mb-1">Cant. Mts/Uni</label>
+                        {{ form.quantity_per_unit }}
+                    </div>
+                    <div class="col-span-2">
+                        <label class="block text-[10px] text-slate-500 uppercase mb-1">Peso (Kg)</label>
+                        {{ form.total_weight }}
+                    </div>
+                    <div class="col-span-1 flex justify-center pb-1">
+                        {% if formset.can_delete %}
+                            <div class="hidden">{{ form.DELETE }}</div> <!-- Checkbox oculto de Django -->
+                            <button type="button" class="delete-row text-slate-600 hover:text-red-500 transition-colors" title="Eliminar fila">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </button>
+                        {% endif %}
+                    </div>
+                    
+                    {% if form.errors %}
+                    <div class="col-span-12">
+                        <p class="text-red-500 text-xs">{{ form.errors }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="mt-8 flex justify-end gap-4">
+            <a href="{% url 'inventory:oc_list' %}" class="px-6 py-2.5 text-sm font-bold text-slate-500 hover:text-white transition-colors uppercase tracking-wider">
+                Cancelar
+            </a>
+            <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold py-2.5 px-8 shadow-lg shadow-blue-900/20 transition-all uppercase tracking-wider">
+                Guardar Orden
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- TEMPLATE VACÍO PARA JAVASCRIPT (No tocar) -->
+<div id="empty-form-template" class="hidden">
+    <div class="item-row grid grid-cols-12 gap-3 items-end bg-[#0f1115]/50 p-3 border border-[#2d333b] rounded-sm animate-fade-in">
+        <div class="col-span-6">
+            <label class="block text-[10px] text-slate-500 uppercase mb-1">Material</label>
+            {{ formset.empty_form.material }}
+        </div>
+        <div class="col-span-2">
+            <label class="block text-[10px] text-slate-500 uppercase mb-1">Cant. Paquetes</label>
+            {{ formset.empty_form.quantity_ordered }}
+        </div>
+        <div class="col-span-3">
+            <label class="block text-[10px] text-slate-500 uppercase mb-1">Cant. x Paquete</label>
+            {{ formset.empty_form.quantity_per_unit }}
+        </div>
+        <div class="col-span-1 flex justify-center pb-1">
+            <div class="hidden">{{ formset.empty_form.DELETE }}</div>
+            <button type="button" class="delete-row text-slate-600 hover:text-red-500 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const itemsContainer = document.getElementById('items-container');
+        const addButton = document.getElementById('add-item');
+        const totalFormsInput = document.getElementById('id_items-TOTAL_FORMS'); // Django genera este ID por defecto
+        const emptyTemplate = document.getElementById('empty-form-template').innerHTML;
+
+        // Agregar fila
+        addButton.addEventListener('click', function() {
+            let formIdx = parseInt(totalFormsInput.value);
+            // Reemplazar __prefix__ con el número actual
+            let newRowHtml = emptyTemplate.replace(/__prefix__/g, formIdx);
+            
+            // Crear un div temporal para insertar HTML
+            let tempDiv = document.createElement('div');
+            tempDiv.innerHTML = newRowHtml;
+            itemsContainer.appendChild(tempDiv.firstElementChild);
+            
+            // Actualizar contador
+            totalFormsInput.value = formIdx + 1;
+        });
+
+        // Borrar fila
+        itemsContainer.addEventListener('click', function(e) {
+            // Buscamos si el click fue dentro de un botón .delete-row
+            const btn = e.target.closest('.delete-row');
+            if (!btn) return;
+
+            const row = btn.closest('.item-row');
+            
+            // Django requiere que marquemos el checkbox DELETE si el form ya existía
+            // Si es un form nuevo (agregado con JS), podemos removerlo del DOM
+            const deleteCheckbox = row.querySelector('input[type="checkbox"][name$="-DELETE"]');
+            
+            if (deleteCheckbox) {
+                // Es un ítem existente o guardado previamente
+                deleteCheckbox.checked = true;
+                row.style.display = 'none'; // Lo ocultamos visualmente
+            } else {
+                // Es un ítem nuevo generado por JS que aún no se guardó
+                row.remove();
+                // Nota: No bajamos el TOTAL_FORMS para no romper índices, Django lo maneja.
+            }
+        });
+    });
+</script>
+{% endblock %}

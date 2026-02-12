@@ -1,0 +1,287 @@
+{% extends 'base.html' %}
+
+{% block breadcrumbs %} Inventory / Unidades Físicas {% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="flex justify-between items-end mb-4">
+        <div>
+            <h2 class="text-xl font-bold text-white tracking-tight">Stock por Material</h2>
+            <p class="text-xs text-slate-500 mt-1">Haz clic en <span class="text-xs text-blue-400 font-bold">+</span> para ver las bobinas individuales.</p>
+        </div>
+    </div>
+
+    <!-- Tabla Principal -->
+    <div class="bg-[#1a1d23] border border-[#2d333b] overflow-hidden shadow-2xl rounded-sm">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="border-b border-[#2d333b] bg-[#0f1115]/50 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                    <th class="px-4 py-2 w-10"></th> <!-- Columna para el botón + -->
+                    <th class="px-4 py-2">Material</th>
+                    <th class="px-4 py-2">Especificaciones</th>
+                    <th class="px-4 py-2 text-center">Cantidad Bobinas</th>
+                    <th class="px-4 py-2 text-right">Stock Total Mts.</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-[#2d333b]">
+                {% for mat in materiales %}
+                <!-- FILA PADRE (MATERIAL) -->
+                <tr class="hover:bg-[#2d333b]/30 transition-colors cursor-pointer group" onclick="toggleRow('row-{{ mat.id }}', 'icon-{{ mat.id }}')">
+                    <td class="px-4 py-2 text-center">
+                        <span id="icon-{{ mat.id }}" class="text-blue-500 font-bold text-lg transition-transform inline-block">+</span>
+                    </td>
+                    <td class="px-4 py-2">
+                        <div class="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">{{ mat.name }}</div>
+                    </td>
+                    <td class="px-4 py-2">
+                        <div class="text-sm ">
+                            {{ mat.width|default:"-" }} x {{ mat.length|default:"-" }} | {{ mat.grammage|default:"-" }}g 
+                            {% if mat.technology %}| <span class="text-purple-400">{{ mat.technology }}</span>{% endif %}
+                        </div>
+                    </td>
+                    <td class="px-4 py-2 text-center">
+                        <span class="bg-[#2d333b] text-slate-300 text-[12px] px-2 py-0.5 rounded-full border border-slate-600">
+                            {{ mat.cant_bobinas }}
+                        </span>
+                    </td>
+                    <td class="px-4 py-2 text-right text-sl font-bold text-emerald-400">
+                        {{ mat.total_stock }} mts.
+                    </td>
+                </tr>
+
+                <!-- FILA HIJA (DETALLE DE BOBINAS) - Oculta por defecto -->
+                <tr id="row-{{ mat.id }}" class="hidden bg-[#0f1115]">
+                    <td colspan="5" class="p-0">
+                        <div class="border-y border-[#2d333b] bg-black/20 p-4 shadow-inner">
+                            <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-2 ml-1">Detalle de Unidades para {{ mat.name }}</p>
+                            
+                            <!-- Tabla Interna de Unidades -->
+                            <table class="w-full text-left">
+                                <thead>
+                                    <tr class="text-[9px] text-slate-600 uppercase border-b border-slate-800">
+                                        <th class="pb-1">Remito</th>
+                                        <th class="pb-1 pl-2">Fecha de entrada</th>
+                                        <th class="pb-1 pl-2">Nº Bobina</th>
+                                        <th class="pb-1 pl-2">Ancho Bobina</th>
+                                        <th class="pb-1 text-center">Estado</th>
+                                        <th class="pb-1 text-right">Cantidad</th>
+                                        <th class="pb-1 text-right pr-2">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-xs text-slate-400">
+                                    {% for unidad in mat.active_units %}
+                                    <tr class="border-b border-slate-800/50 hover:bg-white/5 transition-colors">
+                                        <td class="py-1.5">{{ unidad.purchase_order.remito_number }}</td>
+                                        <td class="py-1.5 pl-2 font-mono text-blue-300">{{ unidad.purchase_order.delivery_date}}</td>
+                                        <td class="py-1.5 pl-2 font-mono text-blue-300">{{ unidad.unit_number}}</td>
+                                        <td class="py-1.5 pl-2 font-mono text-blue-300">
+                                            {{ unidad.width_override|default:mat.width }}
+                                        </td>
+                                        <td class="py-1.5 text-center">
+                                            {% if unidad.status == 'AVAILABLE' %}
+                                                <span class="text-[9px] text-emerald-500">✔ Disp.</span>
+                                            {% else %}
+                                                <span class="text-[9px] text-amber-500">⚠ En Uso</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="py-1.5 text-right font-mono text-white">{{ unidad.current_quantity }}</td>
+
+                                        <!-- Columna de Acciones dentro del Acordeón -->
+                                        <td class="py-1.5 text-right pr-2 flex justify-end gap-2">
+                                            <!-- BOTÓN DESHACER CORTE (Solo si es hija) -->
+                                            {% if unidad.parent_unit %}
+                                            <form action="{% url 'inventory:deshacer_fraccionamiento' unidad.id %}" method="POST" class="inline">
+                                                {% csrf_token %}
+                                                <button type="submit" 
+                                                        onclick="event.stopPropagation(); return confirm('¿Deshacer el corte y restaurar la bobina madre {{ unidad.parent_unit.unit_number }}?');"
+                                                        class="text-purple-400 hover:text-purple-300 transition-colors bg-[#2d333b] hover:bg-purple-900/20 px-2 py-0.5 rounded border border-transparent hover:border-purple-800/50 text-[10px] flex items-center gap-1 mr-2"
+                                                        title="Unir Bobina">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
+                                                    </svg>
+                                                    Deshacer
+                                                </button>
+                                            </form>
+                                            {% endif %}
+                                            
+                                            <!-- BOTÓN FRACCIONAR (Amarillo) -->
+                                            <button onclick="event.stopPropagation(); openFraccionarModal('{{ unidad.id }}', '{{ unidad.unit_number }}', '{{ unidad.get_width }}')"
+                                                    class="text-amber-500 hover:text-amber-300 transition-colors bg-[#2d333b] hover:bg-amber-900/20 px-2 py-0.5 rounded border border-transparent hover:border-amber-800/50 text-[10px] flex items-center gap-1">
+                                                <span>✂</span> Fraccionar
+                                            </button>
+
+                                            <!-- BOTÓN CONSUMIR (Rojo - Ya existía) -->
+                                            <button onclick="event.stopPropagation(); openModal('{{ unidad.id }}', '{{ mat.name }} - {{ unidad.unit_number }}', '{{ unidad.current_quantity }}')"
+                                                    class="text-slate-500 hover:text-red-400 ...">
+                                                Consumir
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="px-6 py-10 text-center text-slate-500 italic">No hay stock disponible.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+        
+    <!-- MODAL (Hidden by default) -->
+    <div id="consumptionModal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity"></div>
+
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+                <div class="relative transform overflow-hidden bg-[#1a1d23] border border-[#2d333b] text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                    
+                    <form id="consumptionForm" method="POST" action="">
+                        {% csrf_token %}
+                        <div class="px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                            <h3 class="text-lg font-bold text-white mb-2" id="modal-title">📉 Registrar Consumo</h3>
+                            <p class="text-sm text-slate-400 mb-4">Vas a descontar material de: <span id="modalUnitName" class="text-blue-400 font-mono"></span></p>
+                            
+                            <div class="space-y-4">
+                                <!-- CAMPO 1: CANTIDAD (El principal) -->
+                                <div>
+                                    <label for="cantidad" class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Cantidad a usar</label>
+                                    <input type="number" step="0.01" name="cantidad" id="cantidadInput" required autofocus
+                                        class="w-full bg-[#0f1115] border border-[#2d333b] text-white text-lg px-4 py-2 focus:outline-none focus:border-red-500 transition-colors placeholder-slate-600">
+                                    <p class="text-[10px] text-slate-500 mt-1 text-right">Disponible: <span id="modalMaxQty" class="font-bold text-emerald-500"></span></p>
+                                </div>
+
+                                <!-- NUEVOS CAMPOS EN 2 COLUMNAS -->
+                                <div class="grid grid-cols-2 gap-4 pt-2 border-t border-[#2d333b]">
+                                    
+                                    <!-- Fecha -->
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Fecha (Opcional)</label>
+                                        <input type="date" name="fecha_consumo" 
+                                            class="w-full bg-[#0f1115] border border-[#2d333b] text-slate-300 text-xs px-3 py-2 focus:outline-none focus:border-blue-400 transition-colors">
+                                    </div>
+
+                                    <!-- OT Reference -->
+                                    <div>
+                                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">OT Vinculada</label>
+                                        <input type="text" name="ref_ot" placeholder="Ej: 11700"
+                                            class="w-full bg-[#0f1115] border border-[#2d333b] text-slate-300 text-xs px-3 py-2 focus:outline-none focus:border-blue-400 transition-colors placeholder-slate-600">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Footer de Botones -->
+                        <div class="bg-[#0f1115]/50 px-4 py-3 flex justify-end gap-3 sm:px-6 border-t border-[#2d333b]">
+                            <button type="button" onclick="closeModal()" class="text-xs font-bold text-slate-500 hover:text-white uppercase tracking-wider px-4 py-2 transition-colors">Cancelar</button>
+                            <button type="submit" class="bg-red-600 hover:bg-red-500 text-white text-xs font-bold uppercase tracking-wider px-4 py-2 rounded-sm transition-colors shadow-lg shadow-red-900/20">
+                                Confirmar Descuento
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <!-- MODAL DE FRACCIONAMIENTO -->
+<div id="fraccionarModal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity"></div>
+    <div class="fixed inset-0 z-10 overflow-y-auto">
+        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+            <div class="relative transform overflow-hidden bg-[#1a1d23] border border-[#2d333b] text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md">
+                
+                <form id="fraccionarForm" method="POST" action="">
+                    {% csrf_token %}
+                    <div class="px-6 py-6">
+                        <h3 class="text-lg font-bold text-white mb-1">✂ Fraccionar Bobina</h3>
+                        <p class="text-xs text-slate-400 mb-6">Unidad: <span id="fracUnitName" class="text-amber-400 font-mono"></span> | Ancho Orig: <span id="fracUnitWidth" class="text-white"></span>cm</p>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+                                    Ancho del Primer Corte (Corte A)
+                                </label>
+                                <div class="flex items-center gap-2">
+                                    <input type="number" step="0.01" name="ancho_hija_a" id="inputAnchoA" required
+                                        class="w-full bg-[#0f1115] border border-amber-500/50 text-white font-mono text-lg px-4 py-3 focus:outline-none focus:border-amber-400 transition-colors">
+                                    <span class="text-slate-500 font-bold">cm</span>
+                                </div>
+                                <p class="text-[10px] text-slate-500 mt-2">
+                                    El sistema calculará automáticamente el Corte B (Restante).
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-[#0f1115]/50 px-6 py-4 flex justify-end gap-3 border-t border-[#2d333b]">
+                        <button type="button" onclick="closeFraccionarModal()" class="text-xs font-bold text-slate-500 hover:text-white uppercase tracking-wider px-4 py-2 transition-colors">Cancelar</button>
+                        <button type="submit" class="bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold uppercase tracking-wider px-6 py-2 rounded-sm transition-colors shadow-lg shadow-amber-900/20">
+                            Confirmar Corte
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // Función para abrir/cerrar filas
+    function toggleRow(rowId, iconId) {
+        const row = document.getElementById(rowId);
+        const icon = document.getElementById(iconId);
+        
+        if (row.classList.contains('hidden')) {
+            row.classList.remove('hidden');
+            icon.innerText = '-'; // Cambiar + a -
+            icon.classList.add('text-slate-400');
+            icon.classList.remove('text-blue-500');
+        } else {
+            row.classList.add('hidden');
+            icon.innerText = '+'; // Cambiar - a +
+            icon.classList.remove('text-slate-400');
+            icon.classList.add('text-blue-500');
+        }
+    }
+
+    // Funcion para fraccionar bobinas
+    function openFraccionarModal(id, name, width) {
+        document.getElementById('fracUnitName').innerText = name;
+        document.getElementById('fracUnitWidth').innerText = width;
+        
+        const form = document.getElementById('fraccionarForm');
+        form.action = `/inventario/fraccionar/${id}/`; // Ajusta tu prefijo de URL
+        
+        document.getElementById('fraccionarModal').classList.remove('hidden');
+    }
+
+
+    function closeFraccionarModal() {
+        document.getElementById('fraccionarModal').classList.add('hidden');
+    }
+
+    // ... (Tu función openModal y closeModal del paso anterior van aquí abajo) ...
+    function openModal(id, name, maxQty) {
+        document.getElementById('modalUnitName').innerText = name;
+        document.getElementById('modalMaxQty').innerText = maxQty;
+        const form = document.getElementById('consumptionForm');
+        form.action = `/inventario/consumo/${id}/`; 
+        document.getElementById('consumptionModal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+        document.getElementById('consumptionModal').classList.add('hidden');
+    }
+
+</script>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "admin/base_site.html" %}
+{% block content %}
+<div style="background: white; padding: 20px; border: 1px solid #ccc; border-radius: 4px;">
+    <h2>✂️ Fraccionar Bobina: {{ unit.unit_number }}</h2>
+    <p>Material: <strong>{{ unit.material.name }}</strong></p>
+    <p>Ancho Total disponible: <span style="font-size: 1.5em; color: #264b5d;">{{ ancho_total }} cm</span></p>
+    <hr>
+    <form action="" method="post">
+        {% csrf_token %}
+        <p>Ingresá el ancho para el <strong>Corte A</strong>. El sistema calculará el sobrante para el <strong>Corte B</strong> automáticamente.</p>
+        <div style="margin: 20px 0;">
+            <label style="font-weight: bold;">Ancho Corte A (cm):</label>
+            <input type="number" name="ancho_a" step="0.01" required style="padding: 8px; border: 1px solid #ccc; width: 150px;">
+        </div>
+        <input type="hidden" name="post" value="yes">
+        <input type="hidden" name="action" value="fraccionar_bobina_action">
+        <input type="hidden" name="_selected_action" value="{{ unit.pk }}">
+        <div style="margin-top: 30px;">
+            <input type="submit" value="Confirmar Fraccionamiento" class="default" style="background: #417690; color: white; padding: 10px 20px; border: none; cursor: pointer; border-radius: 4px;">
+            <a href="." style="margin-left: 15px; text-decoration: none; color: #666;">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
