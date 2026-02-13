@@ -3,7 +3,7 @@ import re
 from django.utils import timezone
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, TemplateView
-from django.views.generic.edit import CreateView # <--- Faltaba esta
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.messages.views import SuccessMessageMixin # <--- Faltaba esta
 from django.urls import reverse_lazy
 from django.db import transaction
@@ -422,3 +422,33 @@ class ConsumptionHistoryView(LoginRequiredMixin, ListView):
 
         return context
     
+#Listado de materiales
+# 1. LISTADO MAESTRO
+class MaterialListView(LoginRequiredMixin, ListView):
+    model = Material
+    template_name = 'inventory/material_master_list.html'
+    context_object_name = 'materiales'
+    ordering = ['name'] # Orden alfabético
+
+# 2. EDITAR MATERIAL
+class MaterialUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    model = Material
+    form_class = MaterialForm
+    template_name = 'inventory/material_form.html' # Reutilizamos el template de creación!
+    success_url = reverse_lazy('inventory:material_list')
+    success_message = "El material '%(name)s' fue actualizado correctamente."
+
+# 3. BORRAR MATERIAL
+class MaterialDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
+    model = Material
+    template_name = 'inventory/material_confirm_delete.html'
+    success_url = reverse_lazy('inventory:material_list')
+    success_message = "Material eliminado del sistema."
+    
+    def form_valid(self, request, *args, **kwargs):
+        # Manejo de errores si el material está en uso (ProtectedError)
+        try:
+            return super().form_valid(request, *args, **kwargs)
+        except Exception:
+            messages.error(self.request, "No se puede eliminar este material porque tiene stock o movimientos asociados.")
+            return redirect('inventory:material_list')

@@ -22,4 +22,9 @@ urlpatterns = [
     path('historial-consumo/', views.ConsumptionHistoryView.as_view(), name='consumption_history'),
     path('consumo/eliminar/<int:log_id>/', views.eliminar_consumo, name='eliminar_consumo'),
     path('fraccionar/deshacer/<int:unit_id>/', views.deshacer_fraccionamiento, name='deshacer_fraccionamiento'),
+
+    #Listado de materiales
+    path('materiales/', views.MaterialListView.as_view(), name='material_list'),
+    path('materiales/editar/<int:pk>/', views.MaterialUpdateView.as_view(), name='material_edit'),
+    path('materiales/borrar/<int:pk>/', views.MaterialDeleteView.as_view(), name='material_delete'),
 ]
