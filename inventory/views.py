@@ -11,6 +11,8 @@ from django.db.models import Sum, Count, Q, Prefetch
 from django.db.models.functions import Length
 from django.contrib import messages
 from decimal import Decimal
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Importa Modelos y Forms
 from .models import PurchaseOrder, InventoryUnit, Material, Supplier, PurchaseOrderItem, ConsumptionLog
@@ -19,6 +21,7 @@ from .forms import PurchaseOrderForm, PurchaseOrderItemFormSet, SupplierForm, Ma
 # Create your views here.
 
 #Funciones
+@login_required
 def recibir_oc(request, pk):
     oc = get_object_or_404(PurchaseOrder, pk=pk)
     
@@ -44,6 +47,7 @@ def recibir_oc(request, pk):
             
     return redirect('inventory:oc_list')
 
+@login_required
 def delete_purchase_order(request, pk):
     oc = get_object_or_404(PurchaseOrder, pk=pk)
     
@@ -59,6 +63,7 @@ def delete_purchase_order(request, pk):
         
     return redirect('inventory:oc_list')
 
+@login_required
 def edit_purchase_order(request, pk):
     oc = get_object_or_404(PurchaseOrder, pk=pk)
 
@@ -90,6 +95,7 @@ def edit_purchase_order(request, pk):
         'is_edit': True # Bandera para saber que estamos editando
     })
 
+@login_required
 def fraccionar_unidad(request, unit_id):
     parent = get_object_or_404(InventoryUnit, pk=unit_id)
     
@@ -144,6 +150,7 @@ def fraccionar_unidad(request, unit_id):
             
     return redirect('inventory:inventory_list')
 
+@login_required
 def registrar_consumo(request, unit_id):
     if request.method == 'POST':
         unidad = get_object_or_404(InventoryUnit, id=unit_id)
@@ -178,6 +185,7 @@ def registrar_consumo(request, unit_id):
             
     return redirect('inventory:inventory_list')
 
+@login_required
 def create_purchase_order(request):
     # 1. Si enviaron el formulario (POST)
     if request.method == 'POST':
@@ -217,6 +225,7 @@ def create_purchase_order(request):
         'formset': formset
     })
 
+@login_required
 def eliminar_consumo(request, log_id):
     log = get_object_or_404(ConsumptionLog, pk=log_id)
     unidad = log.inventory_unit
@@ -242,6 +251,7 @@ def eliminar_consumo(request, log_id):
             
     return redirect('inventory:consumption_history')
 
+@login_required
 def deshacer_fraccionamiento(request, unit_id):
     # Recibimos el ID de una de las hijas (ej: la 1.A)
     hija = get_object_or_404(InventoryUnit, pk=unit_id)
@@ -281,7 +291,7 @@ def deshacer_fraccionamiento(request, unit_id):
     return redirect('inventory:inventory_list')
 
 #Clases
-class StockDashboardView(TemplateView):
+class StockDashboardView(LoginRequiredMixin,TemplateView):
     template_name = 'inventory/dashboard.html'
 
     def get_context_data(self, **kwargs):
@@ -306,7 +316,7 @@ class StockDashboardView(TemplateView):
 
         return context
 
-class InventoryListView(ListView):
+class InventoryListView(LoginRequiredMixin, ListView):
     model = Material
     template_name = 'inventory/inventory_list.html'
     context_object_name = 'materiales'
@@ -350,7 +360,7 @@ class InventoryListView(ListView):
 
         return context
 
-class OCListView(ListView):
+class OCListView(LoginRequiredMixin, ListView):
     model = PurchaseOrder
     template_name = 'inventory/oc_list.html'
     context_object_name = 'ordenes'
@@ -359,14 +369,14 @@ class OCListView(ListView):
         # Mostramos las pendientes de ingreso primero
         return PurchaseOrder.objects.filter(status='PENDING').order_by('-order_date')
 
-class SupplierCreateView(SuccessMessageMixin, CreateView):
+class SupplierCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Supplier
     form_class = SupplierForm
     template_name = 'inventory/supplier_form.html'
     success_url = reverse_lazy('inventory:dashboard')
     success_message = "Proveedor creado con éxito."
 
-class MaterialCreateView(SuccessMessageMixin, CreateView):
+class MaterialCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Material
     form_class = MaterialForm
     template_name = 'inventory/material_form.html'
@@ -377,7 +387,7 @@ class MaterialCreateView(SuccessMessageMixin, CreateView):
     # El mensaje que pediste
     success_message = "El material '%(name)s' fue cargado con éxito."
 
-class ConsumptionHistoryView(ListView):
+class ConsumptionHistoryView(LoginRequiredMixin, ListView):
     model = Material
     template_name = 'inventory/consumption_list.html'
     context_object_name = 'materiales_con_consumo'
