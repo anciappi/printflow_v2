@@ -4,6 +4,61 @@ from django.core.exceptions import ValidationError
 from customers.models import Customer
 from inventory.models import Branch, Material, InventoryUnit
 
+# TIPO DE PRODUCTO (Para separar Tarjetas de Tickets)
+PRODUCT_TYPES = [
+    ('CARD', '💳 Tarjeta Plástica / Magnética'),
+    ('TICKET', '🎟️ Ticket / Entrada'),
+    ('OTHER', '📦 Otro'),
+]
+
+class Product(models.Model):
+    """
+    Ficha Técnica del Producto (Master).
+    Aquí se define CÓMO es el producto, sus colores, specs e imágenes.
+    """
+    # Identificación
+    code = models.CharField(max_length=50, unique=True, verbose_name="Cód. Producto / SKU")
+    name = models.CharField(max_length=200, verbose_name="Nombre del Producto")
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE, verbose_name="Cliente")
+    product_type = models.CharField(max_length=10, choices=PRODUCT_TYPES, default='CARD', verbose_name="Tipo de Producto")
+    
+    # Imágenes de Referencia (Visual)
+    image_front = models.ImageField(upload_to='products/front/', null=True, blank=True, verbose_name="Imagen Anverso")
+    image_back = models.ImageField(upload_to='products/back/', null=True, blank=True, verbose_name="Imagen Reverso")
+    
+    # Especificaciones Técnicas (Checkboxes Si/No)
+    # Basado en tu imagen de referencia
+    
+    # 1. Terminaciones
+    has_uv = models.BooleanField(default=False, verbose_name="Lleva UV")
+    has_laminating = models.BooleanField(default=True, verbose_name="Lleva Laminado")
+    laminate_finish = models.CharField(max_length=20, choices=[('GLOSS', 'Brillante'), ('MATTE', 'Mate')], default='GLOSS', blank=True, verbose_name="Terminación")
+    
+    # 2. Tecnologías
+    has_magstripe = models.BooleanField(default=False, verbose_name="Banda Magnética")
+    magstripe_type = models.CharField(max_length=10, choices=[('LOCO', 'Lo-Co'), ('HICO', 'Hi-Co')], blank=True, verbose_name="Tipo Banda")
+    
+    has_chip = models.BooleanField(default=False, verbose_name="Lleva Chip")
+    chip_type = models.CharField(max_length=50, blank=True, verbose_name="Tipo de Chip")
+    
+    has_contactless = models.BooleanField(default=False, verbose_name="Antena / Inlay")
+    
+    # 3. Seguridad / Panel
+    has_hologram = models.BooleanField(default=False, verbose_name="Holograma")
+    has_signature_panel = models.BooleanField(default=False, verbose_name="Panel de Firma")
+    has_stamping = models.BooleanField(default=False, verbose_name="Stamping / UG")
+    
+    # 4. Datos Variables
+    has_variable_data = models.BooleanField(default=False, verbose_name="Dato Variable / Perso")
+    
+    # Logística
+    units_per_box = models.PositiveIntegerField(default=500, verbose_name="Unidades por Caja")
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f"{self.code} - {self.name}"
+
 class Order(models.Model):
     class Status(models.TextChoices):
         WAITING = 'WAITING', 'Ingresada - En espera de materia prima'
@@ -19,7 +74,7 @@ class Order(models.Model):
 
     # --- CAMPOS BASE ---
     ot_number = models.CharField(max_length=20, unique=True, verbose_name="Nº OT")
-    order_type = models.CharField(max_length=10, choices=OrderType.choices, default=OrderType.CARDS)
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, verbose_name="Producto (Ficha Técnica)", null=True) # null=True
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE, verbose_name="Cliente")
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE, verbose_name="Sucursal de Producción")
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.WAITING)
@@ -71,8 +126,6 @@ class Order(models.Model):
                 self.status = self.Status.CANCELLED
                 self.save()
 
-# --- MODELOS DE ESPECIFICACIÓN ---
-
 class CardSpecification(models.Model):
     """Campos para Magtick"""
     order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='card_spec')
@@ -94,8 +147,6 @@ class TicketSpecification(models.Model):
     def get_meters_needed(self):
         total_with_waste = self.order.total_quantity * (1 + (self.demasia_percent / 100))
         return (total_with_waste / self.bocas_por_pliego) * self.largo_ticket_m
-
-# --- CONSUMO DE MATERIAL Y TRAZABILIDAD ---
 
 class OrderItem(models.Model):
     """Materiales vinculados a la OT"""
@@ -147,3 +198,4 @@ class DeliveryNote(models.Model):
             if self.order.quantity_delivered >= self.order.total_quantity:
                 self.order.status = Order.Status.DELIVERED
             self.order.save()
+

@@ -27,22 +27,19 @@ class ProductionLogInline(admin.TabularInline):
     # Evitamos que el operario tenga que seleccionar su nombre, lo haremos automático
     fields = ('stage', 'operator', 'good_units', 'bad_units', 'created_at')
 
-# --- 2. CONFIGURACIÓN DEL MODELO PRINCIPAL (ORDER) ---
 
+# --- 2. CONFIGURACIÓN DEL MODELO PRINCIPAL (ORDER) ---
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    # Cambiamos 'id' por 'ot_number' para que sea más profesional
-    list_display = ('ot_number', 'customer', 'status', 'order_type', 'branch', 'deadline')
-    list_filter = ('status', 'order_type', 'branch')
-    search_fields = ('ot_number', 'customer__name')
-    
-    # IMPORTANTE: Aquí unimos todos los bloques en la visual de la OT
-    inlines = [
-        OrderItemInline, 
-        CardSpecificationInline, 
-        TicketSpecificationInline, 
-        ProductionLogInline
-    ]
+    # Reemplazamos customer por product__name (para buscar por nombre de producto)
+    list_display = ('ot_number', 'get_product_name', 'status', 'branch', 'deadline')
+    list_filter = ('status', 'branch') # Quitamos order_type
+    search_fields = ('ot_number', 'product__name') # Quitamos customer__name
+
+    # Helper para mostrar nombre del producto en la lista
+    def get_product_name(self, obj):
+        return obj.product.name if obj.product else "-"
+    get_product_name.short_description = "Producto"
 
     # --- ACCIONES ---
     actions = ['make_ready_action', 'make_cancelled_action']

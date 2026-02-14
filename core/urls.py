@@ -15,6 +15,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path, include
 from django.views.generic import RedirectView
 from django.contrib.auth import views as auth_views
@@ -30,10 +32,11 @@ urlpatterns = [
 
     # Conectamos la app inventory
     path('inventario/', include('inventory.urls')),
+
+    #Ordenes de trabajo
     path('ordenes/', include('orders.urls') ),
 
-    # Conexión app orders
-
-    
-    
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

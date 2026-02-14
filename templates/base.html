@@ -15,75 +15,70 @@
 <body class="h-full text-slate-300 font-sans antialiased overflow-hidden flex">
 
     <!-- SIDEBAR (Como el panel de carpetas de VS Code) -->
-    <aside class="w-64 bg-[#1a1d23] border-r border-[#2d333b] flex flex-col">
-        <div class="p-6">
-            <h1 class="text-xl font-bold text-white tracking-wider">PRINTFLOW <span class="text-blue-500">v2</span></h1>
-        </div>
-        <nav class="flex-1 px-2 py-4 space-y-2">
+    <aside class="w-64 bg-[#1a1d23] border-r border-[#2d333b] flex flex-col ">
     
-    <!-- Sección Órdenes de Trabajo (OT) - Deshabilitada por ahora -->
-            <div class="space-y-1">
-                <button  class="w-full flex items-center px-3 py-2 text-xs font-bold text-slate-500 uppercase tracking-widest cursor-not-allowed">
-                    Dashboard general
-                </button>
-            </div>
-            <div class="space-y-1">
-                <button class="w-full flex items-center px-3 py-2 text-xs font-bold text-slate-500 uppercase tracking-widest cursor-not-allowed">
-                    Presupuesto
-                </button>
-            </div>
-            <div class="space-y-1">
-                <button class="w-full flex items-center px-3 py-2 text-xs font-bold text-slate-500 uppercase tracking-widest cursor-not-allowed">
-                    Órdenes de Trabajo
-                </button>
-                    <!-- <a href="#" class="block px-4 py-1.5 text-sm text-slate-400 hover:text-white hover:bg-[#2d333b] transition-colors">
-                        Ordenes de trabajo activas
-                    </a>
-                    <a href="#" class="block px-4 py-1.5 text-sm text-slate-400 hover:text-white hover:bg-[#2d333b] transition-colors">
-                        Ingreso OT pendiente
-                    </a>
-                    
-                    <a a href="#" class="block px-4 py-1.5 text-sm text-slate-400 hover:text-white hover:bg-[#2d333b] transition-colors">
-                        ➕ Nueva Orden de trabajo
-                    </a>
-                    <a href="#" class="block px-4 py-1.5 text-sm text-slate-500 hover:text-white hover:bg-[#2d333b] transition-colors">
-                        🔹 Carga Nuevo Cliente
-                    </a> -->
-            </div>
+    <!-- Logo -->
+    <div class="p-6 border-b border-[#2d333b]">
+        <h1 class="text-xl font-bold text-white tracking-wider">PRINTFLOW <span class="text-blue-500">v2</span></h1>
+    </div>
 
-            <!-- Sección Inventario (Activa) -->
-            <div class="space-y-1">
-                <button class="w-full flex items-center px-3 py-2 text-xs font-bold text-blue-500 uppercase tracking-widest">
-                    Gestión de Inventario
-                </button>
-                
-                <!-- Submenú de Inventario -->
-                <div class="ml-4 border-l border-[#2d333b] space-y-1">
-                    <a href="{% url 'inventory:dashboard' %}" class="block px-4 py-1.5 text-sm text-slate-400 hover:text-white hover:bg-[#2d333b] transition-colors">
-                        Resumen General Stock
-                    </a>
-                    <a href="{% url 'inventory:oc_list' %}" class="block px-4 py-1.5 text-sm text-slate-400 hover:text-white hover:bg-[#2d333b] transition-colors">
-                        Ingreso OC pendientes
-                    </a>
-                    <a href="{% url 'inventory:inventory_list' %}" class="block px-4 py-1.5 text-sm text-slate-400 hover:text-white hover:bg-[#2d333b] transition-colors">
-                        Stock Disponible
-                    </a>
-                    <a href="{% url 'inventory:consumption_history' %}" class="block px-4 py-1.5 text-sm text-slate-400 hover:text-white hover:bg-[#2d333b] transition-colors">
-                        Historial de Consumo
-                    </a>
-                    <!-- Este lo activamos luego -->
-                    <a a href="{% url 'inventory:oc_create' %}" class="block px-4 py-1.5 text-sm text-slate-400 hover:text-white hover:bg-[#2d333b] transition-colors">
-                        ➕ Nueva Orden de Compra
-                    </a>
-                    <a href="{% url 'inventory:material_list' %}" class="block px-4 py-1.5 text-sm text-slate-500 hover:text-white hover:bg-[#2d333b] transition-colors">
-                        🔹 Listado de Materiales
-                    </a>
-                    <a href="{% url 'inventory:supplier_create' %}" class="block px-4 py-1.5 text-sm text-slate-500 hover:text-white hover:bg-[#2d333b] transition-colors">
-                        🔹 Carga Nuevo Proveedor
-                    </a>
+    <!-- Menú Scrolleable -->
+    <nav class="flex-1 overflow-y-auto py-4 space-y-2 px-2 custom-scrollbar">
+        
+        <!-- SECCIÓN 1: DASHBOARD GENERAL (Sin desplegable) -->
+        <a href="{% url 'inventory:dashboard' %}" class="flex items-center px-3 py-2 text-sm font-bold text-slate-400 hover:text-white hover:bg-[#2d333b] rounded transition-colors">
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+            Dashboard General
+        </a>
+
+        <!-- SECCIÓN 2: GESTIÓN DE INVENTARIO (Desplegable) -->
+        <div>
+            <button onclick="toggleMenu('menu-inventario', 'arrow-inv')" class="w-full flex items-center justify-between px-3 py-2 text-sm font-bold text-slate-400 hover:text-white hover:bg-[#2d333b] rounded transition-colors group">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 mr-3 text-emerald-500 group-hover:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                    Inventario
                 </div>
+                <svg id="arrow-inv" class="w-4 h-4 transition-transform transform -rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+            
+            <!-- Submenú (Oculto por defecto) -->
+            <div id="menu-inventario" class="hidden pl-10 pr-2 space-y-1 mt-1">
+                <a href="{% url 'inventory:dashboard' %}" class="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors">Resumen Stock</a>
+                <a href="{% url 'inventory:inventory_list' %}" class="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors">Unidades Físicas</a>
+                <a href="{% url 'inventory:oc_list' %}" class="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors">Recepción (Remitos)</a>
+                <a href="{% url 'inventory:consumption_history' %}" class="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors">Historial Consumos</a>
+                <div class="h-px bg-[#2d333b] my-2"></div>
+                <a href="{% url 'inventory:material_list' %}" class="block py-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors">⚙ Maestro Materiales</a>
+                <a href="{% url 'inventory:oc_create' %}" class="block py-1.5 text-xs text-emerald-400 hover:text-emerald-300 transition-colors">+ Compra Insumos</a>
             </div>
-        </nav>
+        </div>
+
+        <!-- SECCIÓN 3: ÓRDENES DE TRABAJO (Desplegable) -->
+        <div>
+            <button onclick="toggleMenu('menu-ordenes', 'arrow-ord')" class="w-full flex items-center justify-between px-3 py-2 text-sm font-bold text-slate-400 hover:text-white hover:bg-[#2d333b] rounded transition-colors group">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 mr-3 text-blue-500 group-hover:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                    Producción
+                </div>
+                <svg id="arrow-ord" class="w-4 h-4 transition-transform transform -rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+            
+            <div id="menu-ordenes" class="hidden pl-10 pr-2 space-y-1 mt-1">
+                <a href="{% url 'orders:order_list' %}" class="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors">Tablero de Órdenes</a>
+                <a href="#" class="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors">Planificación (Gantt)</a>
+                <div class="h-px bg-[#2d333b] my-2"></div>
+                <a href="{% url 'orders:product_list' %}" class="block py-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors">⚙ Maestro Productos</a>
+                <a href="{% url 'orders:order_create' %}" class="block py-1.5 text-xs text-emerald-400 hover:text-emerald-300 transition-colors">+ Nueva OT</a>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 4: PRESUPUESTOS (Futuro) -->
+        <a href="#" class="flex items-center px-3 py-2 text-sm font-bold text-slate-600 hover:text-slate-400 hover:bg-[#2d333b] rounded transition-colors cursor-not-allowed">
+            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Presupuestos
+        </a>
+
+    </nav>
         <div class="p-4 border-t border-[#2d333b]">
     <div class="flex items-center justify-between">
         <div class="flex flex-col">
@@ -140,3 +135,31 @@
 
 </body>
 </html>
+
+<!-- SCRIPT SIMPLE PARA EL MENÚ -->
+<script>
+    function toggleMenu(menuId, arrowId) {
+        const menu = document.getElementById(menuId);
+        const arrow = document.getElementById(arrowId);
+        
+        if (menu.classList.contains('hidden')) {
+            // ABRIR
+            menu.classList.remove('hidden');
+            arrow.classList.remove('-rotate-90'); // Flecha abajo
+        } else {
+            // CERRAR
+            menu.classList.add('hidden');
+            arrow.classList.add('-rotate-90'); // Flecha derecha
+        }
+    }
+    
+    // Opcional: Auto-abrir el menú según la URL actual para no perder contexto al recargar
+    document.addEventListener("DOMContentLoaded", function() {
+        const path = window.location.pathname;
+        if (path.includes('/inventario/')) {
+            toggleMenu('menu-inventario', 'arrow-inv');
+        } else if (path.includes('/ordenes/') || path.includes('/productos/')) {
+            toggleMenu('menu-ordenes', 'arrow-ord');
+        }
+    });
+</script>
