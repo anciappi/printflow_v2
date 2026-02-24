@@ -290,7 +290,8 @@ def deshacer_fraccionamiento(request, unit_id):
             
     return redirect('inventory:inventory_list')
 
-#Clases
+# Clases
+# Stock general
 class StockDashboardView(LoginRequiredMixin,TemplateView):
     template_name = 'inventory/dashboard.html'
 
@@ -316,6 +317,7 @@ class StockDashboardView(LoginRequiredMixin,TemplateView):
 
         return context
 
+#
 class InventoryListView(LoginRequiredMixin, ListView):
     model = Material
     template_name = 'inventory/inventory_list.html'
@@ -422,7 +424,6 @@ class ConsumptionHistoryView(LoginRequiredMixin, ListView):
 
         return context
     
-#Listado de materiales
 # 1. LISTADO MAESTRO
 class MaterialListView(LoginRequiredMixin, ListView):
     model = Material

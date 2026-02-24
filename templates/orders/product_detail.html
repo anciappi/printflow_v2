@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+
+{% block breadcrumbs %} Producción / Maestro / {{ product.code }} {% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto pb-10">
+
+    <!-- HEADER / RESUMEN -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        
+        <!-- Columna 1: Visual (Fotos) -->
+        <div class="bg-[#1a1d23] border border-[#2d333b] p-2 rounded flex flex-col items-center justify-center relative">
+            {% if product.image_front %}
+                <img src="{{ product.image_front.url }}" class="h-48 object-contain rounded mb-2 shadow-lg">
+                <span class="text-[10px] text-slate-500 uppercase tracking-widest">Frente</span>
+            {% else %}
+                <div class="h-48 w-full bg-[#0f1115] flex items-center justify-center text-slate-600 rounded">Sin Imagen</div>
+            {% endif %}
+            
+            <!-- Badge Tipo -->
+            <span class="absolute top-2 right-2 px-2 py-1 bg-blue-900/50 text-blue-300 text-[10px] font-bold uppercase rounded border border-blue-500/20">
+                {{ product.get_product_type_display }}
+            </span>
+        </div>
+
+        <!-- Columna 2: Datos Clave -->
+        <div class="lg:col-span-2 flex flex-col justify-between">
+            <div>
+                <div class="flex justify-between items-start">
+                    <div>
+                        <h1 class="text-3xl font-bold text-white tracking-tight">{{ product.name }}</h1>
+                        <p class="text-sm text-slate-400 mt-1">Cliente: <span class="text-blue-400 font-bold">{{ product.customer.name }}</span> | SKU: <span class="font-mono text-slate-300">{{ product.code }}</span></p>
+                    </div>
+                    
+                    <!-- BOTÓN ACCIÓN RÁPIDA -->
+                    <a href="{% url 'orders:order_create' %}?product_id={{ product.id }}" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-3 px-6 rounded shadow-lg shadow-emerald-900/20 uppercase tracking-wider flex items-center gap-2 transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                        </svg>
+                        Nueva Orden (OT)
+                    </a>
+                </div>
+                
+                <div class="h-px bg-[#2d333b] my-4"></div>
+                
+                <!-- KPIs Rápidos -->
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="bg-[#1a1d23] border border-[#2d333b] p-3 rounded">
+                        <span class="text-[10px] text-slate-500 uppercase block">Total Producido</span>
+                        <span class="text-xl font-mono font-bold text-white">{{ total_historico }} u.</span>
+                    </div>
+                    <div class="bg-[#1a1d23] border border-[#2d333b] p-3 rounded">
+                        <span class="text-[10px] text-slate-500 uppercase block">Última OT</span>
+                        <span class="text-sm font-mono font-bold text-blue-400">
+                            {{ historial_ordenes.first.ot_number|default:"-" }}
+                        </span>
+                    </div>
+                    <div class="bg-[#1a1d23] border border-[#2d333b] p-3 rounded">
+                        <span class="text-[10px] text-slate-500 uppercase block">Unidades x Caja</span>
+                        <span class="text-xl font-mono font-bold text-slate-300">{{ product.units_per_box }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mini Receta (Materiales Estándar) -->
+            <div class="mt-4">
+                <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Composición (Receta)</h3>
+                <div class="flex flex-wrap gap-2">
+                    {% for pm in receta %}
+                        <span class="px-2 py-1 bg-[#0f1115] border border-[#2d333b] rounded text-xs text-slate-300">
+                            {{ pm.material.name }}
+                        </span>
+                    {% empty %}
+                        <span class="text-xs text-slate-600 italic">No hay receta definida.</span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN INFERIOR: TABS (Visualmente separados) -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- COLUMNA IZQ: ESPECIFICACIONES (Ficha Técnica) -->
+        <div class="bg-[#1a1d23] border border-[#2d333b] rounded-sm overflow-hidden h-fit">
+            <div class="bg-[#0f1115]/50 px-4 py-3 border-b border-[#2d333b]">
+                <h3 class="text-xs font-bold text-slate-300 uppercase tracking-widest">Especificaciones Técnicas</h3>
+            </div>
+            <div class="p-4 space-y-3 text-sm">
+                <!-- Checkboxes Visuales -->
+                <div class="flex justify-between border-b border-[#2d333b] pb-2">
+                    <span class="text-slate-500">Laminado</span>
+                    <span class="text-white font-bold">{{ product.has_laminating|yesno:"SÍ,NO" }} ({{ product.get_laminate_finish_display }})</span>
+                </div>
+                <div class="flex justify-between border-b border-[#2d333b] pb-2">
+                    <span class="text-slate-500">Banda Magnética</span>
+                    {% if product.has_magstripe %}
+                        <span class="text-purple-400 font-bold">SÍ ({{ product.get_magstripe_type_display }})</span>
+                    {% else %}
+                        <span class="text-slate-600">NO</span>
+                    {% endif %}
+                </div>
+                <div class="flex justify-between border-b border-[#2d333b] pb-2">
+                    <span class="text-slate-500">Chip</span>
+                    {% if product.has_chip %}
+                        <span class="text-yellow-400 font-bold">{{ product.chip_type }}</span>
+                    {% else %}
+                        <span class="text-slate-600">NO</span>
+                    {% endif %}
+                </div>
+                <!-- Lista de Features -->
+                <div class="pt-2 grid grid-cols-2 gap-2 text-xs">
+                    <div class="{{ product.has_uv|yesno:'text-emerald-400,text-slate-700' }}">● Laca UV</div>
+                    <div class="{{ product.has_hologram|yesno:'text-emerald-400,text-slate-700' }}">● Holograma</div>
+                    <div class="{{ product.has_signature_panel|yesno:'text-emerald-400,text-slate-700' }}">● Panel Firma</div>
+                    <div class="{{ product.has_contactless|yesno:'text-emerald-400,text-slate-700' }}">● Antena</div>
+                    <div class="{{ product.has_variable_data|yesno:'text-emerald-400,text-slate-700' }}">● Dato Variable</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUMNA DER: HISTORIAL DE ÓRDENES (TRAZABILIDAD) -->
+        <div class="lg:col-span-2 bg-[#1a1d23] border border-[#2d333b] rounded-sm overflow-hidden">
+            <div class="bg-[#0f1115]/50 px-4 py-3 border-b border-[#2d333b] flex justify-between items-center">
+                <h3 class="text-xs font-bold text-slate-300 uppercase tracking-widest">Trazabilidad (Historial de OTs)</h3>
+                <span class="text-[10px] text-slate-500">{{ historial_ordenes|length }} órdenes</span>
+            </div>
+            
+            <table class="w-full text-left">
+                <thead class="text-[9px] text-slate-500 uppercase bg-[#0f1115]/30">
+                    <tr>
+                        <th class="px-4 py-2">Fecha</th>
+                        <th class="px-4 py-2">Nº OT</th>
+                        <th class="px-4 py-2 text-center">Cantidad</th>
+                        <th class="px-4 py-2">Estado</th>
+                        <th class="px-4 py-2 text-right">Ver</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[#2d333b] text-sm">
+                    {% for ot in historial_ordenes %}
+                    <tr class="hover:bg-[#2d333b]/30 transition-colors">
+                        <td class="px-4 py-3 text-slate-400 text-xs">{{ ot.created_at|date:"d/m/Y" }}</td>
+                        <td class="px-4 py-3 font-mono text-blue-400 font-bold">{{ ot.ot_number }}</td>
+                        <td class="px-4 py-3 text-center text-white">{{ ot.total_quantity }}</td>
+                        <td class="px-4 py-3">
+                            {% if ot.status == 'FINISHED' %}
+                                <span class="text-[10px] text-emerald-400 bg-emerald-900/20 px-1.5 py-0.5 rounded border border-emerald-900">Finalizada</span>
+                            {% elif ot.status == 'DELIVERED' %}
+                                <span class="text-[10px] text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded">Entregada</span>
+                            {% else %}
+                                <span class="text-[10px] text-blue-300 bg-blue-900/20 px-1.5 py-0.5 rounded border border-blue-900">En Proceso</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-3 text-right">
+                            <a href="{% url 'orders:order_detail' ot.pk %}" class="text-slate-500 hover:text-white">👁</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="px-6 py-8 text-center text-slate-500 italic">No hay historial de producción.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

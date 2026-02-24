@@ -1,6 +1,5 @@
 from django.db import models, transaction
 from django.utils import timezone
-from django.core.exceptions import ValidationError
 
 # Empresa
 class Branch(models.Model):

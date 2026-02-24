@@ -45,17 +45,14 @@
             </thead>
             <tbody class="divide-y divide-[#2d333b]">
                 {% for order in orders %}
-                <tr class="hover:bg-[#2d333b]/30 transition-colors cursor-pointer group" onclick=window.location="{% url 'orders:order_detail' order.pk %}">
+                <tr class="hover:bg-[#2d333b]/30 transition-colors cursor-pointer group" onclick="window.location='{% url 'orders:order_detail' order.pk %}'">
                     <td class="px-6 py-3">
                         <span class="font-mono font-bold text-blue-400">{{ order.ot_number }}</span>
                         <div class="text-[10px] text-slate-500">{{ order.created_at|date:"d/m/Y" }}</div>
                     </td>
                     <td class="px-6 py-3">
-                        <!-- CAMBIO AQUÍ: Usamos order.product -->
-                        <div class="text-sm font-bold text-white">{{ order.product.name }}</div>
-                        <div class="text-[10px] text-slate-500">
-                            {{ order.product.customer.name }} | {{ order.product.get_product_type_display }}
-                        </div>
+                        <div class="text-sm font-bold text-white">{{ order.customer.name }}</div>
+                        <div class="text-[10px] text-slate-500">{{ order.get_order_type_display }}</div>
                     </td>
                     <td class="px-6 py-3">
                         {% if order.status == 'WAITING' %}

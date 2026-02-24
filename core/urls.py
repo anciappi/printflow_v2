@@ -34,7 +34,7 @@ urlpatterns = [
     path('inventario/', include('inventory.urls')),
 
     #Ordenes de trabajo
-    path('ordenes/', include('orders.urls') ),
+    path('ordenes/', include('orders.urls'))
 
 ]
 
