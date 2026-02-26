@@ -4,18 +4,19 @@ from django.utils import timezone
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import ListView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.contrib.messages.views import SuccessMessageMixin # <--- Faltaba esta
+from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
 from django.db import transaction
 from django.db.models import Sum, Count, Q, Prefetch
-from django.db.models.functions import Length
 from django.contrib import messages
 from decimal import Decimal
+
+#Seguridad
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Importa Modelos y Forms
-from .models import PurchaseOrder, InventoryUnit, Material, Supplier, PurchaseOrderItem, ConsumptionLog
+from .models import PurchaseOrder, InventoryUnit, Material, Supplier, ConsumptionLog
 from .forms import PurchaseOrderForm, PurchaseOrderItemFormSet, SupplierForm, MaterialForm
 
 # Create your views here.
