@@ -1,0 +1,162 @@
+{% extends "base.html" %}
+
+{% block breadcrumbs %} Producción / Maestro Productos {% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto">
+    
+    <!-- Header de la sección -->
+    <div class="flex justify-between items-end mb-6">
+        <div>
+            <h2 class="text-2xl font-bold text-white tracking-tight">Fichas Técnicas</h2>
+            <p class="text-slate-500 text-sm mt-1">Gestión centralizada de productos y especificaciones.</p>
+        </div>
+        
+        <!-- Botón Nuevo (Estilo consistente con tu menú) -->
+        <a href="{% url 'products:create' %}" class="flex items-center px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium rounded transition-colors shadow-lg shadow-emerald-900/20">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            Nueva Ficha
+        </a>
+    </div>
+
+    <!-- Contenedor de la Tabla -->
+    <div class="border border-[#2d333b] rounded-lg overflow-hidden bg-[#1a1d23]">
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="text-[10px] uppercase tracking-widest text-slate-500 border-b border-[#2d333b] bg-[#16181d]">
+                    <th class="p-4 w-12 text-center">#</th>
+                    <th class="p-4">Cliente</th>
+                    <th class="p-4 text-center">Ref. Productos</th>
+                    <th class="p-4 text-right">Estado</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-[#2d333b]">
+                {% for client in customers %}
+                <!-- FILA PADRE (CLIENTE) -->
+                <tr class="hover:bg-[#252932] transition-colors cursor-pointer group" onclick="toggleRow('row-{{ client.id }}', 'icon-{{ client.id }}')">
+                    <td class="p-4 text-center">
+                        <!-- Icono + / - -->
+                        <span id="icon-{{ client.id }}" class="text-emerald-500 font-bold text-lg transition-transform duration-200 inline-block">+</span>
+                    </td>
+                    <td class="p-4">
+                        <div class="text-white font-medium text-sm">{{ client.name }}</div>
+                        <div class="text-xs text-slate-500">{{ client.tax_id }}</div>
+                    </td>
+                    <td class="p-4 text-center">
+                        <span class="bg-[#0f1115] border border-[#2d333b] text-slate-300 px-2 py-1 rounded text-xs font-mono">
+                            {{ client.products.count }} Modelos
+                        </span>
+                    </td>
+                    <td class="p-4 text-right">
+                        <button class="text-slate-500 hover:text-white transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"></path></svg>
+                        </button>
+                    </td>
+                </tr>
+
+                <!-- FILA HIJA (PRODUCTOS) - OCULTA INICIALMENTE -->
+                <tr id="row-{{ client.id }}" class="hidden bg-[#0f1115] border-b border-[#2d333b]">
+                    <td colspan="4" class="p-0">
+                        <div class="pl-12 pr-4 py-4 border-l-2 border-emerald-500/30 ml-6 my-2">
+                            
+                            <!-- TABLA INTERNA DE PRODUCTOS -->
+                            <table class="w-full text-sm">
+                                <thead>
+                                    <tr class="text-xs text-slate-600 border-b border-[#2d333b]">
+                                        <th class="pb-2 pl-2 text-left font-normal">Imagen</th>
+                                        <th class="pb-2 text-left font-normal">Cód. / Nombre</th>
+                                        <th class="pb-2 text-left font-normal">Ficha Técnica</th>
+                                        <th class="pb-2 text-left font-normal">Material Base</th>
+                                        <th class="pb-2 text-right font-normal">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-[#2d333b]">
+                                    {% for product in client.products.all %}
+                                    <tr class="group/item hover:bg-[#1a1d23] transition-colors">
+                                        <!-- Imagen -->
+                                        <td class="py-3 pl-2 w-16 align-middle">
+                                            {% if product.preview_image %}
+                                                <img src="{{ product.preview_image.url }}" class="h-10 w-10 object-cover rounded bg-white/5 border border-[#2d333b]">
+                                            {% else %}
+                                                <div class="h-10 w-10 bg-[#1a1d23] border border-[#2d333b] rounded flex items-center justify-center text-xs text-slate-600">
+                                                    N/A
+                                                </div>
+                                            {% endif %}
+                                        </td>
+                                        
+                                        <!-- Nombre y Código -->
+                                        <td class="py-3 align-middle">
+                                            <div class="text-slate-200 font-medium">{{ product.name }}</div>
+                                            <div class="text-xs text-emerald-500 font-mono">{{ product.code }}</div>
+                                        </td>
+                                        
+                                        <!-- Dimensiones y Colores -->
+                                        <td class="py-3 align-middle">
+                                            <div class="flex flex-col gap-1">
+                                                <span class="text-xs text-slate-400">📏 {{ product.dimensions }}</span>
+                                                <div class="flex gap-1">
+                                                    {% if product.colors_front %}
+                                                        <span class="text-[10px] px-1.5 py-0.5 rounded border border-[#2d333b] bg-[#1a1d23] text-slate-500">F: {{ product.colors_front }}</span>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <!-- Sustrato -->
+                                        <td class="py-3 align-middle">
+                                            <span class="text-xs text-slate-400 block truncate max-w-[200px]" title="{{ product.substrate.name }}">
+                                                {{ product.substrate.name }}
+                                            </span>
+                                        </td>
+
+                                        <!-- Botones -->
+                                        <td class="py-3 text-right align-middle">
+                                            <div class="flex justify-end gap-2 opacity-100 sm:opacity-0 sm:group-hover/item:opacity-100 transition-opacity">
+                                                <a href="#" class="text-xs bg-[#1a1d23] hover:bg-[#2d333b] border border-[#2d333b] text-slate-300 px-3 py-1.5 rounded transition">
+                                                    Ver Ficha
+                                                </a>
+                                                <a href="#" class="text-xs bg-blue-600/10 hover:bg-blue-600/20 border border-blue-600/30 text-blue-400 px-3 py-1.5 rounded transition flex items-center gap-1">
+                                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                                                    Crear OT
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <!-- Fin Tabla Interna -->
+
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="p-12 text-center text-slate-500">
+                        <svg class="w-12 h-12 mx-auto mb-3 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+                        <p>No hay productos registrados.</p>
+                        <p class="text-xs mt-1">Crea una "Nueva Ficha" para comenzar.</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    function toggleRow(rowId, iconId) {
+        const row = document.getElementById(rowId);
+        const icon = document.getElementById(iconId);
+        
+        if (row.classList.contains('hidden')) {
+            row.classList.remove('hidden');
+            icon.innerText = '-';
+            // Animación sutil si quisieras
+        } else {
+            row.classList.add('hidden');
+            icon.innerText = '+';
+        }
+    }
+</script>
+{% endblock %}

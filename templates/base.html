@@ -65,12 +65,11 @@
             </button>
             
             <div id="menu-ordenes" class="hidden pl-10 pr-2 space-y-1 mt-1">
-                <a href="{% url 'orders:order_list' %}" class="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors">Tablero de Órdenes</a>
+                <a href="#" class="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors">Tablero de Órdenes</a>
                 <a href="#" class="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors">Planificación (Gantt)</a>
                 <div class="h-px bg-[#2d333b] my-2"></div>
-                <a href="{% url 'orders:product_list' %}" class="block py-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors">⚙ Maestro Productos</a>
-                <a href="{% url 'orders:order_create' %}" class="block py-1.5 text-xs text-emerald-400 hover:text-emerald-300 transition-colors">+ Nueva OT</a>
-                <a href="#" class="block py-1.5 text-xs text-emerald-400 hover:text-emerald-300 transition-colors">+ Generación UUID</a>
+                <a href="{% url 'products:catalog' %}" class="block py-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors">⚙ Maestro Productos</a>
+                <a href="#" class="block py-1.5 text-xs text-emerald-400 hover:text-emerald-300 transition-colors">+ Nueva OT</a>
             </div>
         </div>
         <!-- SECCIÓN 4: PRESUPUESTOS (Futuro) -->

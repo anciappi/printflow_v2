@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block breadcrumbs %} 
+<span class="text-slate-500">Producción / Maestro Productos /</span> <span class="text-white ml-1">Nueva Ficha</span> 
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-white">Nueva Ficha Técnica</h2>
+        <p class="text-slate-500 text-sm">Registra las especificaciones de un nuevo producto para producción.</p>
+    </div>
+
+    <form method="post" enctype="multipart/form-data" class="space-y-6">
+        {% csrf_token %}
+
+        <!-- SECCIÓN 1: DATOS GENERALES -->
+        <div class="bg-[#1a1d23] border border-[#2d333b] rounded-lg p-6">
+            <h3 class="text-lg font-medium text-emerald-500 mb-4 border-b border-[#2d333b] pb-2">Identificación</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Cliente -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Cliente</label>
+                    {{ form.customer }}
+                    {% if form.customer.errors %}<p class="text-red-500 text-xs mt-1">{{ form.customer.errors.0 }}</p>{% endif %}
+                    <p class="text-[10px] text-slate-600 mt-1">¿No existe? <a href="#" class="text-blue-500 hover:underline">Crear Cliente</a></p>
+                </div>
+
+                <!-- Código SKU -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Código Interno / SKU</label>
+                    {{ form.code }}
+                    {% if form.code.errors %}<p class="text-red-500 text-xs mt-1">{{ form.code.errors.0 }}</p>{% endif %}
+                </div>
+
+                <!-- Nombre del Producto (Full Width) -->
+                <div class="md:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Nombre del Producto</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}<p class="text-red-500 text-xs mt-1">{{ form.name.errors.0 }}</p>{% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 2: ESPECIFICACIONES FÍSICAS -->
+        <div class="bg-[#1a1d23] border border-[#2d333b] rounded-lg p-6">
+            <h3 class="text-lg font-medium text-blue-500 mb-4 border-b border-[#2d333b] pb-2">Especificaciones Técnicas</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <!-- Ancho -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Ancho (mm)</label>
+                    {{ form.width_mm }}
+                </div>
+                <!-- Alto -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Alto (mm)</label>
+                    {{ form.height_mm }}
+                </div>
+                 <!-- Estado (Ej: Activo/Draft) -->
+                 <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Estado Ficha</label>
+                    {{ form.status }}
+                </div>
+            </div>
+
+            <!-- Material Base -->
+            <div>
+                <label class="block mb-2 text-sm font-medium text-slate-400 flex justify-between">
+                    <span>Sustrato / Material Base</span>
+                    <span class="text-xs text-slate-600 italic">Se descontará del inventario</span>
+                </label>
+                {{ form.substrate }}
+                {% if form.substrate.errors %}<p class="text-red-500 text-xs mt-1">{{ form.substrate.errors.0 }}</p>{% endif %}
+            </div>
+        </div>
+
+        <!-- SECCIÓN 3: IMPRESIÓN Y ACABADOS -->
+        <div class="bg-[#1a1d23] border border-[#2d333b] rounded-lg p-6">
+            <h3 class="text-lg font-medium text-purple-500 mb-4 border-b border-[#2d333b] pb-2">Producción e Impresión</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Colores Frente</label>
+                    {{ form.colors_front }} <!-- Ej: CMYK -->
+                </div>
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Colores Dorso</label>
+                    {{ form.colors_back }} <!-- Ej: 1 Tinta Negra -->
+                </div>
+                <div class="md:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Códigos Pantone / Detalles</label>
+                    {{ form.pantone_codes }}
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 4: ARCHIVOS Y ADJUNTOS -->
+        <div class="bg-[#1a1d23] border border-[#2d333b] rounded-lg p-6">
+            <h3 class="text-lg font-medium text-yellow-500 mb-4 border-b border-[#2d333b] pb-2">Archivos Adjuntos</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Imagen de Muestra (JPG/PNG)</label>
+                    {{ form.preview_image }}
+                    <p class="text-[10px] text-slate-600 mt-1">Visible en el catálogo visual.</p>
+                </div>
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Plano Técnico / Arte (PDF/AI)</label>
+                    {{ form.tech_file }}
+                    <p class="text-[10px] text-slate-600 mt-1">Archivo de producción.</p>
+                </div>
+                <div class="md:col-span-2 mt-2">
+                     <label class="block mb-2 text-sm font-medium text-slate-400">Notas Internas</label>
+                     {{ form.notes }}
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTONES DE ACCIÓN -->
+        <div class="flex items-center justify-end gap-4 pt-4 pb-8">
+            <a href="{% url 'products:catalog' %}" class="text-slate-400 hover:text-white text-sm font-medium transition-colors">Cancelar</a>
+            <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2.5 rounded shadow-lg shadow-emerald-900/20 font-medium transition-transform active:scale-95">
+                Guardar Ficha Técnica
+            </button>
+        </div>
+
+    </form>
+</div>
+{% endblock %}

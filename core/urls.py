@@ -33,6 +33,9 @@ urlpatterns = [
     # Conectamos la app inventory
     path('inventario/', include('inventory.urls')),
 
+    #Productos
+    path('products/', include('products.urls'))
+
     #Ordenes de trabajo
     #path('ordenes/', include('orders.urls'))
 
