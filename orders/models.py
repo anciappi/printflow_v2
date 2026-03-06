@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, transaction
 from django.utils import timezone
 from users.models import User       # Tu modelo de usuario
 from products.models import Product # El modelo que acabamos de crear
@@ -53,9 +53,10 @@ class WorkOrder(models.Model):
         return f"OT #{self.ot_number} | {self.product.name}"
 
     def save(self, *args, **kwargs):
-        # Lógica simple para generar numero de OT si no existe (Opcional)
+        # Generar número de OT atómicamente para prevenir condiciones de carrera
         if not self.ot_number:
-            last_id = WorkOrder.objects.all().order_by('id').last()
-            new_id = (last_id.id + 1) if last_id else 1
-            self.ot_number = f"OT-{timezone.now().year}-{new_id:04d}"
+            with transaction.atomic():
+                last_order = WorkOrder.objects.select_for_update().order_by('id').last()
+                new_id = (last_order.id + 1) if last_order else 1
+                self.ot_number = f"OT-{timezone.now().year}-{new_id:04d}"
         super().save(*args, **kwargs)

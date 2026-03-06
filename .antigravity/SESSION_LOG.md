@@ -11,6 +11,7 @@
 - **DATA INTEGRITY:** Implemented soft-delete for `Customer` model (updated_at, Meta ordering, delete override).
 - **FEATURE:** Added informational `assigned_to` field to `Customer` mapping to a user.
 - **SECURITY HARDENING:** Scoped `CustomerListView` and `CustomerUpdateView` to only allow interactions with `is_active=True` customers.
+- **DATA INTEGRITY:** Fixed race condition in `WorkOrder` OT number generation using `transaction.atomic()` and `select_for_update()`.
 
 **Files Created/Modified:**
 - `.antigravity/AUDIT_REPORT.md` (Updated with Action Plan)
@@ -19,6 +20,7 @@
 - `orders/views.py` (Modified)
 - `customers/views.py` (Modified)
 - `customers/models.py` (Modified)
+- `orders/models.py` (Modified)
 
 **Next Pending Task:**
 - Start Phase 1 of Action Plan: Implementation of missing Timestamps and Meta classes in models.
