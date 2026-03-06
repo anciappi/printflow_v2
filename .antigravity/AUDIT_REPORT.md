@@ -202,3 +202,68 @@
 4. 🔗 **Dependencies**: Reuses `inventory.models` entirely.
 5. ⚡ **Performance issues**:
    - Prefetching `items__material` is good, but nested relations need monitoring for overhead.
+
+---
+
+## dashboard
+
+1. ✅ **What is correct**:
+   - Template foundation uses `{% extends 'base.html' %}` which is consistent with the project's layout.
+   - Secure use of `@login_required` decorators on views.
+2. ⚠️ **What needs refactoring**:
+   - **Template Loading**: `views.py` refers to `'templates/dashboard/index.html'`. Standard Django convention (and current project configuration in other apps) implies this should be simply `'dashboard/index.html'`.
+   - **Dead Code**: The app is not currently included in `core/urls.py`, rendering the entire module unreachable from the browser.
+   - **Example**:
+     ```python
+     # Before (dashboard/views.py)
+     return render(request, 'templates/dashboard/index.html')
+
+     # After
+     return render(request, 'dashboard/index.html')
+     ```
+3. ❌ **Missing for production-readiness**:
+   - **Content**: The app is currently just a skeleton. It lacks any operational logic or representative UI.
+   - **Integration**: Must be linked to the main navigation menu and included in the projects `urlpatterns`.
+4. 🔗 **Dependencies**: Depends on `core` (for authentication) and `base.html`.
+5. ⚡ **Performance issues**:
+   - None currently, as the app performs no database operations or complex logic.
+
+---
+
+## CONSOLIDATED ACTION PLAN
+
+### ARCHITECTURAL DECISION: `inventory` vs `purchasing`
+**Recommendation: Option B+ (Refactor and Decouple)**
+- **Reasoning:** Inventory (Stock) and Purchasing (Finance/Sourcing) are distinct domain concerns. 
+- **Plan:** Keep both apps. Move `PurchaseOrder`, `PurchaseOrderItem`, and `Supplier` models from `inventory` to `purchasing`. `inventory` will then import `purchasing` only to track the source of an `InventoryUnit`. This removes the 90% duplication and follows the Single Responsibility Principle.
+
+---
+
+### DEPENDENCY MAP
+The following order is recommended to minimize breaking changes during refactoring:
+1. **`core`** (No internal depends)
+2. **`users`** (Depends on `core`)
+3. **`customers`** (Depends on `core`)
+4. **`purchasing`** (Depends on `users`, `core`)
+5. **`inventory`** (Depends on `purchasing`, `users`, `core`)
+6. **`products`** (Depends on `customers`, `inventory`, `core`)
+7. **`orders`** (Depends on `users`, `customers`, `products`, `core`)
+8. **`dashboard`** (Depends on all others for data)
+
+---
+
+### ACTION PLAN
+
+| Priority | App | Task Description | Risk | Dependencies |
+| :--- | :--- | :--- | :--- | :--- |
+| **CRITICAL** | `System-wide` | **Missing Meta & Timestamps:** Implement `created_at`, `updated_at`, `ordering`, and `__str__` in all models identified as missing in the audit. | **HIGH** | Human approval for migrations. |
+| **CRITICAL** | `System-wide` | **Unscoped Querysets:** Modify `get_queryset` in all generic and functional views to filter by user/role permissions. | **HIGH** | None. |
+| **CRITICAL** | `core` | **Security Headers:** Configure HSTS, SSL redirect, and cookie security in `settings.py`. | **LOW** | Deployment environment config. |
+| **HIGH** | `purchasing` + `inventory` | **Decouple Apps:** Migrate PO models to `purchasing`. Remove duplicate views and forms. Extract shared logic to a `mixins.py` if needed. | **HIGH** | `inventory` models migration. |
+| **HIGH** | `orders` | **Atomic OT Generation:** Replace manual `ot_number` logic with a database sequence or atomic transaction to prevent race conditions. | **MEDIUM** | `WorkOrder` model update. |
+| **HIGH** | `customers` | **Soft Delete:** Implement `is_active` or similar flag and override `delete()` to prevent permanent data loss. | **MEDIUM** | Migration. |
+| **HIGH** | `System-wide` | **Form Styling:** Extact Tailwind classes from form files into a shared CSS or template component to follow DRY. | **LOW** | UI Review. |
+| **MEDIUM** | `inventory` | **Query Optimization:** Replace Python-side natural sorting with database-level ordering in `InventoryListView`. | **LOW** | None. |
+| **MEDIUM** | `System-wide` | **Pagination:** Implement pagination for all ListViews to ensure scalability. | **LOW** | None. |
+| **LOW** | `dashboard` | **Activation:** Register `dashboard` in `core/urls.py` and implement basic KPIs using aggregated data from orders/stock. | **LOW** | None. |
+| **LOW** | `core` | **Translation:** Rename remaining Spanish URLs (`/clientes/`, `/inventario/`) to English for consistency with project rules. | **MEDIUM** | All app URL references. |
