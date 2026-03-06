@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import inlineformset_factory
-from .models import PurchaseOrder, PurchaseOrderItem, Supplier, Material
+from .models import Material
+from purchasing.models import PurchaseOrder, PurchaseOrderItem, Supplier
 
 # --- Clases de estilo Tailwind ---
 INPUT_CLASSES = "w-full bg-[#0f1115] border border-[#2d333b] text-slate-200 px-3 py-2 text-sm focus:outline-none focus:border-blue-500 transition-colors rounded-sm"

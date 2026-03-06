@@ -10,8 +10,8 @@ from django.urls import reverse_lazy
 from django.db import transaction
 from django.utils import timezone
 
-# Los modelos residen en inventory; purchasing actúa como capa de presentación
-from inventory.models import PurchaseOrder, Supplier
+# Models now live in this app
+from .models import PurchaseOrder, Supplier
 from .forms import PurchaseOrderForm, PurchaseOrderItemFormSet, SupplierForm
 
 

@@ -1,7 +1,7 @@
 from django import forms
 from django.forms import inlineformset_factory
-# Los modelos viven en inventory — purchasing los reutiliza sin mover la BD
-from inventory.models import PurchaseOrder, PurchaseOrderItem, Supplier
+# Models now live in this app
+from .models import PurchaseOrder, PurchaseOrderItem, Supplier
 
 # --- Clases de estilo (consistentes con el design system del proyecto) ---
 INPUT_CLASSES = (

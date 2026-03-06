@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from decimal import Decimal
 from .models import *
+from purchasing.models import PurchaseOrder, PurchaseOrderItem, Supplier
 
 # --- 1. Formularios y Configuración de Inlines ---
 class ConsumptionInline(admin.TabularInline):
@@ -12,10 +13,6 @@ class ConsumptionInline(admin.TabularInline):
     extra = 1
     fields = ('quantity_used', 'responsible', 'date')
     readonly_fields = ('date',)
-
-class PurchaseOrderItemInline(admin.TabularInline):
-    model = PurchaseOrderItem
-    extra = 1
 
 # --- 2. Gestión Gerencial (El Dashboard que Gerencia Ama) ---
 @admin.register(MaterialStockSummary)
@@ -115,16 +112,7 @@ class InventoryUnitAdmin(admin.ModelAdmin):
             'unit': obj, 'ancho_total': ancho_total, 'opts': self.model._meta,
         })
 
-# --- 4. Compras y Remitos ---
-@admin.register(PurchaseOrder)
-class PurchaseOrderAdmin(admin.ModelAdmin):
-    list_display = ('remito_number', 'supplier', 'customer_name', 'status', 'order_date')
-    inlines = [PurchaseOrderItemInline]
-    actions = ['confirm_reception']
-
-    @admin.action(description="📥 Confirmar recepción")
-    def confirm_reception(self, request, queryset):
-        for po in queryset: po.mark_as_received()
+# --- 4. (Purchasing now handled in purchasing/admin.py) ---
 
 # --- 5. Definición de Materiales con Especificaciones ---
 @admin.register(Material)
@@ -144,4 +132,4 @@ class MaterialAdmin(admin.ModelAdmin):
 
 # --- 6. Registros Básicos ---
 admin.site.register(Branch)
-admin.site.register(Supplier)
+# Note: Supplier is now registered in purchasing/admin.py
