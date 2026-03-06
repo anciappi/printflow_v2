@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from pathlib import Path
 import os
 from dotenv import load_dotenv
+from django.core.exceptions import ImproperlyConfigured
 
 load_dotenv()
 
@@ -24,7 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-1x*-l!^!2jyjeyxd7@v!k4oa59hek4$#h2cj#$-awk)^^o$kp8')
+SECRET_KEY = os.getenv('SECRET_KEY')
+if not SECRET_KEY:
+    raise ImproperlyConfigured("SECRET_KEY must be set in .env")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
@@ -91,12 +94,16 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # }
 
 # Agrega la configuración de Postgres
+DB_PASSWORD = os.getenv('DB_PASSWORD')
+if not DB_PASSWORD:
+    raise ImproperlyConfigured("DB_PASSWORD must be set in .env")
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('DB_NAME', 'printflow_db'),
         'USER': os.getenv('DB_USER', 'printflow_user'),
-        'PASSWORD': os.getenv('DB_PASSWORD', 'anc31763534...'),
+        'PASSWORD': DB_PASSWORD,
         'HOST': os.getenv('DB_HOST', 'localhost'),
         'PORT': os.getenv('DB_PORT', '5432'),
     }

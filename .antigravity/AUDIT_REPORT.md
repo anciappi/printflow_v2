@@ -60,3 +60,69 @@
 4. 🔗 **Dependencies**: Referenced by `core.settings.AUTH_USER_MODEL` and used across the system for authentication.
 5. 🔴 **Security issues**:
    - No specific vulnerabilities in the current model structure, but lack of granular permission checks in views remains a risk once features are added.
+
+---
+
+## orders + customers
+
+### App: `orders/`
+1. ✅ **What is correct**:
+   - Comprehensive model `WorkOrder` with proper choices for status and priority.
+   - Use of `Django ModelForms` (`WorkOrderForm`).
+   - Views correctly enforce authentication via `LoginRequiredMixin`.
+2. ⚠️ **What needs refactoring**:
+   - **Missing Timestamps**: Model lacks `updated_at` (required by rules).
+   - **Manual ID Generation**: `save()` method manually calculates `ot_number`, which is prone to race conditions under concurrent requests.
+   - **Unscoped QuerySets**: List view does not scope by user/permissions, exposing all orders.
+   - **Example**:
+     ```python
+     # Before
+     class WorkOrderListView(LoginRequiredMixin, ListView):
+         model = WorkOrder
+         # get_queryset is missing, defaults to WorkOrder.objects.all()
+
+     # After
+     class WorkOrderListView(LoginRequiredMixin, ListView):
+         model = WorkOrder
+         # ...
+         def get_queryset(self):
+             return WorkOrder.objects.filter(sales_rep=self.request.user).select_related('customer', 'product')
+     ```
+3. ❌ **Missing for production-readiness**:
+   - Pagination in the `ListView`.
+   - Granular permissions (e.g., only allowing status changes by authorized roles).
+   - A robust mechanism to generate sequential OT numbers (e.g., database sequence or atomic transaction).
+4. 🔗 **Dependencies**: Depends on `users.User` (sales_rep) and `products.Product` (product).
+5. 🔴 **Security issues**:
+   - **High**: Unscoped querysets in `WorkOrderListView` and `WorkOrderUpdateView` allow any authenticated user to view and modify any order.
+   - **Medium**: High risk of race conditions resulting in duplicate `ot_number` values during concurrent creation.
+
+---
+
+### App: `customers/`
+1. ✅ **What is correct**:
+   - Solid `Customer` model definition, including uniqueness for `tax_id`.
+   - Views use `LoginRequiredMixin`.
+   - Use of `Django Forms` for creation and updates.
+2. ⚠️ **What needs refactoring**:
+   - **Missing Timestamps**: Model lacks `updated_at` (required by rules).
+   - **View Logic**: Unscoped querysets in `CustomerListView` and `CustomerUpdateView`.
+   - **UI in Forms**: Tailwind CSS classes are hardcoded directly into `customers/forms.py`, violating separation of concerns.
+   - **Example**:
+     ```python
+     # Before
+     class Customer(models.Model):
+         created_at = models.DateTimeField(auto_now_add=True)
+         # missing updated_at
+
+     # After
+     class Customer(models.Model):
+         created_at = models.DateTimeField(auto_now_add=True)
+         updated_at = models.DateTimeField(auto_now=True)
+     ```
+3. ❌ **Missing for production-readiness**:
+   - Pagination in `CustomerListView`.
+   - Soft-delete functionality. Currently uses standard `DeleteView` which permanently deletes records, violating the "No deletion of existing data" rule without approval/safeguards.
+4. 🔗 **Dependencies**: Depends on `core` for authentication/routing.
+5. 🔴 **Security issues**:
+   - **High**: Unscoped access allows any authenticated user to edit or completely delete any customer via `CustomerDeleteView` and `CustomerUpdateView`.
