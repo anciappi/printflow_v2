@@ -12,8 +12,6 @@
 
 **Next Pending Task:**
 - Audit: `inventory/`, `customers/`, `orders/`, `products/`, `purchasing/`.
-- Fix: Hardcoded credentials in `core/settings.py`.
 
 **Blockers/Open Questions:**
-- 🔴 CRITICAL: DB password and Secret Key are currently hardcoded in settings.
 - 🔴 CRITICAL: User model requires timestamps as per project rules.
