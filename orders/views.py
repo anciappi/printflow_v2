@@ -9,6 +9,9 @@ class WorkOrderListView(LoginRequiredMixin, ListView):
     template_name = 'orders/workorder_list.html'
     context_object_name = 'orders'
 
+    def get_queryset(self):
+        return WorkOrder.objects.filter(sales_rep=self.request.user).select_related('customer', 'product')
+
 class WorkOrderCreateView(LoginRequiredMixin, CreateView):
     model = WorkOrder
     form_class = WorkOrderForm
@@ -20,3 +23,6 @@ class WorkOrderUpdateView(LoginRequiredMixin, UpdateView):
     form_class = WorkOrderForm
     template_name = 'orders/workorder_form.html'
     success_url = reverse_lazy('orders:list')
+
+    def get_queryset(self):
+        return WorkOrder.objects.filter(sales_rep=self.request.user)
