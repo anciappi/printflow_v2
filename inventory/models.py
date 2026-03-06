@@ -5,11 +5,23 @@ from decimal import Decimal
 # Empresa
 class Branch(models.Model):
     name = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
     def __str__(self): return self.name
 
 # Proveedor
 class Supplier(models.Model):
     name = models.CharField(max_length=100)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
     def __str__(self): return self.name
 
 # Material
@@ -36,6 +48,12 @@ class Material(models.Model):
     standard_quantity = models.DecimalField(max_digits=12, decimal_places=2, default=0)
     package_weight = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Peso Bulto (Kg)")
 
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
     def __str__(self):
         tech = f" | {self.technology}" if self.technology else ""
         specs = f"{self.width or 0}x{self.length or 0} | {self.grammage or 0}g"
@@ -54,6 +72,11 @@ class PurchaseOrder(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='PENDING')
     order_date = models.DateField(default=timezone.now)
     delivery_date = models.DateField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
 
     def mark_as_received(self):
         if self.status == 'PENDING':
@@ -79,6 +102,11 @@ class PurchaseOrderItem(models.Model):
     quantity_ordered = models.IntegerField()
     quantity_per_unit = models.DecimalField(max_digits=12, decimal_places=2)
     total_weight = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Peso Total (Kg)")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
 
 #
 class InventoryUnit(models.Model):
@@ -92,6 +120,8 @@ class InventoryUnit(models.Model):
     status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='AVAILABLE')
     width_override = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     parent_unit = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='children')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         ordering = ['unit_number']
@@ -169,6 +199,11 @@ class ConsumptionLog(models.Model):
     date = models.DateTimeField(default=timezone.now)
     responsible = models.ForeignKey('users.User', on_delete=models.PROTECT)
     reference_ot = models.CharField(max_length=50, blank=True, null=True, verbose_name="Ref. OT")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
 
     def save(self, *args, **kwargs):
         with transaction.atomic():
