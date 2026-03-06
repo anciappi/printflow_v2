@@ -1,5 +1,6 @@
 from django.db import models, transaction
 from django.utils import timezone
+from decimal import Decimal
 
 # Empresa
 class Branch(models.Model):
@@ -98,6 +99,66 @@ class InventoryUnit(models.Model):
     def get_width(self):
         return self.width_override if self.width_override else self.material.width
 
+    def fraccionar(self, ancho_a: Decimal):
+        ancho_padre = self.get_width()
+        
+        if ancho_a >= ancho_padre or ancho_a <= 0:
+            raise ValueError("El ancho del corte debe ser menor al ancho total y mayor a 0.")
+
+        ancho_b = ancho_padre - ancho_a
+        
+        with transaction.atomic():
+            # 1. Crear Hija A
+            hija_a = InventoryUnit.objects.create(
+                material=self.material,
+                purchase_order=self.purchase_order,
+                unit_number=f"{self.unit_number}.A",
+                branch=self.branch,
+                initial_quantity=self.current_quantity,
+                current_quantity=self.current_quantity,
+                width_override=ancho_a,
+                parent_unit=self,
+                status='AVAILABLE'
+            )
+            
+            # 2. Crear Hija B
+            hija_b = InventoryUnit.objects.create(
+                material=self.material,
+                purchase_order=self.purchase_order,
+                unit_number=f"{self.unit_number}.B",
+                branch=self.branch,
+                initial_quantity=self.current_quantity,
+                current_quantity=self.current_quantity,
+                width_override=ancho_b,
+                parent_unit=self,
+                status='AVAILABLE'
+            )
+            
+            # 3. "Matar" a la madre (Agotada por corte)
+            self.status = 'EXHAUSTED'
+            self.current_quantity = 0
+            self.save()
+            
+        return hija_a, hija_b
+
+    def deshacer_fraccionamiento(self):
+        # 1. Buscamos a todas las hermanas (todas las hijas de ese padre)
+        hermanas = InventoryUnit.objects.filter(parent_unit=self)
+        
+        # 2. VALIDACIÓN DE SEGURIDAD
+        for h in hermanas:
+            if h.current_quantity < h.initial_quantity:
+                raise ValueError(f"No se puede deshacer: La unidad {h.unit_number} ya tuvo consumo.")
+
+        with transaction.atomic():
+            # 3. Si están intactas, procedemos:
+            hermanas.delete()
+            
+            # 4. Revivimos al Padre
+            self.status = 'AVAILABLE'
+            self.current_quantity = self.initial_quantity
+            self.save()
+
     def __str__(self):
         return f"{self.material.name} ({self.get_width()}cm) - R:{self.purchase_order.remito_number}-U:{self.unit_number}"
 
@@ -120,6 +181,21 @@ class ConsumptionLog(models.Model):
             unit.status = 'EXHAUSTED' if unit.current_quantity <= 0 else 'IN_USE'
             unit.save()
             super().save(*args, **kwargs)
+            
+    def deshacer_consumo(self):
+        with transaction.atomic():
+            unidad = self.inventory_unit
+            # 1. Devolvemos la cantidad al stock
+            unidad.current_quantity += self.quantity_used
+            
+            # 2. Si estaba agotada, la revivimos
+            if unidad.status == 'EXHAUSTED' and unidad.current_quantity > 0:
+                unidad.status = 'IN_USE' # O 'AVAILABLE'
+            
+            unidad.save()
+            
+            # 3. Borramos el registro (El crimen nunca ocurrió)
+            self.delete()
 
 #Resumen materia prima
 class MaterialStockSummary(Material):

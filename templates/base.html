@@ -1,128 +1,243 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es" class="h-full bg-[#0f1115]">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PrintFlow v2 | Stock</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Estética VS Code: scrollbars finos */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0f1115; }
-        ::-webkit-scrollbar-thumb { background: #333; }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
 </head>
+
 <body class="h-full text-slate-300 font-sans antialiased overflow-hidden flex">
 
     <!-- SIDEBAR (Como el panel de carpetas de VS Code) -->
     <aside class="w-64 bg-[#1a1d23] border-r border-[#2d333b] flex flex-col ">
-    
-    <!-- Logo -->
-    <div class="p-6 border-b border-[#2d333b]">
-        <h1 class="text-xl font-bold text-white tracking-wider">PRINTFLOW <span class="text-blue-500">v2</span></h1>
-    </div>
 
-    <!-- Menú Scrolleable -->
-    <nav class="flex-1 overflow-y-auto py-4 space-y-2 px-2 custom-scrollbar">
-        
-        <!-- SECCIÓN 1: DASHBOARD GENERAL (Sin desplegable) -->
-        <a href="{% url 'inventory:dashboard' %}" class="flex items-center px-3 py-2 text-sm font-bold text-slate-400 hover:text-white hover:bg-[#2d333b] rounded transition-colors">
-            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-            Dashboard General
-        </a>
-
-        <!-- SECCIÓN 2: GESTIÓN DE INVENTARIO (Desplegable) -->
-        <div>
-            <button onclick="toggleMenu('menu-inventario', 'arrow-inv')" class="w-full flex items-center justify-between px-3 py-2 text-sm font-bold text-slate-400 hover:text-white hover:bg-[#2d333b] rounded transition-colors group">
-                <div class="flex items-center">
-                    <svg class="w-5 h-5 mr-3 text-emerald-500 group-hover:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
-                    Inventario
-                </div>
-                <svg id="arrow-inv" class="w-4 h-4 transition-transform transform -rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-            </button>
-            
-            <!-- Submenú (Oculto por defecto) -->
-            <div id="menu-inventario" class="hidden pl-10 pr-2 space-y-1 mt-1">
-                <a href="{% url 'inventory:dashboard' %}" class="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors">Resumen Stock</a>
-                <a href="{% url 'inventory:inventory_list' %}" class="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors">Unidades Físicas</a>
-                <a href="{% url 'inventory:oc_list' %}" class="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors">Recepción (Remitos)</a>
-                <a href="{% url 'inventory:consumption_history' %}" class="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors">Historial Consumos</a>
-                <div class="h-px bg-[#2d333b] my-2"></div>
-                <a href="{% url 'inventory:material_list' %}" class="block py-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors">⚙ Maestro Materiales</a>
-                <a href="{% url 'inventory:oc_create' %}" class="block py-1.5 text-xs text-emerald-400 hover:text-emerald-300 transition-colors">+ Compra Insumos</a>
-            </div>
+        <!-- Logo -->
+        <div class="p-6 border-b border-[#2d333b]">
+            <h1 class="text-xl font-bold text-white tracking-wider">PRINTFLOW <span class="text-blue-500">v2</span></h1>
         </div>
 
-        <!-- SECCIÓN 3: ÓRDENES DE TRABAJO (Desplegable) 
--->
-        <div>
-            <button onclick="toggleMenu('menu-ordenes', 'arrow-ord')" class="w-full flex items-center justify-between px-3 py-2 text-sm font-bold text-slate-400 hover:text-white hover:bg-[#2d333b] rounded transition-colors group">
-                <div class="flex items-center">
-                    <svg class="w-5 h-5 mr-3 text-blue-500 group-hover:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
-                    Producción
-                </div>
-                <svg id="arrow-ord" class="w-4 h-4 transition-transform transform -rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-            </button>
-            
-            <div id="menu-ordenes" class="hidden pl-10 pr-2 space-y-1 mt-1">
-                <a href="#" class="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors">Tablero de Órdenes</a>
-                <a href="#" class="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors">Planificación (Gantt)</a>
-                <div class="h-px bg-[#2d333b] my-2"></div>
-                <a href="{% url 'products:catalog' %}" class="block py-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors">⚙ Maestro Productos</a>
-                <a href="#" class="block py-1.5 text-xs text-emerald-400 hover:text-emerald-300 transition-colors">+ Nueva OT</a>
-            </div>
-        </div>
-        <!-- SECCIÓN 4: PRESUPUESTOS (Futuro) -->
-        <a href="#" class="flex items-center px-3 py-2 text-sm font-bold text-slate-600 hover:text-slate-400 hover:bg-[#2d333b] rounded transition-colors cursor-not-allowed">
-            <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            Presupuestos
-        </a>
+        <!-- Menú Scrolleable -->
+        <nav class="flex-1 overflow-y-auto py-4 space-y-2 px-2 custom-scrollbar">
 
-    </nav>
-        <div class="p-4 border-t border-[#2d333b]">
-    <div class="flex items-center justify-between">
-        <div class="flex flex-col">
-            <span class="text-[10px] text-slate-500 uppercase tracking-tight">Usuario</span>
-            <span class="text-s text-white">{{ user.username }}</span>
-        </div>
-        
-        <!-- El botón de Logout como Formulario para Django 6.x -->
-        <form action="{% url 'logout' %}" method="post" class="inline">
-            {% csrf_token %}
-            <button type="submit" class="text-slate-500 hover:text-red-400 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="box-arrow-right" />
-                    <path d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+            <!-- SECCIÓN 1: DASHBOARD GENERAL (Sin desplegable) -->
+            <a href="{% url 'inventory:dashboard' %}"
+                class="flex items-center px-3 py-2 text-sm font-bold text-slate-400 hover:text-white hover:bg-[#2d333b] rounded transition-colors">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
+                    </path>
                 </svg>
-            </button>
-        </form>
-    </div>
-</div>
+                Dashboard General
+            </a>
+
+            <!-- SECCIÓN 2: GESTIÓN DE INVENTARIO (Desplegable) -->
+            <div>
+                <button onclick="toggleMenu('menu-inventario', 'arrow-inv')"
+                    class="w-full flex items-center justify-between px-3 py-2 text-sm font-bold text-slate-400 hover:text-white hover:bg-[#2d333b] rounded transition-colors group">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-3 text-emerald-500 group-hover:text-emerald-400" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                        Inventario
+                    </div>
+                    <svg id="arrow-inv" class="w-4 h-4 transition-transform transform -rotate-90" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+
+                <!-- Submenú (Oculto por defecto) -->
+                <div id="menu-inventario" class="hidden pl-10 pr-2 space-y-1 mt-1">
+                    <a href="{% url 'inventory:dashboard' %}"
+                        class="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors">Resumen Stock</a>
+                    <a href="{% url 'inventory:inventory_list' %}"
+                        class="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors">Unidades
+                        Físicas</a>
+                    <a href="{% url 'inventory:oc_list' %}"
+                        class="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors">Recepción
+                        (Remitos)</a>
+                    <a href="{% url 'inventory:consumption_history' %}"
+                        class="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors">Historial
+                        Consumos</a>
+                    <div class="h-px bg-[#2d333b] my-2"></div>
+                    <a href="{% url 'inventory:material_list' %}"
+                        class="block py-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors">⚙ Maestro
+                        Materiales</a>
+                    <a href="{% url 'inventory:material_create' %}"
+                        class="block py-1.5 text-xs text-emerald-400 hover:text-emerald-300 transition-colors">+ Nuevo
+                        Material</a>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 2b: COMPRAS (Desplegable) -->
+            <div>
+                <button onclick="toggleMenu('menu-compras', 'arrow-comp')"
+                    class="w-full flex items-center justify-between px-3 py-2 text-sm font-bold text-slate-400 hover:text-white hover:bg-[#2d333b] rounded transition-colors group">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-3 text-yellow-500 group-hover:text-yellow-400" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
+                            </path>
+                        </svg>
+                        Compras
+                    </div>
+                    <svg id="arrow-comp" class="w-4 h-4 transition-transform transform -rotate-90" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+
+                <div id="menu-compras" class="hidden pl-10 pr-2 space-y-1 mt-1">
+                    <a href="{% url 'purchasing:oc_list' %}"
+                        class="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors">Órdenes de
+                        Compra</a>
+                    <a href="{% url 'purchasing:oc_create' %}"
+                        class="block py-1.5 text-xs text-emerald-400 hover:text-emerald-300 transition-colors">+ Nueva
+                        Orden</a>
+                    <div class="h-px bg-[#2d333b] my-2"></div>
+                    <a href="{% url 'purchasing:supplier_list' %}"
+                        class="block py-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors">⚙
+                        Proveedores</a>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 3: VENTAS (Desplegable) -->
+            <div>
+                <button onclick="toggleMenu('menu-ventas', 'arrow-ven')"
+                    class="w-full flex items-center justify-between px-3 py-2 text-sm font-bold text-slate-400 hover:text-white hover:bg-[#2d333b] rounded transition-colors group">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-3 text-orange-500 group-hover:text-orange-400" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                            </path>
+                        </svg>
+                        Ventas
+                    </div>
+                    <svg id="arrow-ven" class="w-4 h-4 transition-transform transform -rotate-90" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+
+                <div id="menu-ventas" class="hidden pl-10 pr-2 space-y-1 mt-1">
+                    <a href="{% url 'customers:list' %}"
+                        class="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors">Maestro
+                        Clientes</a>
+                    <a href="{% url 'customers:create' %}"
+                        class="block py-1.5 text-xs text-orange-400 hover:text-orange-300 transition-colors">+ Agregar
+                        Cliente</a>
+                    <a href="{% url 'products:create' %}"
+                        class="block py-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors">+ Nuevo
+                        producto</a>
+                    <div class="h-px bg-[#2d333b] my-2"></div>
+                </div>
+            </div>
+
+            <!-- SECCIÓN 4: ÓRDENES DE TRABAJO (Desplegable) -->
+            <div>
+                <button onclick="toggleMenu('menu-ordenes', 'arrow-ord')"
+                    class="w-full flex items-center justify-between px-3 py-2 text-sm font-bold text-slate-400 hover:text-white hover:bg-[#2d333b] rounded transition-colors group">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-3 text-blue-500 group-hover:text-blue-400" fill="none"
+                            stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
+                            </path>
+                        </svg>
+                        Producción
+                    </div>
+                    <svg id="arrow-ord" class="w-4 h-4 transition-transform transform -rotate-90" fill="none"
+                        stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                </button>
+
+                <div id="menu-ordenes" class="hidden pl-10 pr-2 space-y-1 mt-1">
+                    <a href="#" class="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors">Tablero
+                        de Órdenes</a>
+                    <div class="h-px bg-[#2d333b] my-2"></div>
+                    <a href="{% url 'products:catalog' %}"
+                        class="block py-1.5 text-xs text-blue-400 hover:text-blue-300 transition-colors">⚙ Maestro
+                        Productos</a>
+                    <a href="#" class="block py-1.5 text-xs text-emerald-400 hover:text-emerald-300 transition-colors">+
+                        Nueva OT</a>
+                </div>
+            </div>
+            <!-- SECCIÓN 5: PRESUPUESTOS (Futuro) -->
+            <a href="#"
+                class="flex items-center px-3 py-2 text-sm font-bold text-slate-600 hover:text-slate-400 hover:bg-[#2d333b] rounded transition-colors cursor-not-allowed">
+                <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                    </path>
+                </svg>
+                Presupuestos
+            </a>
+
+        </nav>
+        <div class="p-4 border-t border-[#2d333b]">
+            <div class="flex items-center justify-between">
+                <div class="flex flex-col">
+                    <span class="text-[10px] text-slate-500 uppercase tracking-tight">Usuario</span>
+                    <span class="text-s text-white">{{ user.username }}</span>
+                </div>
+
+                <!-- El botón de Logout como Formulario para Django 6.x -->
+                <form action="{% url 'logout' %}" method="post" class="inline">
+                    {% csrf_token %}
+                    <button type="submit" class="text-slate-500 hover:text-red-400 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="box-arrow-right" />
+                            <path
+                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
     </aside>
 
     <!-- MAIN CONTENT -->
     <main class="flex-1 flex flex-col overflow-hidden bg-[#0f1115]">
         <!-- Header / Breadcrumbs -->
-        <header class="h-12 border-b border-[#2d333b] flex items-center px-8 text-xs uppercase tracking-widest text-slate-500">
+        <header
+            class="h-12 border-b border-[#2d333b] flex items-center px-8 text-xs uppercase tracking-widest text-slate-500">
             {% block breadcrumbs %} Inventory / Dashboard {% endblock %}
         </header>
 
         {% if messages %}
         <div class="px-8 pt-6">
             {% for message in messages %}
-                {% if message.tags == 'success' %}
-                    <!-- Alerta Verde (Éxito) -->
-                    <div class="flex items-center p-4 mb-4 text-sm text-emerald-400 border border-emerald-800 rounded-sm bg-emerald-900/20" role="alert">
-                        <svg class="flex-shrink-0 inline w-4 h-4 mr-3" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z"/></svg>
-                        <div><span class="font-bold">¡Éxito!</span> {{ message }}</div>
-                    </div>
-                {% else %}
-                    <!-- Alerta Roja (Error) -->
-                    <div class="flex items-center p-4 mb-4 text-sm text-red-400 border border-red-800 rounded-sm bg-red-900/20" role="alert">
-                        <svg class="flex-shrink-0 inline w-4 h-4 mr-3" fill="currentColor" viewBox="0 0 20 20"><path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z"/></svg>
-                        <div><span class="font-bold">Atención:</span> {{ message }}</div>
-                    </div>
-                {% endif %}
+            {% if message.tags == 'success' %}
+            <!-- Alerta Verde (Éxito) -->
+            <div class="flex items-center p-4 mb-4 text-sm text-emerald-400 border border-emerald-800 rounded-sm bg-emerald-900/20"
+                role="alert">
+                <svg class="flex-shrink-0 inline w-4 h-4 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+                </svg>
+                <div><span class="font-bold">¡Éxito!</span> {{ message }}</div>
+            </div>
+            {% else %}
+            <!-- Alerta Roja (Error) -->
+            <div class="flex items-center p-4 mb-4 text-sm text-red-400 border border-red-800 rounded-sm bg-red-900/20"
+                role="alert">
+                <svg class="flex-shrink-0 inline w-4 h-4 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path
+                        d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z" />
+                </svg>
+                <div><span class="font-bold">Atención:</span> {{ message }}</div>
+            </div>
+            {% endif %}
             {% endfor %}
         </div>
         {% endif %}
@@ -134,6 +249,7 @@
     </main>
 
 </body>
+
 </html>
 
 <!-- SCRIPT SIMPLE PARA EL MENÚ -->
@@ -141,7 +257,7 @@
     function toggleMenu(menuId, arrowId) {
         const menu = document.getElementById(menuId);
         const arrow = document.getElementById(arrowId);
-        
+
         if (menu.classList.contains('hidden')) {
             // ABRIR
             menu.classList.remove('hidden');
@@ -152,12 +268,16 @@
             arrow.classList.add('-rotate-90'); // Flecha derecha
         }
     }
-    
+
     // Opcional: Auto-abrir el menú según la URL actual para no perder contexto al recargar
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         const path = window.location.pathname;
         if (path.includes('/inventario/')) {
             toggleMenu('menu-inventario', 'arrow-inv');
+        } else if (path.includes('/clientes/')) {
+            toggleMenu('menu-ventas', 'arrow-ven');
+        } else if (path.includes('/compras/')) {
+            toggleMenu('menu-compras', 'arrow-comp');
         } else if (path.includes('/ordenes/') || path.includes('/productos/')) {
             toggleMenu('menu-ordenes', 'arrow-ord');
         }

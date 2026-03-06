@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block breadcrumbs %}
+<span class="text-slate-500">Ventas / Maestro Clientes /</span> <span class="text-white ml-1">
+    {% if form.instance.pk %}
+    Editar
+    {% else %}
+    Nuevo
+    {% endif %}
+    Cliente</span>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+
+    <div class="mb-6 flex justify-between items-end">
+        <div>
+            <h2 class="text-2xl font-bold text-white">
+                {% if form.instance.pk %}
+                Editar
+                {% else %}
+                Nuevo
+                {% endif %}
+                Cliente
+            </h2>
+            <p class="text-slate-500 text-sm">Registra o actualiza la información fiscal y de contacto del cliente.</p>
+        </div>
+        <a href="{% url 'customers:list' %}" class="text-xs text-slate-500 hover:text-white transition-colors mb-1">
+            &larr; Volver al listado
+        </a>
+    </div>
+
+    <form method="post" class="space-y-6">
+        {% csrf_token %}
+
+        <!-- SECCIÓN 1: IDENTIFICACIÓN -->
+        <div class="bg-[#1a1d23] border border-[#2d333b] rounded-lg p-6">
+            <h3 class="text-lg font-medium text-orange-500 mb-4 border-b border-[#2d333b] pb-2">Datos de Identificación
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Nombre / Razón Social -->
+                <div class="md:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Nombre o Razón Social</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.name.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Tipo de Cliente -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Tipo de Cliente</label>
+                    {{ form.customer_type }}
+                </div>
+
+                <!-- ID Fiscal -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-400">CUIT / ID Fiscal</label>
+                    {{ form.tax_id }}
+                    {% if form.tax_id.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.tax_id.errors.0 }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 2: CONTACTO Y UBICACIÓN -->
+        <div class="bg-[#1a1d23] border border-[#2d333b] rounded-lg p-6">
+            <h3 class="text-lg font-medium text-blue-500 mb-4 border-b border-[#2d333b] pb-2">Contacto y Ubicación</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Email -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Email de Contacto</label>
+                    {{ form.email }}
+                </div>
+
+                <!-- Teléfono -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Teléfono / WhatsApp</label>
+                    {{ form.phone }}
+                </div>
+
+                <!-- Dirección -->
+                <div class="md:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Dirección de Entrega / Fiscal</label>
+                    {{ form.address }}
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 3: CONFIGURACIÓN Y NOTAS -->
+        <div class="bg-[#1a1d23] border border-[#2d333b] rounded-lg p-6">
+            <h3 class="text-lg font-medium text-slate-400 mb-4 border-b border-[#2d333b] pb-2">Información Adicional
+            </h3>
+
+            <div class="space-y-6">
+                <!-- Estado Activo -->
+                <div class="flex items-center gap-3 bg-[#0f1115]/50 p-4 border border-[#2d333b] rounded-sm">
+                    {{ form.is_active }}
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider cursor-pointer"
+                        for="{{ form.is_active.id_for_label }}">
+                        Cliente Activo (Habilitado para Órdenes)
+                    </label>
+                </div>
+
+                <!-- Notas -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Notas Internas / Preferencias</label>
+                    {{ form.notes }}
+                    <p class="text-[10px] text-slate-600 mt-2 italic">Ej: "Prefiere factura A", "Horario de entrega
+                        08-12hs".</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTONES DE ACCIÓN -->
+        <div class="flex items-center justify-between border-t border-[#2d333b] mt-8 pt-6 pb-8">
+            <div>
+                {% if form.instance.pk %}
+                <a href="{% url 'customers:delete' form.instance.pk %}"
+                    class="flex items-center text-[10px] font-bold text-red-500 hover:text-red-400 uppercase tracking-widest transition-colors">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                        </path>
+                    </svg>
+                    Eliminar Cliente
+                </a>
+                {% endif %}
+            </div>
+            <div class="flex items-center gap-4">
+                <a href="{% url 'customers:list' %}"
+                    class="text-[10px] font-bold text-slate-500 hover:text-white uppercase tracking-widest transition-colors px-4">Cancelar</a>
+                <button type="submit"
+                    class="bg-orange-600 hover:bg-orange-500 text-white text-xs font-bold py-2.5 px-8 shadow-lg shadow-orange-900/20 transition-all uppercase tracking-widest">
+                    {% if form.instance.pk %}
+                    Actualizar
+                    {% else %}
+                    Guardar
+                    {% endif %}
+                    Cliente
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

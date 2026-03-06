@@ -1,0 +1,151 @@
+/* 
+   PrintFlow v2 - Global Styles
+   Modularized CSS for better maintainability.
+*/
+
+/* Estilo global para el dark mode en selects nativos */
+select option {
+    background-color: #0f1115 !important;
+    color: #94a3b8 !important;
+}
+
+select {
+    appearance: none !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 0.75rem center !important;
+    background-size: 1.25em 1.250em !important;
+    padding-right: 2.5rem !important;
+}
+
+/* Animaciones */
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fade-in 0.2s ease-out forwards;
+}
+
+/* VS Code Style Scrollbars */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0f1115;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #2d333b;
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #444;
+}
+
+/* 
+   Product Form Technical Documentation Styles
+   Professional "Expert System" Aesthetic
+*/
+
+/* Ocultar ABSOLUTAMENTE todo lo predeterminado de Django en inputs de archivo */
+.hide-django-file-labels input[type="file"] {
+    color: transparent;
+}
+
+.hide-django-file-labels ul,
+.hide-django-file-labels li,
+.hide-django-file-labels .helptext,
+.hide-django-file-labels br,
+.hide-django-file-labels a:not([class*="btn-doc-action"]),
+.hide-django-file-labels label:not([class*="text-[10px]"]):not([class*="btn-doc-action"]) {
+    display: none !important;
+}
+
+/* Forzamos que el texto de Django desaparezca del DOM visual */
+.hide-django-file-labels {
+    font-size: 0;
+}
+
+.hide-django-file-labels * {
+    font-size: initial;
+}
+
+/* Preview Containers */
+.file-preview-container {
+    aspect-ratio: 85/54;
+    /* Proporción estándar de tarjeta */
+    background-image:
+        linear-gradient(45deg, #16181d 25%, transparent 25%),
+        linear-gradient(-45deg, #16181d 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #16181d 75%),
+        linear-gradient(-45deg, transparent 75%, #16181d 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+    background-color: #0f1115;
+}
+
+/* Status Badges - Sober & Professional */
+.status-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 8px;
+    /* Texto reducido como pidió el usuario */
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 0.125rem 0.5rem;
+    border-radius: 0.125rem;
+    border-width: 1px;
+    transition: all 0.3s ease;
+}
+
+.status-badge .dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 9999px;
+}
+
+.status-badge-cargado {
+    color: #94a3b8;
+    /* Slate 400 - Más sobrio */
+    background-color: rgba(30, 41, 59, 0.4);
+    /* Slate 800 at 40px */
+    border-color: #2d333b;
+}
+
+.status-badge-cargado .dot {
+    background-color: #10b981;
+    /* Emerald 500 */
+}
+
+.status-badge-pendiente {
+    color: #475569;
+    /* Slate 500 */
+    border-color: transparent;
+}
+
+.status-badge-nuevo {
+    color: #f1f5f9;
+    /* Slate 100 */
+    background-color: #2d333b;
+    border-color: #475569;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+
+.status-badge-nuevo .dot {
+    background-color: #eab308;
+    /* Yellow 500 */
+}

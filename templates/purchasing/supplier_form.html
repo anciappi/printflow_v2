@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block breadcrumbs %} Compras / Proveedores / {{ titulo }} {% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto pb-10">
+
+    <div class="mb-6 border-b border-[#2d333b] pb-4">
+        <h2 class="text-xl font-bold text-white tracking-tight">{{ titulo }}</h2>
+    </div>
+
+    <div class="bg-[#1a1d23] border border-[#2d333b] p-6 shadow-lg">
+        <form method="POST">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="mb-4">
+                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+                    {{ field.label }}
+                </label>
+                {{ field }}
+                {% if field.errors %}
+                <p class="text-red-500 text-xs mt-1">{{ field.errors.0 }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <div class="flex justify-end gap-4 mt-6">
+                <a href="{% url 'purchasing:supplier_list' %}"
+                    class="px-6 py-2.5 text-sm font-bold text-slate-500 hover:text-white transition-colors uppercase tracking-wider">
+                    Cancelar
+                </a>
+                <button type="submit"
+                    class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold py-2.5 px-8 shadow-lg shadow-blue-900/20 transition-all uppercase tracking-wider">
+                    {% if is_edit %}Actualizar{% else %}Crear Proveedor{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

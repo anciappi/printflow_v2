@@ -12,6 +12,9 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,10 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-1x*-l!^!2jyjeyxd7@v!k4oa59hek4$#h2cj#$-awk)^^o$kp8'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-1x*-l!^!2jyjeyxd7@v!k4oa59hek4$#h2cj#$-awk)^^o$kp8')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
 ALLOWED_HOSTS = []
 
@@ -42,7 +45,8 @@ INSTALLED_APPS = [
     'inventory',
     'customers',
     'orders',
-    'products'
+    'products',
+    'purchasing',
 ]
 
 MIDDLEWARE = [
@@ -90,11 +94,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'printflow_db',
-        'USER': 'printflow_user',
-        'PASSWORD': 'anc31763534...', # La que pusiste en el Paso 3
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.getenv('DB_NAME', 'printflow_db'),
+        'USER': os.getenv('DB_USER', 'printflow_user'),
+        'PASSWORD': os.getenv('DB_PASSWORD', 'anc31763534...'),
+        'HOST': os.getenv('DB_HOST', 'localhost'),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
 
@@ -135,6 +139,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / "static"]
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'inventory:dashboard'
 LOGOUT_REDIRECT_URL = 'login'

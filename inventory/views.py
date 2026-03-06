@@ -103,51 +103,12 @@ def fraccionar_unidad(request, unit_id):
     if request.method == 'POST':
         try:
             ancho_a = Decimal(request.POST.get('ancho_hija_a'))
-            ancho_padre = parent.get_width()
-            
-            # Validaciones básicas
-            if ancho_a >= ancho_padre or ancho_a <= 0:
-                messages.error(request, "El ancho del corte debe ser menor al ancho total.")
-                return redirect('inventory:inventory_list')
-
-            ancho_b = ancho_padre - ancho_a
-            
-            with transaction.atomic():
-                # 1. Crear Hija A
-                InventoryUnit.objects.create(
-                    material=parent.material,
-                    purchase_order=parent.purchase_order,
-                    unit_number=f"{parent.unit_number}.A",
-                    branch=parent.branch,
-                    initial_quantity=parent.current_quantity, # Hereda el largo/peso
-                    current_quantity=parent.current_quantity,
-                    width_override=ancho_a, # Nuevo Ancho
-                    parent_unit=parent,
-                    status='AVAILABLE'
-                )
-                
-                # 2. Crear Hija B
-                InventoryUnit.objects.create(
-                    material=parent.material,
-                    purchase_order=parent.purchase_order,
-                    unit_number=f"{parent.unit_number}.B",
-                    branch=parent.branch,
-                    initial_quantity=parent.current_quantity,
-                    current_quantity=parent.current_quantity,
-                    width_override=ancho_b, # El resto del ancho
-                    parent_unit=parent,
-                    status='AVAILABLE'
-                )
-                
-                # 3. "Matar" a la madre (Agotada por corte)
-                parent.status = 'EXHAUSTED'
-                parent.current_quantity = 0
-                parent.save()
-                
-            messages.success(request, f"Bobina fraccionada en: {ancho_a}cm y {ancho_b}cm")
-            
+            hija_a, hija_b = parent.fraccionar(ancho_a)
+            messages.success(request, f"Bobina fraccionada en: {hija_a.width_override}cm y {hija_b.width_override}cm")
+        except ValueError as e:
+            messages.error(request, str(e))
         except Exception as e:
-            messages.error(request, f"Error al fraccionar: {e}")
+            messages.error(request, f"Error inesperado al fraccionar: {e}")
             
     return redirect('inventory:inventory_list')
 
@@ -229,24 +190,11 @@ def create_purchase_order(request):
 @login_required
 def eliminar_consumo(request, log_id):
     log = get_object_or_404(ConsumptionLog, pk=log_id)
-    unidad = log.inventory_unit
     
     if request.method == 'POST':
         try:
-            with transaction.atomic():
-                # 1. Devolvemos la cantidad al stock
-                unidad.current_quantity += log.quantity_used
-                
-                # 2. Si estaba agotada, la revivimos
-                if unidad.status == 'EXHAUSTED' and unidad.current_quantity > 0:
-                    unidad.status = 'IN_USE' # O 'AVAILABLE'
-                
-                unidad.save()
-                
-                # 3. Borramos el registro (El crimen nunca ocurrió)
-                log.delete()
-                
-                messages.success(request, "Consumo eliminado. El stock ha sido restaurado.")
+            log.deshacer_consumo()
+            messages.success(request, "Consumo eliminado. El stock ha sido restaurado.")
         except Exception as e:
             messages.error(request, f"Error al deshacer: {e}")
             
@@ -254,7 +202,6 @@ def eliminar_consumo(request, log_id):
 
 @login_required
 def deshacer_fraccionamiento(request, unit_id):
-    # Recibimos el ID de una de las hijas (ej: la 1.A)
     hija = get_object_or_404(InventoryUnit, pk=unit_id)
     padre = hija.parent_unit
     
@@ -264,30 +211,12 @@ def deshacer_fraccionamiento(request, unit_id):
         
     if request.method == 'POST':
         try:
-            with transaction.atomic():
-                # 1. Buscamos a todas las hermanas (todas las hijas de ese padre)
-                hermanas = InventoryUnit.objects.filter(parent_unit=padre)
-                
-                # 2. VALIDACIÓN DE SEGURIDAD
-                # Si alguna hermana ya se usó (cant_actual < cant_inicial), NO se puede deshacer.
-                for h in hermanas:
-                    if h.current_quantity < h.initial_quantity:
-                        messages.error(request, f"No se puede deshacer: La unidad {h.unit_number} ya tuvo consumo.")
-                        return redirect('inventory:inventory_list')
-
-                # 3. Si están intactas, procedemos:
-                # Borramos todas las hijas
-                hermanas.delete()
-                
-                # 4. Revivimos al Padre
-                padre.status = 'AVAILABLE'
-                padre.current_quantity = padre.initial_quantity # Restauramos el total
-                padre.save()
-                
-                messages.success(request, f"Corte deshecho. La unidad {padre.unit_number} ha sido restaurada.")
-                
+            padre.deshacer_fraccionamiento()
+            messages.success(request, f"Corte deshecho. La unidad {padre.unit_number} ha sido restaurada.")
+        except ValueError as e:
+            messages.error(request, str(e))
         except Exception as e:
-            messages.error(request, f"Error al unir bobinas: {e}")
+            messages.error(request, f"Error inesperado al unir bobinas: {e}")
             
     return redirect('inventory:inventory_list')
 
@@ -318,7 +247,6 @@ class StockDashboardView(LoginRequiredMixin,TemplateView):
 
         return context
 
-#
 class InventoryListView(LoginRequiredMixin, ListView):
     model = Material
     template_name = 'inventory/inventory_list.html'

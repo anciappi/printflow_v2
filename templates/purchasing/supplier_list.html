@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block breadcrumbs %} Compras / Proveedores {% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto pb-10">
+
+    <!-- HEADER -->
+    <div class="mb-6 border-b border-[#2d333b] pb-4 flex justify-between items-end">
+        <div>
+            <h2 class="text-xl font-bold text-white tracking-tight">Proveedores</h2>
+            <p class="text-xs text-slate-500 mt-1">Maestro de proveedores de insumos.</p>
+        </div>
+        <a href="{% url 'purchasing:supplier_create' %}"
+            class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold py-2 px-5 rounded-sm shadow-lg transition-all uppercase tracking-wider">
+            + Nuevo Proveedor
+        </a>
+    </div>
+
+    <!-- TABLA -->
+    {% if proveedores %}
+    <div class="bg-[#1a1d23] border border-[#2d333b] shadow-lg overflow-hidden">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="border-b border-[#2d333b]">
+                    <th class="text-left px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Razón
+                        Social</th>
+                    <th class="text-right px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                        Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for prov in proveedores %}
+                <tr class="border-b border-[#2d333b]/50 hover:bg-[#2d333b]/30 transition-colors">
+                    <td class="px-4 py-3 text-slate-300">{{ prov.name }}</td>
+                    <td class="px-4 py-3 text-right">
+                        <a href="{% url 'purchasing:supplier_edit' prov.pk %}"
+                            class="text-xs bg-[#2d333b] hover:bg-blue-600 text-slate-400 hover:text-white px-3 py-1 rounded transition-colors">
+                            Editar
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="bg-[#1a1d23] border border-[#2d333b] p-8 text-center text-slate-600 text-sm">
+        No hay proveedores registrados. <a href="{% url 'purchasing:supplier_create' %}"
+            class="text-blue-400 hover:text-blue-300">Crear el primero</a>.
+    </div>
+    {% endif %}
+
+</div>
+{% endblock %}

@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block breadcrumbs %} 
-<span class="text-slate-500">Producción / Maestro Productos /</span> <span class="text-white ml-1">Nueva Ficha</span> 
+{% block breadcrumbs %}
+<span class="text-slate-500">Producción / Maestro Productos /</span> <span class="text-white ml-1">Nueva Ficha</span>
 {% endblock %}
 
 {% block content %}
 <div class="max-w-4xl mx-auto">
-    
+
     <div class="mb-6">
         <h2 class="text-2xl font-bold text-white">Nueva Ficha Técnica</h2>
         <p class="text-slate-500 text-sm">Registra las especificaciones de un nuevo producto para producción.</p>
@@ -18,36 +18,58 @@
         <!-- SECCIÓN 1: DATOS GENERALES -->
         <div class="bg-[#1a1d23] border border-[#2d333b] rounded-lg p-6">
             <h3 class="text-lg font-medium text-emerald-500 mb-4 border-b border-[#2d333b] pb-2">Identificación</h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                 <!-- Cliente -->
-                <div>
+                <div class="md:col-span-2">
                     <label class="block mb-2 text-sm font-medium text-slate-400">Cliente</label>
                     {{ form.customer }}
-                    {% if form.customer.errors %}<p class="text-red-500 text-xs mt-1">{{ form.customer.errors.0 }}</p>{% endif %}
-                    <p class="text-[10px] text-slate-600 mt-1">¿No existe? <a href="#" class="text-blue-500 hover:underline">Crear Cliente</a></p>
+                    {% if form.customer.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.customer.errors.0 }}</p>
+                    {% endif %}
+                    <p class="text-[12px] text-slate-600 mt-1">¿No existe? <a href="{% url 'customers:create' %}"
+                            class="text-blue-500 hover:underline">Crear Cliente</a></p>
                 </div>
 
                 <!-- Código SKU -->
                 <div>
                     <label class="block mb-2 text-sm font-medium text-slate-400">Código Interno / SKU</label>
                     {{ form.code }}
-                    {% if form.code.errors %}<p class="text-red-500 text-xs mt-1">{{ form.code.errors.0 }}</p>{% endif %}
+                    {% if form.code.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.code.errors.0 }}</p>
+                    {% endif %}
                 </div>
 
-                <!-- Nombre del Producto (Full Width) -->
-                <div class="md:col-span-2">
+                <!-- Estado -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Estado</label>
+                    {{ form.status }}
+                </div>
+
+                <!-- Nombre del Producto -->
+                <div class="md:col-span-3">
                     <label class="block mb-2 text-sm font-medium text-slate-400">Nombre del Producto</label>
                     {{ form.name }}
-                    {% if form.name.errors %}<p class="text-red-500 text-xs mt-1">{{ form.name.errors.0 }}</p>{% endif %}
+                    {% if form.name.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.name.errors.0 }}</p>
+                    {%endif%}
+                </div>
+
+                <!-- Tipo de Producto -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Tipo de Producto</label>
+                    {{ form.product_type }}
+                    {% if form.product_type.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.product_type.errors.0 }}</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
 
         <!-- SECCIÓN 2: ESPECIFICACIONES FÍSICAS -->
         <div class="bg-[#1a1d23] border border-[#2d333b] rounded-lg p-6">
-            <h3 class="text-lg font-medium text-blue-500 mb-4 border-b border-[#2d333b] pb-2">Especificaciones Técnicas</h3>
-            
+            <h3 class="text-lg font-medium text-blue-500 mb-4 border-b border-[#2d333b] pb-2">Medidas y material</h3>
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 <!-- Ancho -->
                 <div>
@@ -59,8 +81,8 @@
                     <label class="block mb-2 text-sm font-medium text-slate-400">Alto (mm)</label>
                     {{ form.height_mm }}
                 </div>
-                 <!-- Estado (Ej: Activo/Draft) -->
-                 <div>
+                <!-- Estado (Ej: Activo/Draft) -->
+                <div>
                     <label class="block mb-2 text-sm font-medium text-slate-400">Estado Ficha</label>
                     {{ form.status }}
                 </div>
@@ -73,60 +95,742 @@
                     <span class="text-xs text-slate-600 italic">Se descontará del inventario</span>
                 </label>
                 {{ form.substrate }}
-                {% if form.substrate.errors %}<p class="text-red-500 text-xs mt-1">{{ form.substrate.errors.0 }}</p>{% endif %}
+                {% if form.substrate.errors %}
+                <p class="text-red-500 text-xs mt-1">{{ form.substrate.errors.0 }}</p>
+                {% endif %}
             </div>
         </div>
 
         <!-- SECCIÓN 3: IMPRESIÓN Y ACABADOS -->
         <div class="bg-[#1a1d23] border border-[#2d333b] rounded-lg p-6">
-            <h3 class="text-lg font-medium text-purple-500 mb-4 border-b border-[#2d333b] pb-2">Producción e Impresión</h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block mb-2 text-sm font-medium text-slate-400">Colores Frente</label>
-                    {{ form.colors_front }} <!-- Ej: CMYK -->
+            <h3 class="text-lg font-medium text-purple-500 mb-4 border-b border-[#2d333b] pb-2">Colores y terminaciones
+            </h3>
+
+            <!-- Colores Frente -->
+            <div class="mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Colores Frente</label>
+                    <button type="button" onclick="addColorRow('colors-front-container')"
+                        class="text-[10px] bg-[#2d333b] hover:bg-emerald-600 text-slate-300 hover:text-white px-2 py-1 rounded transition-colors flex items-center gap-1">
+                        <span>+</span> Agregar color
+                    </button>
                 </div>
-                <div>
-                    <label class="block mb-2 text-sm font-medium text-slate-400">Colores Dorso</label>
-                    {{ form.colors_back }} <!-- Ej: 1 Tinta Negra -->
+                <!-- Select oculto real de Django (será sincronizado por JS) -->
+                <div class="hidden">{{ form.colors_front }}</div>
+                <div id="colors-front-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <!-- Aquí se insertarán las filas de colores dinámicamente -->
                 </div>
-                <div class="md:col-span-2">
-                    <label class="block mb-2 text-sm font-medium text-slate-400">Códigos Pantone / Detalles</label>
-                    {{ form.pantone_codes }}
+            </div>
+
+            <!-- Colores Dorso -->
+            <div class="mb-8 pt-6 border-t border-[#2d333b]/50">
+                <div class="flex justify-between items-center mb-4">
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Colores Dorso</label>
+                    <button type="button" onclick="addColorRow('colors-back-container')"
+                        class="text-[10px] bg-[#2d333b] hover:bg-emerald-600 text-slate-300 hover:text-white px-2 py-1 rounded transition-colors flex items-center gap-1">
+                        <span>+</span> Agregar color
+                    </button>
+                </div>
+                <!-- Select oculto real de Django -->
+                <div class="hidden">{{ form.colors_back }}</div>
+                <div id="colors-back-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
+                    <!-- Aquí se insertarán las filas de colores dinámicamente -->
+                </div>
+            </div>
+
+            <!-- Laminado, Barniz, Banda, Chip -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 pt-6 border-t border-[#2d333b]">
+                <!-- Laminado -->
+                <div class="bg-[#0f1115]/50 p-4 border border-[#2d333b] rounded-sm">
+                    <div class="flex items-center gap-3 mb-4">
+                        {{ form.has_laminate }}
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider cursor-pointer"
+                            for="{{ form.has_laminate.id_for_label }}">¿Laminado?</label>
+                    </div>
+                    <div>
+                        {{ form.laminate_type }}
+                    </div>
+                </div>
+
+                <!-- Barniz -->
+                <div class="bg-[#0f1115]/50 p-4 border border-[#2d333b] rounded-sm">
+                    <div class="flex items-center gap-3 mb-4">
+                        {{ form.has_varnish }}
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider cursor-pointer"
+                            for="{{ form.has_varnish.id_for_label }}">¿Barniz?</label>
+                    </div>
+                    <div>
+                        {{ form.varnish_type }}
+                    </div>
+                </div>
+
+                <!-- Banda Magnética -->
+                <div class="bg-[#0f1115]/50 p-4 border border-[#2d333b] rounded-sm">
+                    <div class="flex items-center gap-3 mb-4">
+                        {{ form.has_mag_stripe }}
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider cursor-pointer"
+                            for="{{ form.has_mag_stripe.id_for_label }}">¿Banda Magnética?</label>
+                    </div>
+                    <div>
+                        {{ form.mag_coercivity }}
+                    </div>
+                </div>
+
+                <!-- Chip / RFID -->
+                <div class="bg-[#0f1115]/50 p-4 border border-[#2d333b] rounded-sm">
+                    <div class="flex items-center gap-3 mb-4">
+                        {{ form.has_chip }}
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider cursor-pointer"
+                            for="{{ form.has_chip.id_for_label }}">¿Chip / RFID?</label>
+                    </div>
+                    <div>
+                        {{ form.chip_type }}
+                        <p class="text-[10px] text-slate-600 mt-2 italic">{{ form.chip_type.help_text }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Otras Terminaciones -->
+            <div class="pt-6 border-t border-[#2d333b]">
+                <label class="block mb-4 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Otras
+                    Terminaciones</label>
+
+                <div class="border border-[#2d333b] rounded-sm divide-y divide-[#2d333b]">
+                    <!-- Row: Laca UV -->
+                    <div
+                        class="flex items-center justify-between p-3 bg-[#0f1115]/20 hover:bg-[#0f1115]/40 transition-colors">
+                        <span class="text-xs font-medium text-slate-400">Laca UV Sectorizada</span>
+                        {{ form.has_uv_sectorizado }}
+                    </div>
+                    <!-- Row: Hot Stamping -->
+                    <div
+                        class="flex items-center justify-between p-3 bg-[#0f1115]/20 hover:bg-[#0f1115]/40 transition-colors">
+                        <span class="text-xs font-medium text-slate-400">Hot Stamping</span>
+                        {{ form.has_hot_stamping }}
+                    </div>
+                    <!-- Row: Holograma -->
+                    <div
+                        class="flex items-center justify-between p-3 bg-[#0f1115]/20 hover:bg-[#0f1115]/40 transition-colors">
+                        <span class="text-xs font-medium text-slate-400">Holograma</span>
+                        {{ form.has_holograma }}
+                    </div>
+                    <!-- Row: Troquelado -->
+                    <div
+                        class="flex items-center justify-between p-3 bg-[#0f1115]/20 hover:bg-[#0f1115]/40 transition-colors">
+                        <span class="text-xs font-medium text-slate-400">Troquelado</span>
+                        {{ form.has_troquelado }}
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- SECCIÓN 4: ARCHIVOS Y ADJUNTOS -->
+        <!-- SECCIÓN 4: LOGÍSTICA Y EMPAQUE -->
         <div class="bg-[#1a1d23] border border-[#2d333b] rounded-lg p-6">
-            <h3 class="text-lg font-medium text-yellow-500 mb-4 border-b border-[#2d333b] pb-2">Archivos Adjuntos</h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <h3 class="text-lg font-medium text-orange-400 mb-4 border-b border-[#2d333b] pb-2 uppercase tracking-wide">
+                Logística y Empaque</h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
-                    <label class="block mb-2 text-sm font-medium text-slate-400">Imagen de Muestra (JPG/PNG)</label>
-                    {{ form.preview_image }}
-                    <p class="text-[10px] text-slate-600 mt-1">Visible en el catálogo visual.</p>
+                    <label class="block mb-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Tipo de
+                        Empaque</label>
+                    {{ form.packaging_type }}
                 </div>
                 <div>
-                    <label class="block mb-2 text-sm font-medium text-slate-400">Plano Técnico / Arte (PDF/AI)</label>
-                    {{ form.tech_file }}
-                    <p class="text-[10px] text-slate-600 mt-1">Archivo de producción.</p>
+                    <label class="block mb-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Unidades por
+                        Caja</label>
+                    {{ form.qty_per_box }}
                 </div>
-                <div class="md:col-span-2 mt-2">
-                     <label class="block mb-2 text-sm font-medium text-slate-400">Notas Internas</label>
-                     {{ form.notes }}
+                <div>
+                    <label class="block mb-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Lugar de
+                        Entrega Sugerido</label>
+                    {{ form.delivery_address }}
                 </div>
             </div>
         </div>
 
-        <!-- BOTONES DE ACCIÓN -->
-        <div class="flex items-center justify-end gap-4 pt-4 pb-8">
-            <a href="{% url 'products:catalog' %}" class="text-slate-400 hover:text-white text-sm font-medium transition-colors">Cancelar</a>
-            <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2.5 rounded shadow-lg shadow-emerald-900/20 font-medium transition-transform active:scale-95">
-                Guardar Ficha Técnica
-            </button>
-        </div>
+        <!-- SECCIÓN 5: DOCUMENTACIÓN TÉCNICA -->
+        <div class="bg-[#1a1d23] border border-[#2d333b] rounded-lg p-6">
+            <h3 class="text-lg font-medium text-yellow-500 mb-4 border-b border-[#2d333b] pb-2 uppercase tracking-wide">
+                Documentación Técnica</h3>
 
-    </form>
+            <style>
+                .doc-crud-row {
+                    display: grid;
+                    grid-template-columns: 1fr 80px 100px;
+                    align-items: center;
+                    gap: 1.5rem;
+                    padding: 0.75rem 0;
+                    border-bottom: 1px solid #2d333b;
+                    transition: all 0.2s ease;
+                }
+
+                .doc-crud-row:hover {
+                    background-color: rgba(255, 255, 255, 0.01);
+                }
+
+                .doc-preview-col {
+                    width: 80px;
+                    height: 50px;
+                    background-color: #0f1115;
+                    border: 1px solid #2d333b;
+                    border-radius: 4px;
+                    overflow: hidden;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                .btn-doc-action {
+                    font-size: 9px;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    padding: 4px 10px;
+                    background-color: #1a1d23;
+                    border: 1px solid #2d333b;
+                    color: #94a3b8;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    gap: 4px;
+                }
+
+                .btn-doc-action:hover {
+                    background-color: #2d333b;
+                    color: white;
+                    border-color: #475569;
+                }
+
+                /* Status Badges */
+                .status-badge {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 0.5rem;
+                    padding: 2px 8px;
+                    border-radius: 9999px;
+                    font-size: 9px;
+                    font-weight: 600;
+                    text-transform: uppercase;
+                }
+
+                .status-badge-cargado {
+                    background-color: rgba(16, 185, 129, 0.1);
+                    color: #10b981;
+                    border: 1px solid rgba(16, 185, 129, 0.2);
+                }
+
+                .status-badge-pendiente {
+                    background-color: rgba(100, 116, 139, 0.1);
+                    color: #64748b;
+                    border: 1px solid rgba(100, 116, 139, 0.2);
+                }
+
+                .status-badge-nuevo {
+                    background-color: rgba(59, 130, 246, 0.1);
+                    color: #3b82f6;
+                    border: 1px solid rgba(59, 130, 246, 0.2);
+                }
+
+                .status-badge-eliminado {
+                    background-color: rgba(239, 68, 68, 0.1);
+                    color: #ef4444;
+                    border: 1px solid rgba(239, 68, 68, 0.2);
+                }
+
+                .dot {
+                    width: 6px;
+                    height: 6px;
+                    border-radius: 50%;
+                    background-color: currentColor;
+                }
+            </style>
+
+
+            <!-- SECCIÓN HÍBRIDA: VISTAS PREVIAS GRANDES (Anverso/Reverso) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 hide-django-file-labels mt-4">
+                <!-- Diseño Anverso -->
+                <div class="space-y-3 relative group">
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Diseño
+                            Anverso / Original</label>
+                        {% if form.instance.design_front %}
+                        <span id="status-design_front" class="status-badge status-badge-cargado">
+                            <span class="dot"></span> Cargado
+                        </span>
+                        {% else %}
+                        <span id="status-design_front" class="status-badge status-badge-pendiente">Pendiente</span>
+                        {% endif %}
+                    </div>
+                    <div id="preview-design_front"
+                        class="file-preview-container w-full border border-[#2d333b] rounded-lg overflow-hidden flex items-center justify-center bg-[#0f1115] transition-all group-hover:border-emerald-500/50">
+                        {% if form.instance.design_front %}
+                        <img src="{{ form.instance.design_front.url }}" class="w-full h-full object-contain">
+                        {% else %}
+                        <div class="text-center p-4">
+                            <svg class="w-8 h-8 text-slate-800 mx-auto mb-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                            <span
+                                class="text-[9px] text-slate-700 font-bold uppercase tracking-tight italic text-opacity-30">No
+                                disponible</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="flex justify-end mt-2 gap-2">
+                        {% if form.instance.design_front %}
+                        <a href="{{ form.instance.design_front.url }}" download
+                            class="btn-doc-action text-emerald-500/80 hover:text-emerald-400">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            Descargar
+                        </a>
+                        <button type="button" onclick="markForDeletion('design_front')"
+                            class="btn-doc-action text-red-500/80 hover:text-red-400">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                </path>
+                            </svg>
+                            Eliminar
+                        </button>
+                        {% endif %}
+                        <label for="id_design_front" class="btn-doc-action cursor-pointer">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                            </svg>
+                            Actualizar
+                        </label>
+                    </div>
+                    {{ form.design_front }}
+                    <input type="checkbox" name="design_front-clear" id="design_front-clear_id" class="hidden">
+                </div>
+
+                <!-- Diseño Reverso -->
+                <div class="space-y-3 relative group">
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider">Diseño
+                            Reverso / Original</label>
+                        {% if form.instance.design_back %}
+                        <span id="status-design_back" class="status-badge status-badge-cargado">
+                            <span class="dot" style="background-color: #3b82f6;"></span> Cargado
+                        </span>
+                        {% else %}
+                        <span id="status-design_back" class="status-badge status-badge-pendiente">Pendiente</span>
+                        {% endif %}
+                    </div>
+                    <div id="preview-design_back"
+                        class="file-preview-container w-full border border-[#2d333b] rounded-lg overflow-hidden flex items-center justify-center bg-[#0f1115] transition-all group-hover:border-blue-500/50">
+                        {% if form.instance.design_back %}
+                        <img src="{{ form.instance.design_back.url }}" class="w-full h-full object-contain">
+                        {% else %}
+                        <div class="text-center p-4">
+                            <svg class="w-8 h-8 text-slate-800 mx-auto mb-2" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                                </path>
+                            </svg>
+                            <span
+                                class="text-[9px] text-slate-700 font-bold uppercase tracking-tight italic text-opacity-30">No
+                                disponible</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="flex justify-end mt-2 gap-2">
+                        {% if form.instance.design_back %}
+                        <a href="{{ form.instance.design_back.url }}" download
+                            class="btn-doc-action text-blue-500/80 hover:text-blue-400">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            Descargar
+                        </a>
+                        <button type="button" onclick="markForDeletion('design_back')"
+                            class="btn-doc-action text-red-500/80 hover:text-red-400">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                </path>
+                            </svg>
+                            Eliminar
+                        </button>
+                        {% endif %}
+                        <label for="id_design_back" class="btn-doc-action cursor-pointer">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                            </svg>
+                            Actualizar
+                        </label>
+                    </div>
+                    {{ form.design_back }}
+                    <input type="checkbox" name="design_back-clear" id="design_back-clear_id" class="hidden">
+                </div>
+            </div>
+
+            <!-- SECCIÓN HÍBRIDA: LISTA CRUD (Sacabocados/Adjuntos) -->
+            <div class="mt-8 space-y-1 divide-y divide-[#2d333b] border-t border-[#2d333b] hide-django-file-labels">
+
+                <!-- Fila: Sacabocados -->
+                <div class="doc-crud-row">
+                    <div class="flex flex-col gap-1">
+                        <label class="block text-[10px] font-bold text-slate-200 uppercase tracking-wider">Sacabocados /
+                            Plano</label>
+                        <div class="flex items-center gap-2">
+                            {% if form.instance.diecut_file %}
+                            <span id="status-diecut_file" class="status-badge status-badge-cargado">
+                                <span class="dot" style="background-color: #f97316;"></span> Cargado
+                            </span>
+                            {% else %}
+                            <span id="status-diecut_file" class="status-badge status-badge-pendiente">Pendiente</span>
+                            {% endif %}
+                            <span
+                                class="text-[8px] text-slate-600 uppercase font-medium tracking-tighter">Corte/Troquel</span>
+                        </div>
+                    </div>
+                    <div class="doc-preview-col" id="preview-diecut_file">
+                        {% if form.instance.diecut_file %}
+                        <svg class="w-5 h-5 text-orange-500/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758L5 19m0-14l4.121 4.121">
+                            </path>
+                        </svg>
+                        {% else %}
+                        <svg class="w-5 h-5 text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                            </path>
+                        </svg>
+                        {% endif %}
+                    </div>
+                    <div class="flex justify-end gap-2">
+                        {% if form.instance.diecut_file %}
+                        <a href="{{ form.instance.diecut_file.url }}" download
+                            class="btn-doc-action text-emerald-500/80 hover:text-emerald-400">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            Descargar
+                        </a>
+                        <button type="button" onclick="markForDeletion('diecut_file')"
+                            class="btn-doc-action text-red-500/80 hover:text-red-400">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                </path>
+                            </svg>
+                            Eliminar
+                        </button>
+                        {% endif %}
+                        <label for="id_diecut_file" class="btn-doc-action cursor-pointer">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                            </svg>
+                            Actualizar
+                        </label>
+                        {{ form.diecut_file }}
+                        <input type="checkbox" name="diecut_file-clear" id="diecut_file-clear_id" class="hidden">
+                    </div>
+                </div>
+
+                <!-- Fila: Otros Adjuntos -->
+                <div class="doc-crud-row mb-6">
+                    <div class="flex flex-col gap-1">
+                        <label
+                            class="block text-[10px] font-bold text-slate-200 uppercase tracking-wider">Originales</label>
+                        <div class="flex items-center gap-2">
+                            {% if form.instance.tech_file %}
+                            <span id="status-tech_file" class="status-badge status-badge-cargado">
+                                <span class="dot" style="background-color: #a855f7;"></span> Cargado
+                            </span>
+                            {% else %}
+                            <span id="status-tech_file" class="status-badge status-badge-pendiente">Pendiente</span>
+                            {% endif %}
+                            <span
+                                class="text-[8px] text-slate-600 uppercase font-medium tracking-tighter">Auxiliar</span>
+                        </div>
+                    </div>
+                    <div class="doc-preview-col" id="preview-tech_file">
+                        {% if form.instance.tech_file %}
+                        <svg class="w-5 h-5 text-purple-500/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13">
+                            </path>
+                        </svg>
+                        {% else %}
+                        <svg class="w-5 h-5 text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                            </path>
+                        </svg>
+                        {% endif %}
+                    </div>
+                    <div class="flex justify-end gap-2">
+                        {% if form.instance.tech_file %}
+                        <a href="{{ form.instance.tech_file.url }}" download
+                            class="btn-doc-action text-purple-500/80 hover:text-purple-400">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                            </svg>
+                            Descargar
+                        </a>
+                        <button type="button" onclick="markForDeletion('tech_file')"
+                            class="btn-doc-action text-red-500/80 hover:text-red-400">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                </path>
+                            </svg>
+                            Eliminar
+                        </button>
+                        {% endif %}
+                        <label for="id_tech_file" class="btn-doc-action cursor-pointer">
+                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                            </svg>
+                            Actualizar
+                        </label>
+                        {{ form.tech_file }}
+                        <input type="checkbox" name="tech_file-clear" id="tech_file-clear_id" class="hidden">
+                    </div>
+                </div>
+
+                <!-- Notas Internas (Full Width) -->
+                <div class="pt-4 pb-2">
+                    <label class="block mb-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Notas
+                        Internas / Instrucciones Especiales</label>
+                    {{ form.notes }}
+                    <p class="text-[10px] text-slate-600 mt-2 italic">Ej: "El cliente solicita que el color sea igual a
+                        la muestra física enviada por correo".</p>
+                </div>
+            </div>
+        </div>
 </div>
+
+<!-- BOTONES DE ACCIÓN -->
+<div class="flex items-center justify-between border-t border-[#2d333b] mt-8 pt-6 pb-8">
+    <div>
+        {% if form.instance.pk %}
+        <a href="{% url 'products:delete' form.instance.pk %}"
+            class="flex items-center text-[10px] font-bold text-red-500 hover:text-red-400 uppercase tracking-widest transition-colors px-4 py-2 bg-red-900/10 border border-red-900/30 rounded-sm">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                </path>
+            </svg>
+            Eliminar Ficha
+        </a>
+        {% endif %}
+    </div>
+    <div class="flex items-center gap-4">
+        <a href="{% url 'products:catalog' %}"
+            class="text-[10px] font-bold text-slate-500 hover:text-white uppercase tracking-widest transition-colors px-4">Cancelar</a>
+        <button type="submit"
+            class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2.5 px-8 shadow-lg shadow-emerald-900/20 transition-all uppercase tracking-widest">
+            {% if form.instance.pk %}
+            Actualizar
+            {% else %}
+            Guardar
+            {% endif %}
+            Ficha Técnica
+        </button>
+    </div>
+</div>
+
+</form>
+</div>
+
+<!-- SCRIPT PARA COLORES DINÁMICOS -->
+<script>
+    function addColorRow(containerId) {
+        const container = document.getElementById(containerId);
+        const fieldName = containerId.includes('front') ? 'colors_front' : 'colors_back';
+        const hiddenSelect = document.querySelector(`select[name="${fieldName}"]`);
+
+        // Clonar las opciones del select original con estilo dark
+        const optionsHtml = Array.from(hiddenSelect.options).map(opt =>
+            `<option value="${opt.value}" class="bg-[#0f1115] text-slate-300">${opt.text}</option>`
+        ).join('');
+
+        const rowId = 'color-row-' + Math.random().toString(36).substr(2, 9);
+        const row = document.createElement('div');
+        row.id = rowId;
+        row.className = 'flex items-center gap-2 animate-fade-in bg-[#0f1115] p-2 border border-[#2d333b] rounded-sm';
+        row.innerHTML = `
+            <select class="dynamic-color-select flex-1 bg-[#0f1115] border-none text-slate-400 text-[11px] focus:ring-0 cursor-pointer p-1" onchange="syncColors('${fieldName}')">
+                <option value="" class="bg-[#0f1115]">Seleccionar...</option>
+                ${optionsHtml}
+            </select>
+            <button type="button" onclick="removeColorRow('${rowId}', '${fieldName}')" class="text-slate-600 hover:text-red-500 transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        `;
+        container.appendChild(row);
+    }
+
+    function removeColorRow(rowId, fieldName) {
+        document.getElementById(rowId).remove();
+        syncColors(fieldName);
+    }
+
+    function syncColors(fieldName) {
+        const containerId = fieldName.replace('_', '-') + '-container';
+        const container = document.getElementById(containerId);
+        const hiddenSelect = document.querySelector(`select[name="${fieldName}"]`);
+        const selects = container.querySelectorAll('.dynamic-color-select');
+
+        // Resetear selección del original
+        Array.from(hiddenSelect.options).forEach(opt => opt.selected = false);
+
+        // Marcar seleccionados
+        selects.forEach(s => {
+            if (s.value) {
+                const opt = Array.from(hiddenSelect.options).find(o => o.value === s.value);
+                if (opt) opt.selected = true;
+            }
+        });
+    }
+
+    // Inicializar colores si ya existen (edición)
+    document.addEventListener('DOMContentLoaded', function () {
+        const defaultColors = ['Cyan', 'Magenta', 'Amarillo', 'Negro'];
+
+        ['colors_front', 'colors_back'].forEach(fieldName => {
+            const hiddenSelect = document.querySelector(`select[name="${fieldName}"]`);
+            if (!hiddenSelect) return;
+
+            const containerId = fieldName.replace('_', '-') + '-container';
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            const selectedOptions = Array.from(hiddenSelect.options).filter(opt => opt.selected);
+
+            if (selectedOptions.length > 0) {
+                // Modo Edición: Mostrar colores guardados
+                selectedOptions.forEach(opt => {
+                    addColorRow(containerId);
+                    const lastSelect = container.lastElementChild.querySelector('select');
+                    if (lastSelect) {
+                        lastSelect.value = opt.value;
+                        syncColors(fieldName);
+                    }
+                });
+            } else {
+                // Modo Creación o No hay seleccionados: Intentar poner predeterminados
+                let defaultsAdded = 0;
+
+                defaultColors.forEach(colorName => {
+                    const opt = Array.from(hiddenSelect.options).find(o =>
+                        o.text.trim().toLowerCase() === colorName.toLowerCase()
+                    );
+
+                    if (opt) {
+                        addColorRow(containerId);
+                        const lastSelect = container.lastElementChild.querySelector('select');
+                        if (lastSelect) {
+                            lastSelect.value = opt.value;
+                            defaultsAdded++;
+                        }
+                    }
+                });
+
+                // Sincronizar al final si se agregaron defaults
+                if (defaultsAdded > 0) {
+                    syncColors(fieldName);
+                } else {
+                    // Si no hay seleccionados y no se encontraron defaults, agregar una fila vacía
+                    addColorRow(containerId);
+                }
+            }
+        });
+
+        // Configuración de Previews y Estados de Ficheros
+        handleFileStatus('id_design_front', 'status-design_front', 'preview-design_front');
+        handleFileStatus('id_design_back', 'status-design_back', 'preview-design_back');
+        handleFileStatus('id_diecut_file', 'status-diecut_file');
+        handleFileStatus('id_tech_file', 'status-tech_file');
+    });
+
+    function handleFileStatus(inputId, statusId, previewId = null) {
+        const input = document.getElementById(inputId);
+        const status = document.getElementById(statusId);
+        if (!input || !status) return;
+
+        input.addEventListener('change', function () {
+            const file = this.files[0];
+            if (file) {
+                // Desmarcar checkbox de eliminación si existe
+                const fieldName = inputId.replace('id_', '');
+                const clearCheckbox = document.getElementById(`${fieldName}-clear_id`);
+                if (clearCheckbox) clearCheckbox.checked = false;
+
+                // Actualizar Badge de Estado (Clase Modularizada)
+                status.innerHTML = `<span class="dot"></span> NUEVO: ${file.name.substring(0, 15)}...`;
+                status.className = "status-badge status-badge-nuevo animate-fade-in";
+
+                // Actualizar Preview si existe y es imagen
+                if (previewId) {
+                    const preview = document.getElementById(previewId);
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = function (e) {
+                            preview.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-contain animate-fade-in shadow-2xl shadow-black/60 scale-[0.98] transition-transform duration-500">`;
+                        }
+                        reader.readAsDataURL(file);
+                    } else {
+                        // Si no es imagen pero habia preview, poner icono generico
+                        preview.innerHTML = `
+                            <div class="text-center p-4">
+                                <svg class="w-8 h-8 text-slate-500 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                <span class="text-[9px] text-slate-500 font-bold uppercase tracking-tight italic">${file.name.split('.').pop()}</span>
+                            </div>
+                        `;
+                    }
+                }
+            }
+        });
+    }
+
+    function markForDeletion(fieldName) {
+        const clearCheckbox = document.getElementById(`${fieldName}-clear_id`);
+        const status = document.getElementById(`status-${fieldName}`);
+        const preview = document.getElementById(`preview-${fieldName}`);
+        const input = document.getElementById(`id_${fieldName}`);
+
+        if (clearCheckbox) {
+            clearCheckbox.checked = true;
+            input.value = ''; // Limpiar el input de archivo por si había algo seleccionado
+
+            if (status) {
+                status.innerHTML = `<span class="dot"></span> Marcardo para eliminar`;
+                status.className = "status-badge status-badge-eliminado animate-fade-in";
+            }
+
+            if (preview) {
+                preview.innerHTML = `
+                    <div class="text-center p-4 opacity-30">
+                        <svg class="w-8 h-8 text-red-500 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        <span class="text-[9px] text-red-500 font-bold uppercase tracking-tight italic">Eliminado</span>
+                    </div>
+                `;
+            }
+        }
+    }
+</script>
+
 {% endblock %}

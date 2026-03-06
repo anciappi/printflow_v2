@@ -33,12 +33,17 @@ urlpatterns = [
     # Conectamos la app inventory
     path('inventario/', include('inventory.urls')),
 
-    #Productos
-    path('products/', include('products.urls'))
+    # Clientes
+    path('clientes/', include('customers.urls')),
 
-    #Ordenes de trabajo
-    #path('ordenes/', include('orders.urls'))
+    # Productos
+    path('products/', include('products.urls')),
 
+    # Compras
+    path('compras/', include('purchasing.urls')),
+
+    # Ordenes de trabajo
+    #path('ordenes/', include('orders.urls')),
 ]
 
 if settings.DEBUG:
