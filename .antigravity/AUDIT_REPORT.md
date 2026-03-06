@@ -126,3 +126,79 @@
 4. 🔗 **Dependencies**: Depends on `core` for authentication/routing.
 5. 🔴 **Security issues**:
    - **High**: Unscoped access allows any authenticated user to edit or completely delete any customer via `CustomerDeleteView` and `CustomerUpdateView`.
+
+---
+
+## inventory + products + purchasing
+
+### App: `inventory/`
+1. ✅ **What is correct**:
+   - Complex stock logic (fractioning units, consumption logs) handled via `transaction.atomic()`.
+   - Use of `inlineformset_factory` for purchasing items.
+   - Managerial summaries using proxy models.
+2. ⚠️ **What needs refactoring**:
+   - **Performance**: `InventoryListView` performs Python-side sorting on unit numbers, which will scale poorly.
+   - **DRY**: Redundant view logic and forms between `inventory` and `purchasing`.
+   - **Form Styling**: Hardcoded Tailwind classes in `forms.py`.
+   - **Example**:
+     ```python
+     # Before (inventory/views.py)
+     for mat in context['materiales']:
+         mat.active_units.sort(key=natural_sort_key)
+
+     # After
+     # Use database-level ordering during Prefetch or custom manager methods
+     Prefetch('units', queryset=InventoryUnit.objects.order_by('purchase_order__remito_number', 'unit_number'))
+     ```
+3. ❌ **Missing for production-readiness**:
+   - `updated_at` timestamps on all models and `Meta` classes on several.
+   - User-role scoping (who can fraction? who can mark as received?).
+4. 🔗 **Dependencies**: `users`, `core`.
+5. ⚡ **Performance issues**:
+   - `StockDashboardView` recalculates sums/counts across all materials on every hit.
+   - Potential N+1 in `mark_as_received` loop if items count is high.
+
+---
+
+### App: `products/`
+1. ✅ **What is correct**:
+   - Proper model structure with timestamps and soft-delete ready status.
+   - Catalog view correctly uses `prefetch_related` for efficiency.
+   - Proper use of `limit_choices_to` for data integrity.
+2. ⚠️ **What needs refactoring**:
+   - **Metadata**: `Color` model lacks timestamps and meta-ordering.
+   - **Scoping**: Update/Delete views allow access to any product regardless of relationship.
+   - **Example**:
+     ```python
+     # Before
+     class ProductUpdateView(LoginRequiredMixin, UpdateView):
+         model = Product
+
+     # After
+     class ProductUpdateView(LoginRequiredMixin, UpdateView):
+         model = Product
+         def get_queryset(self):
+             return Product.objects.filter(...) # Define scoping rules
+     ```
+3. ❌ **Missing for production-readiness**:
+   - Pagination in the catalog view.
+   - Audit logs for design/file changes.
+4. 🔗 **Dependencies**: `customers`, `inventory` (substrate).
+5. ⚡ **Performance issues**:
+   - The M2M relation for colors (`colors_front`, `colors_back`) needs careful prefetching in detailed views to avoid N+1 queries.
+
+---
+
+### App: `purchasing/`
+1. ✅ **What is correct**:
+   - Explicit `select_related` and `prefetch_related` in `PurchaseOrderListView`.
+   - Atomic creation of orders with UUID-based unique identifiers.
+2. ⚠️ **What needs refactoring**:
+   - **Massive Duplication**: Almost 90% of views and forms are duplicates of `inventory`. This app should either be merged into `inventory` or exclusively handle the purchasing workflow while `inventory` handles units/consumption.
+   - **URL Overlap**: Overlapping paths in `core/urls.py` can cause confusion.
+3. ❌ **Missing for production-readiness**:
+   - Formal separation from inventory models or migration of those models to this app.
+   - Scoping of purchases by sucursal or department.
+4. 🔗 **Dependencies**: Reuses `inventory.models` entirely.
+5. ⚡ **Performance issues**:
+   - Prefetching `items__material` is good, but nested relations need monitoring for overhead.

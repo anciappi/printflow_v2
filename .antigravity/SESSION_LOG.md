@@ -3,9 +3,8 @@
 ## Session: 2026-03-06
 **Tasks Completed:**
 - Orientation and primary rules review.
-- Security/Architectural audit of `core/` and `users/` apps.
+- Security/Architectural audit of ALL apps: `core`, `users`, `orders`, `customers`, `inventory`, `products`, `purchasing`.
 - Fixed hardcoded credentials in `core/settings.py`.
-- Security/Architectural audit of `orders/` and `customers/` apps.
 - Initialization of project tracking (`AUDIT_REPORT.md`, `SESSION_LOG.md`).
 
 **Files Created/Modified:**
@@ -14,10 +13,12 @@
 - `core/settings.py` (Modified)
 
 **Next Pending Task:**
-- Audit: `inventory/`, `products/`, `purchasing/`.
+- Refactor models to include missing timestamps and Meta classes.
+- Implement queryset scoping in views for all apps.
+- Consolidation of `inventory` and `purchasing` logic to remove duplication.
 
 **Blockers/Open Questions:**
-- 🔴 CRITICAL: User and Customer models require timestamps as per project rules.
-- 🔴 HIGH: Unscoped querysets in `orders/` and `customers/` views allow unauthorized data access/modification.
-- 🔴 HIGH: `CustomerDeleteView` allows permanent deletion, violating data retention rules.
-- 🔴 MEDIUM: Race condition vulnerability in `WorkOrder.ot_number` generation.
+- 🔴 CRITICAL: Missing timestamps and Meta classes across almost all models.
+- 🔴 HIGH: Massive duplication between `inventory` and `purchasing` apps.
+- 🔴 HIGH: Unscoped querysets across all apps allow unauthorized data access/modification.
+- 🔴 MEDIUM: Performance bottlenecks due to Python-side sorting and on-the-fly dashboard annotations.
