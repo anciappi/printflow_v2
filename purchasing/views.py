@@ -22,8 +22,9 @@ from .forms import PurchaseOrderForm, PurchaseOrderItemFormSet, SupplierForm
 class PurchaseOrderListView(LoginRequiredMixin, ListView):
     """Lista todas las OC, separando pendientes de recibidas."""
     model = PurchaseOrder
-    template_name = 'purchasing/oc_list.html'
+    template_name = 'purchasing/purchaseorder_list.html'
     context_object_name = 'ordenes'
+    paginate_by = 20
 
     def get_queryset(self):
         return (
@@ -158,6 +159,7 @@ class SupplierListView(LoginRequiredMixin, ListView):
     template_name = 'purchasing/supplier_list.html'
     context_object_name = 'proveedores'
     ordering = ['name']
+    paginate_by = 20
 
 
 class SupplierCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):

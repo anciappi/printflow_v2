@@ -25,6 +25,7 @@ urlpatterns = [
 
     #Listado de materiales
     path('materiales/', views.MaterialListView.as_view(), name='material_list'),
+    path('materiales/<int:pk>/', views.MaterialDetailView.as_view(), name='material_detail'),
     path('materiales/editar/<int:pk>/', views.MaterialUpdateView.as_view(), name='material_edit'),
     path('materiales/borrar/<int:pk>/', views.MaterialDeleteView.as_view(), name='material_delete'),
 ]

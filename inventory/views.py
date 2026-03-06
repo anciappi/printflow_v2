@@ -2,7 +2,7 @@ import uuid
 import re
 from django.utils import timezone
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import ListView, TemplateView
+from django.views.generic import ListView, TemplateView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.urls import reverse_lazy
@@ -252,6 +252,7 @@ class InventoryListView(LoginRequiredMixin, ListView):
     model = Material
     template_name = 'inventory/inventory_list.html'
     context_object_name = 'materiales'
+    paginate_by = 20
 
     def get_queryset(self):
         # 2. Limpiamos el QuerySet. 
@@ -294,8 +295,9 @@ class InventoryListView(LoginRequiredMixin, ListView):
 
 class OCListView(LoginRequiredMixin, ListView):
     model = PurchaseOrder
-    template_name = 'inventory/oc_list.html'
+    template_name = 'inventory/purchaseorder_list.html'
     context_object_name = 'ordenes'
+    paginate_by = 20
 
     def get_queryset(self):
         # Mostramos las pendientes de ingreso primero
@@ -323,6 +325,7 @@ class ConsumptionHistoryView(LoginRequiredMixin, ListView):
     model = Material
     template_name = 'inventory/consumption_list.html'
     context_object_name = 'materiales_con_consumo'
+    paginate_by = 20
 
     def get_queryset(self):
         # 1. Traemos materiales que tengan al menos un consumo registrado
@@ -360,6 +363,7 @@ class MaterialListView(LoginRequiredMixin, ListView):
     template_name = 'inventory/material_master_list.html'
     context_object_name = 'materiales'
     ordering = ['name'] # Orden alfabético
+    paginate_by = 20
 
 # 2. EDITAR MATERIAL
 class MaterialUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
@@ -383,3 +387,24 @@ class MaterialDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
         except Exception:
             messages.error(self.request, "No se puede eliminar este material porque tiene stock o movimientos asociados.")
             return redirect('inventory:material_list')
+
+class MaterialDetailView(LoginRequiredMixin, DetailView):
+    model = Material
+    template_name = 'inventory/inventory_detail.html'
+    context_object_name = 'material'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        material = self.get_object()
+        
+        # Unidades activas
+        context['unidades_activas'] = material.units.filter(
+            status__in=['AVAILABLE', 'IN_USE']
+        ).select_related('purchase_order').order_by('purchase_order__delivery_date', 'unit_number')
+        
+        # Historial de consumos
+        context['consumos'] = ConsumptionLog.objects.filter(
+            inventory_unit__material=material
+        ).select_related('inventory_unit', 'responsible').order_by('-date')
+        
+        return context

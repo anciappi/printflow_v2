@@ -7,8 +7,9 @@ from customers.models import Customer
 
 class ProductCatalogView(LoginRequiredMixin, ListView):
     model = Customer
-    template_name = 'products/product_catalog.html'
+    template_name = 'products/product_list.html'
     context_object_name = 'customers'
+    paginate_by = 20
 
     def get_queryset(self):
         # Obtenemos clientes que tengan al menos un producto activo

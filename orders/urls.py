@@ -6,5 +6,6 @@ app_name = 'orders'
 urlpatterns = [
     path('', views.WorkOrderListView.as_view(), name='list'),
     path('nueva/', views.WorkOrderCreateView.as_view(), name='create'),
+    path('<int:pk>/', views.WorkOrderDetailView.as_view(), name='detail'),
     path('<int:pk>/editar/', views.WorkOrderUpdateView.as_view(), name='update'),
 ]

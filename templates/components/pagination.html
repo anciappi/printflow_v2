@@ -1,0 +1,54 @@
+{% if is_paginated %}
+<div class="flex flex-col sm:flex-row justify-between items-center bg-[#1a1d23] px-6 py-4 border border-[#2d333b] rounded-lg gap-4 mt-6">
+    <div class="text-sm text-slate-500 order-2 sm:order-1">
+        Mostrando <span class="text-slate-300">{{ page_obj.start_index }}</span> a <span class="text-slate-300">{{ page_obj.end_index }}</span> de <span class="text-slate-300">{{ paginator.count }}</span> resultados
+    </div>
+    
+    <nav class="inline-flex rounded-md shadow-sm order-1 sm:order-2" aria-label="Pagination">
+        {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
+           class="relative inline-flex items-center px-3 py-2 rounded-l-md border border-[#2d333b] bg-[#0f1115] text-xs font-medium text-slate-400 hover:bg-[#1a1d23] hover:text-white transition-colors">
+            <span class="sr-only">Anterior</span>
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+        </a>
+        {% else %}
+        <span class="relative inline-flex items-center px-3 py-2 rounded-l-md border border-[#2d333b] bg-[#0f1115] text-xs font-medium text-slate-600 cursor-not-allowed">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+        </span>
+        {% endif %}
+
+        {% for i in paginator.page_range %}
+            {% if page_obj.number == i %}
+            <span class="relative inline-flex items-center px-4 py-2 border border-[#2d333b] bg-orange-600/20 text-orange-400 text-xs font-bold transition-colors">
+                {{ i }}
+            </span>
+            {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
+            <a href="?page={{ i }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
+               class="relative inline-flex items-center px-4 py-2 border border-[#2d333b] bg-[#0f1115] text-xs font-medium text-slate-400 hover:bg-[#1a1d23] hover:text-white transition-colors">
+                {{ i }}
+            </a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
+           class="relative inline-flex items-center px-3 py-2 rounded-r-md border border-[#2d333b] bg-[#0f1115] text-xs font-medium text-slate-400 hover:bg-[#1a1d23] hover:text-white transition-colors">
+            <span class="sr-only">Siguiente</span>
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+        </a>
+        {% else %}
+        <span class="relative inline-flex items-center px-3 py-2 rounded-r-md border border-[#2d333b] bg-[#0f1115] text-xs font-medium text-slate-600 cursor-not-allowed">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+        </span>
+        {% endif %}
+    </nav>
+</div>
+{% endif %}
