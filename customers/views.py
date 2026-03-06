@@ -9,6 +9,9 @@ class CustomerListView(LoginRequiredMixin, ListView):
     template_name = 'customers/customer_list.html'
     context_object_name = 'customers'
 
+    def get_queryset(self):
+        return Customer.objects.filter(is_active=True)
+
 class CustomerCreateView(LoginRequiredMixin, CreateView):
     model = Customer
     form_class = CustomerForm
