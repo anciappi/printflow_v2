@@ -256,14 +256,14 @@ The following order is recommended to minimize breaking changes during refactori
 
 | Priority | App | Task Description | Risk | Dependencies |
 | :--- | :--- | :--- | :--- | :--- |
-| **CRITICAL** | `System-wide` | **Missing Meta & Timestamps:** Implement `created_at`, `updated_at`, `ordering`, and `__str__` in all models identified as missing in the audit. | **HIGH** | Human approval for migrations. |
-| **CRITICAL** | `System-wide` | **Unscoped Querysets:** Modify `get_queryset` in all generic and functional views to filter by user/role permissions. | **HIGH** | None. |
-| **CRITICAL** | `core` | **Security Headers:** Configure HSTS, SSL redirect, and cookie security in `settings.py`. | **LOW** | Deployment environment config. |
-| **HIGH** | `purchasing` + `inventory` | **Decouple Apps:** Migrate PO models to `purchasing`. Remove duplicate views and forms. Extract shared logic to a `mixins.py` if needed. | **HIGH** | `inventory` models migration. |
-| **HIGH** | `orders` | **Atomic OT Generation:** Replace manual `ot_number` logic with a database sequence or atomic transaction to prevent race conditions. | **MEDIUM** | `WorkOrder` model update. |
-| **HIGH** | `customers` | **Soft Delete:** Implement `is_active` or similar flag and override `delete()` to prevent permanent data loss. | **MEDIUM** | Migration. |
+| ✅ DONE | `System-wide` | **Missing Meta & Timestamps:** Implement `created_at`, `updated_at`, `ordering`, and `__str__` in all models identified as missing in the audit. | **HIGH** | Human approval for migrations. |
+| ✅ DONE | `System-wide` | **Unscoped Querysets:** Modify `get_queryset` in all generic and functional views to filter by user/role permissions. | **HIGH** | None. |
+| ✅ DONE | `core` | **Security Headers:** Configure HSTS, SSL redirect, and cookie security in `settings.py`. | **LOW** | Deployment environment config. |
+| ✅ DONE | `purchasing` + `inventory` | **Decouple Apps:** Migrate PO models to `purchasing`. Remove duplicate views and forms. Extract shared logic to a `mixins.py` if needed. | **HIGH** | `inventory` models migration. |
+| ✅ DONE | `orders` | **Atomic OT Generation:** Replace manual `ot_number` logic with a database sequence or atomic transaction to prevent race conditions. | **MEDIUM** | `WorkOrder` model update. |
+| ✅ DONE | `customers` | **Soft Delete:** Implement `is_active` or similar flag and override `delete()` to prevent permanent data loss. | **MEDIUM** | Migration. |
 | **HIGH** | `System-wide` | **Form Styling:** Extact Tailwind classes from form files into a shared CSS or template component to follow DRY. | **LOW** | UI Review. |
 | **MEDIUM** | `inventory` | **Query Optimization:** Replace Python-side natural sorting with database-level ordering in `InventoryListView`. | **LOW** | None. |
-| **MEDIUM** | `System-wide` | **Pagination:** Implement pagination for all ListViews to ensure scalability. | **LOW** | None. |
+| ✅ DONE | `System-wide` | **Pagination:** Implement pagination for all ListViews to ensure scalability. | **LOW** | None. |
 | **LOW** | `dashboard` | **Activation:** Register `dashboard` in `core/urls.py` and implement basic KPIs using aggregated data from orders/stock. | **LOW** | None. |
 | **LOW** | `core` | **Translation:** Rename remaining Spanish URLs (`/clientes/`, `/inventario/`) to English for consistency with project rules. | **MEDIUM** | All app URL references. |
