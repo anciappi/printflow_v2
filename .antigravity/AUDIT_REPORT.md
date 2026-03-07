@@ -262,6 +262,7 @@ The following order is recommended to minimize breaking changes during refactori
 | ✅ DONE | `purchasing` + `inventory` | **Decouple Apps:** Migrate PO models to `purchasing`. Remove duplicate views and forms. Extract shared logic to a `mixins.py` if needed. | **HIGH** | `inventory` models migration. |
 | ✅ DONE | `orders` | **Atomic OT Generation:** Replace manual `ot_number` logic with a database sequence or atomic transaction to prevent race conditions. | **MEDIUM** | `WorkOrder` model update. |
 | ✅ DONE | `customers` | **Soft Delete:** Implement `is_active` or similar flag and override `delete()` to prevent permanent data loss. | **MEDIUM** | Migration. |
+| ✅ DONE | `quotes` | **Client Portal (Phase 1):** Implement QuoteRequest models, views, forms, and security middleware. | **HIGH** | None. |
 | **HIGH** | `System-wide` | **Form Styling:** Extact Tailwind classes from form files into a shared CSS or template component to follow DRY. | **LOW** | UI Review. |
 | **MEDIUM** | `inventory` | **Query Optimization:** Replace Python-side natural sorting with database-level ordering in `InventoryListView`. | **LOW** | None. |
 | ✅ DONE | `System-wide` | **Pagination:** Implement pagination for all ListViews to ensure scalability. | **LOW** | None. |

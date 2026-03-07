@@ -2,21 +2,21 @@
 
 ## Session: 2026-03-06
 **Tasks Completed:**
-- **Audit & Security:** Completed full app audit; hardened `core` (headers, fallbacks), `orders`/`customers` (querysets, atomic OT gen), and `customers` (soft-delete).
-- **Architecture:** Decoupled `purchasing` from `inventory`; migrated PO models and updated all references/FKs.
-- **Data Integrity:** Added timestamps/Meta to `users`, `inventory`, and `products` models.
-- **UI/UX:** Created pagination component and responsive templates for `orders` and `inventory`. Applied UI refinements to `purchaseorder_list.html`, `material_master_list.html`, and `consumption_list.html`.
-- **Bugfixes:** Resolved template syntax error in `inventory_list.html`; fixed `MaterialStockSummary` proxy model inheritance inconsistency in `inventory/models.py`.
-- **Documentation:** Marked completed tasks in `AUDIT_REPORT.md` and consolidated session history.
+- **Client Portal (Phase 1):** Built `quotes` app with `QuoteRequest` and `QuoteProduct` models.
+- **Security:** Implemented `PortalMiddleware` for strict role-based routing; hardened `QuoteApproveView` with CUIT/Customer matching logic.
+- **Frontend:** Created mobile-first templates (`portal.html`, `quote_form.html`, `quote_list.html`) with interactive JS for address toggling.
+- **Backend:** Created `create_portal_user` management command and applied database migrations.
 
 **Files Created/Modified:**
-- `core/settings.py`, `inventory/models.py`, `customers/models.py`, `orders/models.py`, `users/models.py`, `products/models.py`, `purchasing/models.py`
-- `inventory/views.py`, `purchasing/views.py`, `orders/views.py`, `customers/views.py`, `products/views.py`
-- `templates/inventory/*.html`, `templates/orders/*.html`, `templates/customers/*.html`, `templates/components/pagination.html`
-- `.antigravity/AUDIT_REPORT.md`, `.antigravity/SESSION_LOG.md`
+- `quotes/`: `models.py`, `views.py`, `forms.py`, `urls.py`, `management/commands/create_portal_user.py`
+- `core/`: `middleware.py`, `settings.py`, `urls.py`
+- `templates/quotes/`: `portal.html`, `quote_form.html`, `quote_list.html`
+- `.antigravity/`: `AUDIT_REPORT.md`, `SESSION_LOG.md`
 
-**Next Pending Task:**
-- Audit `core/dashboard.html` for visual consistency with new mobile-first templates.
+**Next Pending Tasks:**
+- Custom Portal Login page (avoiding internal login UI).
+- Unified UI consistency across all portal forms.
+- Permissive checks for `quote_list` (Sales vs Admin view).
 
 **Blockers/Open Questions:**
-- None. UI consistency and architecture are now aligned with project rules.
+- None. Phase 1 is fully functional and migrated.

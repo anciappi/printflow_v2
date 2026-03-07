@@ -44,6 +44,9 @@ urlpatterns = [
 
     # Ordenes de trabajo
     #path('ordenes/', include('orders.urls')),
+
+    # Client Portal (external)
+    path('portal/', include('quotes.urls')),
 ]
 
 if settings.DEBUG:
