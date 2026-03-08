@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nueva Orden de Trabajo | PrintFlow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f1115;
+            color: #94a3b8;
+        }
+
+        .card {
+            background-color: #1a1d23;
+            border: 1px solid #2d333b;
+            border-radius: 0.125rem;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        input[type="tel"],
+        textarea,
+        select {
+            background-color: #0f1115;
+            border: 1px solid #2d333b;
+            color: white;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            outline: none;
+            transition: border-color 0.2s;
+            border-radius: 0.125rem;
+        }
+
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #60a5fa;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            items-center: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #64748b;
+        }
+
+        .checkbox-group input {
+            width: 1rem;
+            height: 1rem;
+            border-radius: 0.125rem;
+            border-color: #2d333b;
+            background-color: #0f1115;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex flex-col antialiased">
+
+    <!-- Header -->
+    <header class="bg-[#1a1d23] border-b border-[#2d333b] sticky top-0 z-40">
+        <div class="max-w-4xl mx-auto px-4 flex justify-between h-14 items-center">
+            <h1 class="text-white text-xs font-bold uppercase tracking-widest">Nueva O.T. Tarjetas</h1>
+            <a href="{% url 'quotes:portal_home' %}"
+                class="text-[10px] font-bold text-slate-500 hover:text-white uppercase tracking-widest transition-colors">Volver</a>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto py-8 px-4 w-full">
+        <form method="post" enctype="multipart/form-data" id="jobForm">
+            {% csrf_token %}
+
+            <!-- Section 1: Job Info -->
+            <div class="card p-6 mb-4 shadow-xl">
+                <h3
+                    class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-[#2d333b] pb-1">
+                    Sección 1: Datos del Trabajo</h3>
+                <div class="grid grid-cols-1 gap-6">
+                    <div class="space-y-1.5">
+                        <label for="{{ form.job_description.id_for_label }}"
+                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Descripción del
+                            Trabajo</label>
+                        {{ form.job_description }}
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label for="{{ form.op_anterior.id_for_label }}"
+                                class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Orden
+                                Anterior (Ref)</label>
+                            {{ form.op_anterior }}
+                        </div>
+                        <div class="space-y-1.5">
+                            <label for="{{ form.version.id_for_label }}"
+                                class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Versión</label>
+                            {{ form.version }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Colors Front -->
+            <div class="card p-6 mb-4 shadow-xl">
+                <h3
+                    class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-[#2d333b] pb-1">
+                    Sección 2: Colores Anverso</h3>
+
+                <div class="space-y-6">
+                    <div class="flex flex-wrap gap-6 checkbox-group">
+                        <label><input type="checkbox" class="color-front" data-color="C"> CIAN</label>
+                        <label><input type="checkbox" class="color-front" data-color="M"> MAGENTA</label>
+                        <label><input type="checkbox" class="color-front" data-color="Y"> AMARILLO</label>
+                        <label><input type="checkbox" class="color-front" data-color="K"> NEGRO</label>
+                    </div>
+                    {{ form.front_colors.as_hidden }}
+
+                    <div class="space-y-1.5">
+                        <label for="{{ form.front_special_colors.id_for_label }}"
+                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Colores
+                            adicionales / Tintas especiales</label>
+                        {{ form.front_special_colors }}
+                        <p class="text-[9px] text-slate-600 mt-1">Ej: Pantone 485C, Barniz UV, Tinta Metálica Oro</p>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label for="{{ form.front_observations.id_for_label }}"
+                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Observaciones
+                            de Color</label>
+                        {{ form.front_observations }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Colors Back -->
+            <div class="card p-6 mb-4 shadow-xl">
+                <h3
+                    class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-[#2d333b] pb-1">
+                    Sección 3: Colores Reverso</h3>
+
+                <div class="space-y-6">
+                    <div class="flex flex-wrap gap-6 checkbox-group">
+                        <label><input type="checkbox" class="color-back" data-color="C"> CIAN</label>
+                        <label><input type="checkbox" class="color-back" data-color="M"> MAGENTA</label>
+                        <label><input type="checkbox" class="color-back" data-color="Y"> AMARILLO</label>
+                        <label><input type="checkbox" class="color-back" data-color="K"> NEGRO</label>
+                    </div>
+                    {{ form.back_colors.as_hidden }}
+
+                    <div class="space-y-1.5">
+                        <label for="{{ form.back_special_colors.id_for_label }}"
+                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Colores
+                            adicionales / Tintas especiales</label>
+                        {{ form.back_special_colors }}
+                        <p class="text-[9px] text-slate-600 mt-1">Ej: Pantone 485C, Barniz UV, Tinta Metálica Oro</p>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label for="{{ form.back_observations.id_for_label }}"
+                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Observaciones
+                            de Color</label>
+                        {{ form.back_observations }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Files -->
+            <div class="card p-6 mb-12 shadow-xl">
+                <h3
+                    class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-[#2d333b] pb-1">
+                    Sección 4: Archivos y Notas</h3>
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Diseño
+                            / Arte Final</label>
+                        <div
+                            class="border-2 border-dashed border-[#2d333b] bg-[#0f1115] p-8 text-center rounded-sm hover:border-blue-500/50 transition-colors">
+                            <div class="flex flex-col items-center">
+                                <svg class="w-8 h-8 text-slate-600 mb-2" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                </svg>
+                                <span class="text-xs text-slate-500 mb-4">Click para cargar archivo (PDF, JPG,
+                                    PNG)</span>
+                                <div
+                                    class="px-4 py-2 bg-[#1a1d23] border border-[#2d333b] rounded-sm text-xs text-white">
+                                    {{ form.attached_file }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-1.5">
+                        <label for="{{ form.general_notes.id_for_label }}"
+                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Notas
+                            Adicionales</label>
+                        {{ form.general_notes }}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Bar -->
+            <div class="flex flex-col sm:flex-row gap-4 mb-20">
+                <button type="submit"
+                    class="flex-1 py-4 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold uppercase tracking-widest rounded-sm transition-all shadow-xl shadow-blue-900/10">
+                    Enviar para Revisión
+                </button>
+                <a href="{% url 'quotes:portal_home' %}"
+                    class="px-8 py-4 bg-[#1a1d23] border border-[#2d333b] text-slate-500 hover:text-white text-xs font-bold uppercase tracking-widest rounded-sm text-center transition-all">
+                    Cancelar
+                </a>
+            </div>
+
+            <!-- Hidden fields integration -->
+            {{ form.requester_name.as_hidden }}
+            {{ form.requester_email.as_hidden }}
+            {{ form.requester_phone.as_hidden }}
+            {{ form.requester_cuit.as_hidden }}
+        </form>
+    </main>
+
+    <script>
+        // Sync checkboxes with hidden CharFields
+        function updateColors(side) {
+            const checkboxes = document.querySelectorAll(`.color-${side}`);
+            const hiddenInput = document.getElementById(`id_${side}_colors`);
+            const selected = Array.from(checkboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.getAttribute('data-color'))
+                .join(',');
+            hiddenInput.value = selected;
+        }
+
+        document.querySelectorAll('.color-front').forEach(cb => {
+            cb.addEventListener('change', () => updateColors('front'));
+        });
+        document.querySelectorAll('.color-back').forEach(cb => {
+            cb.addEventListener('change', () => updateColors('back'));
+        });
+
+        // Styling inputs
+        document.querySelectorAll('input:not([type="checkbox"]):not([type="file"]), select, textarea').forEach(el => {
+            el.classList.add('w-full');
+        });
+
+        // Pre-fill hidden requester info from user if possible (simplified for this demo)
+        // In a real scenario, this would be handled in form_valid or via template variables
+    </script>
+</body>
+
+</html>

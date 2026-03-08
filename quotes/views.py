@@ -8,8 +8,11 @@ from django.db import transaction
 
 from users.models import User
 from customers.models import Customer
-from .models import QuoteRequest
-from .forms import QuoteRequestForm, QuoteProductFormSet
+from .models import QuoteRequest, CardJobOrder
+from .forms import (
+    QuoteRequestForm, QuoteProductFormSet,
+    CardJobOrderClientForm, CardJobOrderStaffForm
+)
 
 
 class PortalClientMixin(UserPassesTestMixin):
@@ -130,3 +133,71 @@ class PortalLoginView(LoginView):
         if request.user.is_authenticated:
             return redirect(self.get_success_url())
         return super().get(request, *args, **kwargs)
+
+
+class CardJobOrderCreateView(LoginRequiredMixin, PortalClientMixin, CreateView):
+    model = CardJobOrder
+    form_class = CardJobOrderClientForm
+    template_name = 'quotes/card_job_form.html'
+    success_url = reverse_lazy('quotes:portal_home')
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        # Auto-fill requester info from user session/profile if available
+        # In this system, Portal users might have their info pre-filled in the form
+        # but we ensure it's saved correctly.
+        self.object.status = 'PENDING'
+        self.object.save()
+        messages.success(self.request, "Solicitud de trabajo de tarjetas enviada para revisión.")
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"CardJobOrder form errors: {form.errors}")
+        messages.error(self.request, f"Error en el formulario: {form.errors}")
+        return super().form_invalid(form)
+
+
+class CardJobOrderDetailView(LoginRequiredMixin, View):
+    def get(self, request, pk):
+        job = get_object_or_404(CardJobOrder, pk=pk)
+        
+        # Security check for PORTAL users
+        if request.user.role == User.Roles.PORTAL and job.requester_email != request.user.email:
+             # Basic ownership check via email for now, or link to User if refined
+             return redirect('quotes:portal_home')
+
+        staff_form = None
+        if request.user.role in [User.Roles.ADMIN, User.Roles.MANAGEMENT, User.Roles.SALES]:
+            staff_form = CardJobOrderStaffForm(instance=job)
+
+        return render(request, 'quotes/card_job_detail.html', {
+            'job': job,
+            'staff_form': staff_form
+        })
+
+    def post(self, request, pk):
+        job = get_object_or_404(CardJobOrder, pk=pk)
+        
+        # Only internal staff can POST (edit technical specs)
+        if request.user.role not in [User.Roles.ADMIN, User.Roles.MANAGEMENT, User.Roles.SALES]:
+            return redirect('quotes:portal_home')
+            
+        form = CardJobOrderStaffForm(request.POST, instance=job)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Especificaciones técnicas actualizadas correctamente.")
+            return redirect('quotes:card_job_detail', pk=pk)
+        
+        return render(request, 'quotes/card_job_detail.html', {
+            'job': job,
+            'staff_form': form
+        })
+
+
+class CardJobOrderListView(LoginRequiredMixin, InternalStaffMixin, ListView):
+    model = CardJobOrder
+    template_name = 'quotes/card_job_list.html'
+    context_object_name = 'jobs'
+    paginate_by = 20

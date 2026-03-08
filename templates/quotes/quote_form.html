@@ -1,164 +1,179 @@
 <!DOCTYPE html>
-<html lang="es" class="h-full bg-slate-50">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nueva Solicitud de Cotización | PrintFlow</title>
+    <title>Nueva Cotización | PrintFlow</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #0f1115;
+            color: #94a3b8;
         }
 
-        .form-section {
-            @apply bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mb-6;
+        .card {
+            background-color: #1a1d23;
+            border: 1px solid #2d333b;
+            border-radius: 0.125rem;
         }
 
-        .label {
-            @apply block text-sm font-semibold text-slate-700 mb-1;
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        input[type="tel"],
+        textarea,
+        select {
+            background-color: #0f1115;
+            border: 1px solid #2d333b;
+            color: white;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            outline: none;
+            transition: border-color 0.2s;
+            border-radius: 0.125rem;
         }
 
-        .input {
-            @apply block w-full px-4 py-3 rounded-xl border-slate-200 bg-slate-50 text-slate-900 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all;
-        }
-
-        .checkbox-label {
-            @apply flex items-center gap-3 cursor-pointer select-none text-sm text-slate-600 font-medium;
-        }
-
-        .checkbox {
-            @apply w-5 h-5 rounded border-slate-300 text-blue-600 focus:ring-blue-500 transition-all;
+        input:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #60a5fa;
         }
     </style>
 </head>
 
-<body class="h-full antialiased text-slate-900">
+<body class="min-h-screen flex flex-col antialiased">
 
     <!-- Header -->
-    <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between h-16 items-center">
-            <h1 class="text-lg font-bold">Solicitar Cotización</h1>
+    <header class="bg-[#1a1d23] border-b border-[#2d333b] sticky top-0 z-40">
+        <div class="max-w-4xl mx-auto px-4 flex justify-between h-14 items-center">
+            <h1 class="text-white text-xs font-bold uppercase tracking-widest">Solicitud de Cotización</h1>
             <a href="{% url 'quotes:portal_home' %}"
-                class="text-sm text-slate-500 hover:text-slate-800 transition-colors">Cancelar</a>
+                class="text-[10px] font-bold text-slate-500 hover:text-white uppercase tracking-widest transition-colors">Volver</a>
         </div>
     </header>
 
-    <main class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <main class="max-w-4xl mx-auto py-8 px-4 w-full">
         <form method="post" enctype="multipart/form-data" id="quoteForm">
             {% csrf_token %}
 
             <!-- Section 1: Contact -->
-            <div
-                class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mb-6 transition-all hover:border-blue-200">
-                <h3 class="text-blue-600 font-bold uppercase tracking-wider text-xs mb-4">Sección 1: Datos de Contacto
-                </h3>
+            <div class="card p-6 mb-4 shadow-xl">
+                <h3
+                    class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-[#2d333b] pb-1">
+                    Sección 1: Contacto</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
+                    <div class="space-y-1.5">
                         <label for="{{ form.requester_name.id_for_label }}"
-                            class="block text-sm font-semibold text-slate-700 mb-1">Nombre / Razón Social</label>
+                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Razón
+                            Social</label>
                         {{ form.requester_name }}
                     </div>
-                    <div>
+                    <div class="space-y-1.5">
                         <label for="{{ form.requester_cuit.id_for_label }}"
-                            class="block text-sm font-semibold text-slate-700 mb-1">CUIT</label>
+                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">CUIT</label>
                         {{ form.requester_cuit }}
                     </div>
-                    <div>
+                    <div class="space-y-1.5">
                         <label for="{{ form.requester_email.id_for_label }}"
-                            class="block text-sm font-semibold text-slate-700 mb-1">Email</label>
+                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Email</label>
                         {{ form.requester_email }}
                     </div>
-                    <div>
+                    <div class="space-y-1.5">
                         <label for="{{ form.requester_phone.id_for_label }}"
-                            class="block text-sm font-semibold text-slate-700 mb-1">Teléfono</label>
+                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Teléfono</label>
                         {{ form.requester_phone }}
                     </div>
                 </div>
             </div>
 
-            <!-- Section 2: Billing -->
-            <div
-                class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mb-6 transition-all hover:border-blue-200">
-                <h3 class="text-blue-600 font-bold uppercase tracking-wider text-xs mb-4">Sección 2: Dirección de
-                    Facturación</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div class="sm:col-span-2">
+            <!-- Section 2: Billing & Delivery -->
+            <div class="card p-6 mb-4 shadow-xl">
+                <h3
+                    class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-[#2d333b] pb-1">
+                    Sección 2: Logística</h3>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                    <div class="space-y-1.5 sm:col-span-2">
                         <label for="{{ form.billing_address.id_for_label }}"
-                            class="block text-sm font-semibold text-slate-700 mb-1">Dirección</label>
+                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Facturación:
+                            Dirección</label>
                         {{ form.billing_address }}
                     </div>
-                    <div>
+                    <div class="space-y-1.5">
                         <label for="{{ form.billing_city.id_for_label }}"
-                            class="block text-sm font-semibold text-slate-700 mb-1">Ciudad</label>
+                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Ciudad</label>
                         {{ form.billing_city }}
                     </div>
                 </div>
-            </div>
 
-            <!-- Section 3: Delivery -->
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mb-6 transition-all">
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                    <h3 class="text-blue-600 font-bold uppercase tracking-wider text-xs">Sección 3: Dirección de Entrega
-                    </h3>
-                    <label
-                        class="flex items-center gap-3 cursor-pointer select-none text-sm text-slate-600 font-medium">
-                        {{ form.same_as_billing }}
-                        <span>Misma que facturación</span>
-                    </label>
-                </div>
+                <div class="pt-6 border-t border-[#2d333b]">
+                    <div class="flex items-center justify-between mb-6">
+                        <h4 class="text-white text-xs font-bold uppercase tracking-widest">Entrega</h4>
+                        <label
+                            class="flex items-center gap-2 cursor-pointer text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-blue-400 transition-colors">
+                            {{ form.same_as_billing }}
+                            <span>Misma que facturación</span>
+                        </label>
+                    </div>
 
-                <div id="delivery-fields" class="grid grid-cols-1 sm:grid-cols-2 gap-4 transition-all duration-300">
-                    <div class="sm:col-span-2">
-                        <label for="{{ form.delivery_address.id_for_label }}"
-                            class="block text-sm font-semibold text-slate-700 mb-1">Dirección de Entrega</label>
-                        {{ form.delivery_address }}
-                    </div>
-                    <div>
-                        <label for="{{ form.delivery_city.id_for_label }}"
-                            class="block text-sm font-semibold text-slate-700 mb-1">Ciudad</label>
-                        {{ form.delivery_city }}
-                    </div>
-                    <div>
-                        <label for="{{ form.delivery_contact.id_for_label }}"
-                            class="block text-sm font-semibold text-slate-700 mb-1">Persona de Contacto</label>
-                        {{ form.delivery_contact }}
-                    </div>
-                    <div class="sm:col-span-2">
-                        <label for="{{ form.delivery_phone.id_for_label }}"
-                            class="block text-sm font-semibold text-slate-700 mb-1">Teléfono de Entrega</label>
-                        {{ form.delivery_phone }}
+                    <div id="delivery-fields" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="space-y-1.5 sm:col-span-2">
+                            <label for="{{ form.delivery_address.id_for_label }}"
+                                class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Dirección
+                                de Entrega</label>
+                            {{ form.delivery_address }}
+                        </div>
+                        <div class="space-y-1.5">
+                            <label for="{{ form.delivery_city.id_for_label }}"
+                                class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Ciudad</label>
+                            {{ form.delivery_city }}
+                        </div>
+                        <div class="space-y-1.5">
+                            <label for="{{ form.delivery_contact.id_for_label }}"
+                                class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Persona de
+                                Contacto</label>
+                            {{ form.delivery_contact }}
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Section 4: Products -->
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mb-6">
-                <h3 class="text-blue-600 font-bold uppercase tracking-wider text-xs mb-4">Sección 4: Productos a Cotizar
-                </h3>
+            <!-- Section 3: Products -->
+            <div class="card p-6 mb-4 shadow-xl">
+                <h3
+                    class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-[#2d333b] pb-1">
+                    Sección 3: Requerimientos</h3>
                 {{ products.management_form }}
                 <div id="product-list" class="space-y-4">
                     {% for pform in products %}
-                    <div class="product-item p-4 bg-slate-50 border border-slate-200 rounded-xl relative">
+                    <div
+                        class="p-4 bg-[#0f1115] border border-[#2d333b] focus-within:border-blue-500/50 transition-colors rounded-sm">
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <div class="sm:col-span-2">
-                                <label class="block text-xs text-slate-500 mb-1">Producto</label>
+                            <div class="sm:col-span-2 space-y-1.5">
+                                <label
+                                    class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Producto</label>
                                 {{ pform.product }}
                             </div>
-                            <div>
-                                <label class="block text-xs text-slate-500 mb-1">Cantidad</label>
+                            <div class="space-y-1.5">
+                                <label
+                                    class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Cantidad</label>
                                 {{ pform.quantity }}
                             </div>
-                            <div class="sm:col-span-3">
-                                <label class="block text-xs text-slate-500 mb-1">Notas específicas (Tamaño, papel,
-                                    terminación)</label>
+                            <div class="sm:col-span-3 space-y-1.5">
+                                <label
+                                    class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Especificaciones
+                                    (Papel, medidas, etc.)</label>
                                 {{ pform.notes }}
                             </div>
                         </div>
-                        {% if products.can_delete %}
-                        <div class="mt-2 text-right">
-                            <span class="text-xs text-slate-400">Marcar para eliminar: {{ pform.DELETE }}</span>
+                        {% if pform.can_delete %}
+                        <div class="mt-3 pt-3 border-t border-[#2d333b] text-right">
+                            <label
+                                class="text-[10px] text-slate-600 hover:text-red-500 transition-colors cursor-pointer uppercase tracking-widest">Eliminar:
+                                {{ pform.DELETE }}</label>
                         </div>
                         {% endif %}
                     </div>
@@ -166,90 +181,79 @@
                 </div>
             </div>
 
-            <!-- Section 5: Files and Notes -->
-            <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm mb-12">
-                <h3 class="text-blue-600 font-bold uppercase tracking-wider text-xs mb-4">Sección 5: Archivos y Notas
-                    Generales</h3>
+            <!-- Section 4: Design Files -->
+            <div class="card p-6 mb-12 shadow-xl">
+                <h3
+                    class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-[#2d333b] pb-1">
+                    Sección 4: Archivos</h3>
                 <div class="space-y-6">
                     <div>
-                        <label for="{{ form.attached_file.id_for_label }}"
-                            class="block text-sm font-semibold text-slate-700 mb-1">Adjuntar Diseño o Referencia (PDF,
-                            JPG, PNG - Máx 10MB)</label>
+                        <label
+                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Adjuntar
+                            Originales / Referencias</label>
                         <div
-                            class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-slate-300 border-dashed rounded-xl hover:border-blue-400 transition-colors cursor-pointer bg-slate-50">
-                            <div class="space-y-1 text-center">
-                                <svg class="mx-auto h-12 w-12 text-slate-400" stroke="currentColor" fill="none"
-                                    viewBox="0 0 48 48">
-                                    <path
-                                        d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            class="border-2 border-dashed border-[#2d333b] bg-[#0f1115] p-8 text-center rounded-sm hover:border-blue-500/50 transition-colors">
+                            <div class="flex flex-col items-center">
+                                <svg class="w-8 h-8 text-slate-600 mb-2" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                 </svg>
-                                <div class="flex text-sm text-slate-600 justify-center">
-                                    <span
-                                        class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 px-1">
-                                        {{ form.attached_file }}
-                                    </span>
+                                <span class="text-xs text-slate-500 mb-4">Click para cargar archivo (PDF, JPG,
+                                    PNG)</span>
+                                <div
+                                    class="px-4 py-2 bg-[#1a1d23] border border-[#2d333b] rounded-sm text-xs text-white">
+                                    {{ form.attached_file }}
                                 </div>
-                                <p class="text-xs text-slate-500">Haz clic para buscar archivo</p>
                             </div>
                         </div>
                     </div>
-                    <div>
+                    <div class="space-y-1.5">
                         <label for="{{ form.general_notes.id_for_label }}"
-                            class="block text-sm font-semibold text-slate-700 mb-1">Notas Generales</label>
+                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Notas
+                            Adicionales</label>
                         {{ form.general_notes }}
                     </div>
                 </div>
             </div>
 
-            <!-- Floating Action Bar -->
-            <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 p-4 sm:p-6 shadow-2xl z-50">
-                <div class="max-w-4xl mx-auto flex gap-4">
-                    <button type="submit"
-                        class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-6 rounded-2xl shadow-lg shadow-blue-500/30 transition-all flex items-center justify-center gap-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-                        </svg>
-                        Enviar Solicitud
-                    </button>
-                    <a href="{% url 'quotes:portal_home' %}"
-                        class="px-8 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-2xl transition-colors flex items-center justify-center">
-                        Atrás
-                    </a>
-                </div>
+            <!-- Action Bar -->
+            <div class="flex flex-col sm:flex-row gap-4 mb-20">
+                <button type="submit"
+                    class="flex-1 py-4 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold uppercase tracking-widest rounded-sm transition-all shadow-xl shadow-blue-900/10">
+                    Enviar Solicitud
+                </button>
+                <a href="{% url 'quotes:portal_home' %}"
+                    class="px-8 py-4 bg-[#1a1d23] border border-[#2d333b] text-slate-500 hover:text-white text-xs font-bold uppercase tracking-widest rounded-sm text-center transition-all">
+                    Cancelar
+                </a>
             </div>
-
-            <div class="h-24"></div> <!-- Spacer for floating bar -->
 
         </form>
     </main>
 
     <script>
-        // Checkbox logic for delivery fields
         const sameAsBillingCheckbox = document.getElementById('{{ form.same_as_billing.id_for_label }}');
         const deliveryFields = document.getElementById('delivery-fields');
 
         function toggleDelivery() {
             if (sameAsBillingCheckbox.checked) {
-                deliveryFields.classList.add('opacity-0', 'pointer-events-none', 'max-h-0', 'overflow-hidden');
-                deliveryFields.classList.remove('opacity-100', 'max-h-[1000px]');
+                deliveryFields.style.opacity = '0.3';
+                deliveryFields.style.pointerEvents = 'none';
+                deliveryFields.style.filter = 'grayscale(1)';
             } else {
-                deliveryFields.classList.remove('opacity-0', 'pointer-events-none', 'max-h-0', 'overflow-hidden');
-                deliveryFields.classList.add('opacity-100', 'max-h-[1000px]');
+                deliveryFields.style.opacity = '1';
+                deliveryFields.style.pointerEvents = 'auto';
+                deliveryFields.style.filter = 'none';
             }
         }
 
         sameAsBillingCheckbox.addEventListener('change', toggleDelivery);
         window.addEventListener('load', toggleDelivery);
 
-        // Add class to inputs for styling
+        // Styling inputs
         document.querySelectorAll('input:not([type="checkbox"]):not([type="file"]), select, textarea').forEach(el => {
-            el.classList.add('block', 'w-full', 'px-4', 'py-3', 'rounded-xl', 'border-slate-200', 'bg-slate-50', 'text-slate-900', 'text-sm', 'focus:ring-2', 'focus:ring-blue-500', 'focus:border-blue-500', 'transition-all');
-        });
-
-        document.querySelectorAll('input[type="checkbox"]').forEach(el => {
-            el.classList.add('w-5', 'h-5', 'rounded', 'border-slate-300', 'text-blue-600', 'focus:ring-blue-500', 'transition-all');
+            el.classList.add('w-full');
         });
     </script>
 </body>

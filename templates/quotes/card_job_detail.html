@@ -1,0 +1,292 @@
+{% extends 'base.html' %}
+
+{% block breadcrumbs %} Cotizaciones / Orden de Trabajo #{{ job.id }} {% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto pb-20">
+
+    <!-- Header with Status -->
+    <div class="flex justify-between items-center mb-8 bg-[#1a1d23] border border-[#2d333b] p-6 rounded-sm shadow-xl">
+        <div>
+            <span class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1 block">Orden de Trabajo de
+                Tarjetas</span>
+            <h2 class="text-2xl font-bold text-white tracking-tight">O.T. #{{ job.id }} - {{
+                job.job_description|truncatechars:40 }}</h2>
+            <p class="text-xs text-slate-400 mt-1">Creado el {{ job.created_at|date:"d/m/Y H:i" }} | Cliente: <span
+                    class="text-blue-400 font-bold">{{ job.requester_name }}</span></p>
+        </div>
+        <div>
+            {% if job.status == 'DRAFT' %}
+            <span
+                class="px-3 py-1 bg-slate-500/10 border border-slate-500/20 text-slate-400 text-[10px] font-bold uppercase tracking-widest rounded-full">Borrador</span>
+            {% elif job.status == 'PENDING' %}
+            <span
+                class="px-3 py-1 bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[10px] font-bold uppercase tracking-widest rounded-full">Pendiente</span>
+            {% elif job.status == 'IN_REVIEW' %}
+            <span
+                class="px-3 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold uppercase tracking-widest rounded-full">En
+                Revisión</span>
+            {% elif job.status == 'APPROVED' %}
+            <span
+                class="px-3 py-1 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-bold uppercase tracking-widest rounded-full">Aprobado</span>
+            {% elif job.status == 'REJECTED' %}
+            <span
+                class="px-3 py-1 bg-red-500/10 border border-red-500/20 text-red-500 text-[10px] font-bold uppercase tracking-widest rounded-full">Rechazado</span>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- Left Column: Client Data (Read-only) -->
+        <div class="lg:col-span-1 space-y-6">
+            <div class="bg-[#1a1d23] border border-[#2d333b] p-6 rounded-sm shadow-lg">
+                <h3
+                    class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4 border-b border-[#2d333b] pb-2">
+                    Información del Cliente</h3>
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-[9px] text-slate-500 uppercase font-bold tracking-widest">Nombre / Email</p>
+                        <p class="text-xs text-white font-medium">{{ job.requester_name }}</p>
+                        <p class="text-[10px] text-blue-400">{{ job.requester_email }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[9px] text-slate-500 uppercase font-bold tracking-widest">CUIT / Teléfono</p>
+                        <p class="text-xs text-white font-medium">{{ job.requester_cuit }}</p>
+                        <p class="text-xs text-slate-400">{{ job.requester_phone }}</p>
+                    </div>
+                    <div class="pt-2 border-t border-slate-800">
+                        <p class="text-[9px] text-slate-500 uppercase font-bold tracking-widest">Orden Anterior /
+                            Versión</p>
+                        <p class="text-xs text-white font-mono">{{ job.op_anterior|default:"N/A" }} / v{{
+                            job.version|default:"1" }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-[#1a1d23] border border-[#2d333b] p-6 rounded-sm shadow-lg">
+                <h3
+                    class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4 border-b border-[#2d333b] pb-2">
+                    Especificaciones Cliente</h3>
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-[9px] text-slate-500 uppercase font-bold tracking-widest">Colores Anverso</p>
+                        <p class="text-xs text-emerald-400 font-mono">{{ job.front_colors|default:"Sin especificar" }}
+                        </p>
+                        {% if job.front_special_colors %}
+                        <p class="text-[10px] text-slate-400 italic mt-1">{{ job.front_special_colors }}</p>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <p class="text-[9px] text-slate-500 uppercase font-bold tracking-widest">Colores Reverso</p>
+                        <p class="text-xs text-emerald-400 font-mono">{{ job.back_colors|default:"Sin especificar" }}
+                        </p>
+                        {% if job.back_special_colors %}
+                        <p class="text-[10px] text-slate-400 italic mt-1">{{ job.back_special_colors }}</p>
+                        {% endif %}
+                    </div>
+                    {% if job.attached_file %}
+                    <div class="pt-4">
+                        <a href="{{ job.attached_file.url }}" target="_blank"
+                            class="flex items-center gap-2 bg-[#2d333b] px-4 py-2 rounded-sm text-xs font-bold text-blue-400 hover:text-white transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            DESCARGAR ARCHIVO
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Staff Technical Specs (Editable) -->
+        <div class="lg:col-span-2">
+            <div class="bg-[#1a1d23] border border-[#2d333b] p-8 rounded-sm shadow-xl relative">
+                <h3
+                    class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-8 inline-block border-b border-blue-500 pb-1">
+                    Análisis Técnico y Producción</h3>
+
+                <form method="post" class="space-y-8">
+                    {% csrf_token %}
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                        <!-- UV -->
+                        <div class="p-4 bg-black/20 border border-slate-800 rounded-sm space-y-4">
+                            <div class="flex items-center justify-between">
+                                <label class="text-[10px] font-bold text-white uppercase tracking-widest">Barniz
+                                    UV</label>
+                                {{ staff_form.uv }}
+                            </div>
+                            <div class="space-y-3">
+                                <div class="grid grid-cols-2 gap-2">
+                                    {{ staff_form.uv_type }}
+                                    {{ staff_form.uv_size }}
+                                </div>
+                                <div class="flex gap-4 text-[9px] font-bold text-slate-500">
+                                    <label class="flex items-center gap-2">{{ staff_form.uv_front }} ANVERSO</label>
+                                    <label class="flex items-center gap-2">{{ staff_form.uv_back }} REVERSO</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Lamination -->
+                        <div class="p-4 bg-black/20 border border-slate-800 rounded-sm space-y-4">
+                            <div class="flex items-center justify-between">
+                                <label
+                                    class="text-[10px] font-bold text-white uppercase tracking-widest">Laminación</label>
+                                {{ staff_form.lamination }}
+                            </div>
+                            <div class="space-y-3">
+                                {{ staff_form.lamination_type }}
+                                <div class="flex gap-4 text-[9px] font-bold text-slate-500">
+                                    <label class="flex items-center gap-2">{{ staff_form.lamination_front }}
+                                        ANVERSO</label>
+                                    <label class="flex items-center gap-2">{{ staff_form.lamination_back }}
+                                        REVERSO</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Magnetic Band -->
+                        <div class="p-4 bg-black/20 border border-slate-800 rounded-sm space-y-4">
+                            <div class="flex items-center justify-between">
+                                <label class="text-[10px] font-bold text-white uppercase tracking-widest">Banda
+                                    Magnética</label>
+                                {{ staff_form.magnetic_band }}
+                            </div>
+                            <div class="space-y-3">
+                                <div class="grid grid-cols-2 gap-2">
+                                    {{ staff_form.magnetic_band_type }}
+                                    {{ staff_form.magnetic_band_size }}
+                                </div>
+                                <label class="flex items-center gap-2 text-[9px] font-bold text-slate-500">{{
+                                    staff_form.magnetic_band_back }} REVERSO</label>
+                            </div>
+                        </div>
+
+                        <!-- Others checkboxes -->
+                        <div class="p-4 bg-black/20 border border-slate-800 rounded-sm">
+                            <label
+                                class="text-[10px] font-bold text-white uppercase tracking-widest mb-4 block">Terminaciones
+                                Adicionales</label>
+                            <div class="grid grid-cols-2 gap-y-2 text-[9px] font-bold text-slate-400">
+                                <label class="flex items-center gap-2">{{ staff_form.signature_panel }} PANEL DE
+                                    FIRMA</label>
+                                <label class="flex items-center gap-2">{{ staff_form.hologram }} HOLOGRAMA</label>
+                                <label class="flex items-center gap-2">{{ staff_form.stamping }} STAMPING</label>
+                                <label class="flex items-center gap-2">{{ staff_form.chip }} CHIP / RFID</label>
+                                <label class="flex items-center gap-2">{{ staff_form.antenna_inlay }} INLAY
+                                    ANTENA</label>
+                                <label class="flex items-center gap-2">{{ staff_form.pre_perso }} PRE-PERSO</label>
+                                <label class="flex items-center gap-2">{{ staff_form.variable_data }} DATOS
+                                    VARIABLES</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Internal Tracking -->
+                    <div class="pt-8 border-t border-slate-800 space-y-6">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="space-y-1.5">
+                                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Nº
+                                    Orden</label>
+                                {{ staff_form.order_number }}
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Casillero
+                                    (BIN)</label>
+                                {{ staff_form.bin_number }}
+                            </div>
+                            <div class="space-y-1.5">
+                                <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">PIF /
+                                    RPP</label>
+                                {{ staff_form.pif_rpp }}
+                            </div>
+                            <div class="space-y-1.5">
+                                <label
+                                    class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">ICA</label>
+                                {{ staff_form.ica_number }}
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div class="space-y-4">
+                                <div class="space-y-1.5">
+                                    <label
+                                        class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Resultado
+                                        de Revisión</label>
+                                    {{ staff_form.review_result }}
+                                </div>
+                                <div class="space-y-1.5">
+                                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Estado
+                                        Actual</label>
+                                    {{ staff_form.status }}
+                                </div>
+                            </div>
+                            <div class="space-y-4">
+                                <div class="space-y-1.5">
+                                    <label
+                                        class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Asignado
+                                        a</label>
+                                    {{ staff_form.assigned_to }}
+                                </div>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div class="space-y-1.5">
+                                        <label
+                                            class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Aprobado
+                                            por</label>
+                                        {{ staff_form.approved_by }}
+                                    </div>
+                                    <div class="space-y-1.5">
+                                        <label
+                                            class="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Fecha
+                                            Aprob.</label>
+                                        {{ staff_form.approval_date }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-8 flex justify-end gap-4">
+                        <button type="submit"
+                            class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold uppercase tracking-widest px-8 py-3 rounded-sm transition-all shadow-lg shadow-blue-900/20">
+                            Guardar Cambios Técnicos
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    input[type="text"],
+    input[type="date"],
+    select {
+        width: 100%;
+        background-color: #0f1115;
+        border: 1px solid #2d333b;
+        color: white;
+        padding: 0.5rem 0.75rem;
+        font-size: 0.75rem;
+        border-radius: 0.125rem;
+        outline: none;
+    }
+
+    input:focus {
+        border-color: #60a5fa;
+    }
+
+    input[type="checkbox"] {
+        width: 1rem;
+        height: 1rem;
+        border-radius: 0.125rem;
+        border-color: #2d333b;
+        background-color: #0f1115;
+    }
+</style>
+{% endblock %}

@@ -22,7 +22,7 @@ class PortalMiddleware:
     """
 
     # Internal staff can access these portal URLs
-    INTERNAL_PORTAL_URLS = ['/portal/list', '/portal/approve']
+    INTERNAL_PORTAL_URLS = ['/portal/list', '/portal/approve', '/portal/card-jobs', '/portal/card-job/']
 
     def __init__(self, get_response):
         self.get_response = get_response
