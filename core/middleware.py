@@ -22,7 +22,7 @@ class PortalMiddleware:
     """
 
     # Internal staff can access these portal URLs
-    INTERNAL_PORTAL_URLS = ['/portal/list/', '/portal/approve/']
+    INTERNAL_PORTAL_URLS = ['/portal/list', '/portal/approve']
 
     def __init__(self, get_response):
         self.get_response = get_response
@@ -33,6 +33,7 @@ class PortalMiddleware:
 
         # Skip unauthenticated users, static and media files
         if not user.is_authenticated or \
+           path.startswith('/portal/login/') or \
            path.startswith('/static/') or \
            path.startswith('/media/') or \
            path.startswith('/__debug__/'):

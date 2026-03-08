@@ -9,7 +9,7 @@ class User(AbstractUser):
         DESIGNER = 'DESIGNER', 'Diseñador'
         TEAM = 'TEAM', 'Equipo'
         SALES = 'SALES', 'Vendedor/Comercial'
-        PORTAL = 'PORTAL', 'Portal Client'
+        PORTAL = 'PORTAL', 'Cliente Portal'
 
     role = models.CharField(
         max_length=20, 

@@ -1,22 +1,19 @@
-# Session Log - PrintFlow v2
 
-## Session: 2026-03-06
+## Session: 2026-03-07
 **Tasks Completed:**
-- **Client Portal (Phase 1):** Built `quotes` app with `QuoteRequest` and `QuoteProduct` models.
-- **Security:** Implemented `PortalMiddleware` for strict role-based routing; hardened `QuoteApproveView` with CUIT/Customer matching logic.
-- **Frontend:** Created mobile-first templates (`portal.html`, `quote_form.html`, `quote_list.html`) with interactive JS for address toggling.
-- **Backend:** Created `create_portal_user` management command and applied database migrations.
+- **Custom Portal Login Page:** Created a standalone `portal_login.html` with professional dark theme; implemented `PortalLoginView` with role-based redirection logic.
+- **Permissions:** Hardened `QuoteListView` to allow only `ADMIN`, `MANAGEMENT`, and `SALES` roles, and configured it to redirect unauthorized users to the dashboard.
+- **Middleware:** Updated `PortalMiddleware` to allow unauthenticated access to `/portal/login/`.
 
 **Files Created/Modified:**
-- `quotes/`: `models.py`, `views.py`, `forms.py`, `urls.py`, `management/commands/create_portal_user.py`
-- `core/`: `middleware.py`, `settings.py`, `urls.py`
-- `templates/quotes/`: `portal.html`, `quote_form.html`, `quote_list.html`
-- `.antigravity/`: `AUDIT_REPORT.md`, `SESSION_LOG.md`
+- `quotes/`: `views.py`, `urls.py`
+- `core/`: `middleware.py`
+- `templates/quotes/`: `portal_login.html`
+- `.antigravity/`: `SESSION_LOG.md`
 
 **Next Pending Tasks:**
-- Custom Portal Login page (avoiding internal login UI).
-- Unified UI consistency across all portal forms.
+- Unified UI consistency across all portal forms (Phase 2).
 - Permissive checks for `quote_list` (Sales vs Admin view).
 
 **Blockers/Open Questions:**
-- None. Phase 1 is fully functional and migrated.
+- None.

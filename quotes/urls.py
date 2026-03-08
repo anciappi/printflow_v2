@@ -1,10 +1,11 @@
 from django.urls import path
-from .views import PortalView, QuoteCreateView, QuoteListView, QuoteApproveView
+from .views import PortalView, QuoteCreateView, QuoteListView, QuoteApproveView, PortalLoginView
 
 app_name = 'quotes'
 
 urlpatterns = [
     # Portal views (External clients)
+    path('login/', PortalLoginView.as_view(), name='portal_login'),
     path('', PortalView.as_view(), name='portal_home'),
     path('new/', QuoteCreateView.as_view(), name='quote_create'),
     

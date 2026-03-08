@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import TemplateView, CreateView, ListView, View
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.urls import reverse_lazy
+from django.contrib.auth.views import LoginView
+from django.urls import reverse_lazy, reverse
 from django.contrib import messages
 from django.db import transaction
 
@@ -71,6 +72,8 @@ class QuoteListView(LoginRequiredMixin, InternalStaffMixin, ListView):
     template_name = 'quotes/quote_list.html'
     context_object_name = 'quotes'
     paginate_by = 20
+    raise_exception = False
+    login_url = reverse_lazy('inventory:dashboard')
     
     def get_queryset(self):
         # Todos los empleados permitidos ven las cotizaciones pendientes o las contactadas/aprobadas
@@ -112,3 +115,18 @@ class QuoteApproveView(LoginRequiredMixin, InternalStaffMixin, View):
             
         messages.success(request, f"Cotización #{quote.id} aprobada y vinculada al cliente {customer.name}.")
         return redirect('quotes:quote_list')
+
+
+class PortalLoginView(LoginView):
+    template_name = 'quotes/portal_login.html'
+    
+    def get_success_url(self):
+        user = self.request.user
+        if user.role == User.Roles.PORTAL:
+            return reverse_lazy('quotes:portal_home')
+        return reverse_lazy('inventory:dashboard')
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect(self.get_success_url())
+        return super().get(request, *args, **kwargs)
