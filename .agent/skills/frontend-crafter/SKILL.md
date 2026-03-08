@@ -12,6 +12,9 @@ Use this skill when:
 - Ensuring visual consistency across the app
 - Improving accessibility or responsiveness
 
+## Before Starting Any Task
+- **MANDATORY**: Before creating or modifying any template, read `.antigravity/STYLE_GUIDE.md` and apply its conventions strictly. All templates must match the established visual system. Never invent new color schemes, spacing patterns, or component styles.
+
 ## Standards
 
 ### Template Structure

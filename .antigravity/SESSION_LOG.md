@@ -3,13 +3,15 @@
 **Tasks Completed:**
 - **Custom Portal Login Page:** Created a standalone `portal_login.html` with professional dark theme; implemented `PortalLoginView` with role-based redirection logic.
 - **Permissions:** Hardened `QuoteListView` to allow only `ADMIN`, `MANAGEMENT`, and `SALES` roles, and configured it to redirect unauthorized users to the dashboard.
+- **Skill Update:** Added mandatory `STYLE_GUIDE.md` requirement to the `frontend-crafter` skill to ensure visual consistency.
 - **Middleware:** Updated `PortalMiddleware` to allow unauthenticated access to `/portal/login/`.
+- **System Documentation:** Created `.antigravity/STYLE_GUIDE.md` based on `inventory_list.html` as a reference for future UI consistency.
 
 **Files Created/Modified:**
 - `quotes/`: `views.py`, `urls.py`
 - `core/`: `middleware.py`
 - `templates/quotes/`: `portal_login.html`
-- `.antigravity/`: `SESSION_LOG.md`
+- `.antigravity/`: `SESSION_LOG.md`, `STYLE_GUIDE.md`
 
 **Next Pending Tasks:**
 - Unified UI consistency across all portal forms (Phase 2).
