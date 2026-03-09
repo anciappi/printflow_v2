@@ -22,10 +22,14 @@
 **Files Created/Modified:**
 - `templates/quotes/card_job_detail.html`: Redesigned from scratch based on mockup.
 
+**Status:** Paused pending Stitch mockup validation with client.
+
 **Next Pending Tasks:**
-- **Refine CardJobOrder Form**: Rebuild `card_job_form.html` to mirror the patterns of `product_form.html`.
-- **Polish Form UX**: Implement success messages and refine field validation.
-- **Navigation**: Finalize sidebar link for `/portal/card-jobs/` for administrative roles.
+- Integrate approved Stitch mockup into PrintFlow
+- Add approval_token UUID to CardJobOrder model
+- Build standalone card_job_approval.html (no base.html)
+- Build unified card_job_form.html for staff
+- Public approval URL: /aprobar/<uuid>/
 
 **Blockers/Open Questions:**
 - None.
