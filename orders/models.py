@@ -2,6 +2,7 @@ from django.db import models, transaction
 from django.utils import timezone
 from users.models import User       # Tu modelo de usuario
 from products.models import Product # El modelo que acabamos de crear
+from tenants.models import Branch
 
 class WorkOrder(models.Model):
     # Estados del Flujo de Trabajo (Workflow)
@@ -37,6 +38,14 @@ class WorkOrder(models.Model):
     sales_rep = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='sales_orders', verbose_name="Vendedor")
     current_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
     priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default='NORMAL')
+    branch = models.ForeignKey(
+        Branch,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name='work_orders',
+        verbose_name="Branch"
+    )
     
     # Notas específicas de ESTA orden (ej: "El cliente pidió cambiar el rojo por azul solo en esta tirada")
     production_notes = models.TextField(blank=True, verbose_name="Notas de Orden")

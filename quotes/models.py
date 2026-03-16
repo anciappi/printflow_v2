@@ -2,6 +2,7 @@ from django.db import models
 from customers.models import Customer
 from products.models import Product
 from users.models import User
+from tenants.models import Branch
 
 class QuoteRequest(models.Model):
     STATUS_CHOICES = [
@@ -38,6 +39,14 @@ class QuoteRequest(models.Model):
     # On approval (null until approved)
     customer = models.ForeignKey(Customer, null=True, blank=True, on_delete=models.SET_NULL, related_name='quotes')
     assigned_to = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='handled_quotes')
+    branch = models.ForeignKey(
+        Branch,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name='quote_requests',
+        verbose_name="Branch"
+    )
 
     # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
@@ -142,6 +151,14 @@ class CardJobOrder(models.Model):
 
     # Timestamps & Meta
     assigned_to = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='card_orders')
+    branch = models.ForeignKey(
+        Branch,
+        on_delete=models.PROTECT,
+        null=True,
+        blank=True,
+        related_name='card_job_orders',
+        verbose_name="Branch"
+    )
     attached_file = models.FileField(upload_to='card_jobs/', blank=True, null=True)
     general_notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -4,18 +4,15 @@
 DB_NAME="printflow_db"
 DB_USER="printflow_user"
 
-echo "🛑  INICIANDO RESETEO TOTAL DE LA APP (POSTGRESQL)..."
+echo "🛑  INICIANDO RESETEO TOTAL DE LA APP (MULTI-TENANT)..."
 
-# 1. Borrar archivos de migración (VERSIÓN SEGURA)
-# Agregamos: -not -path "*/venv/*" para que NO entre en el entorno virtual
+# 1. Borrar archivos de migración
 echo "🧹  Limpiando archivos de migraciones anteriores..."
 find . -path "*/migrations/*.py" -not -name "__init__.py" -not -path "*/venv/*" -delete
 find . -path "*/migrations/*.pyc" -not -path "*/venv/*" -delete
 
-# ... (El resto del script sigue igual) ...
-# 2. Eliminar y Recrear la Base de Datos...
+# 2. Eliminar y Recrear la Base de Datos
 echo "🔥  Reiniciando Base de Datos PostgreSQL..."
-
 sudo -u postgres psql -c "
 SELECT pg_terminate_backend(pg_stat_activity.pid)
 FROM pg_stat_activity
@@ -26,15 +23,51 @@ sudo -u postgres psql -c "DROP DATABASE IF EXISTS $DB_NAME;"
 sudo -u postgres psql -c "CREATE DATABASE $DB_NAME OWNER $DB_USER;"
 sudo -u postgres psql -d $DB_NAME -c "GRANT ALL ON SCHEMA public TO $DB_USER;"
 
-# 3. Reconstruir Django
+# 3. Reconstruir migraciones
 echo "🏗️   Creando nuevas migraciones..."
 python manage.py makemigrations
 
-echo "🚀  Aplicando migraciones a la nueva DB..."
-python manage.py migrate
+# 4. Aplicar migraciones al schema public (SHARED_APPS)
+echo "🚀  Aplicando migraciones shared (schema public)..."
+python manage.py migrate_schemas --shared
 
-# 4. Crear Superusuario Automático
-echo "👑  Creando Superusuario (admin / admin)..."
-python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('anciappi', 'anciappi@printflow.com', 'anc31763534...')"
+# 5. Crear tenant público (obligatorio para django-tenants)
+echo "🏢  Creando tenant público (PrintFlow)..."
+python manage.py shell -c "
+from tenants.models import PrintShop, Domain
+t = PrintShop(schema_name='public', name='PrintFlow', plan='enterprise')
+t.save()
+Domain.objects.create(domain='localhost', tenant=t, is_primary=True)
+print('✅ Tenant público creado.')
+"
 
-echo "✅  ¡LISTO! Sistema reseteado correctamente."
+# 6. Crear superusuario
+echo "👑  Creando Superusuario..."
+python manage.py shell -c "
+from django.contrib.auth import get_user_model
+User = get_user_model()
+User.objects.create_superuser('anciappi', 'anciappi@printflow.com', 'anc31763534...')
+print('✅ Superusuario creado.')
+"
+
+# 7. Crear tenant Grupo Velton con sus branches
+echo "🏭  Creando tenant Grupo Velton..."
+python manage.py shell -c "
+from tenants.models import PrintShop, Domain, Branch
+velton = PrintShop(schema_name='velton', name='Grupo Velton', plan='pro')
+velton.save()
+Domain.objects.create(domain='velton.localhost', tenant=velton, is_primary=True)
+Branch.objects.create(tenant=velton, name='Velton')
+Branch.objects.create(tenant=velton, name='Magtik')
+print('✅ Tenant Grupo Velton creado con branches Velton y Magtik.')
+"
+
+echo ""
+echo "✅  ¡LISTO! Sistema reseteado y configurado para desarrollo."
+echo ""
+echo "   Accesos disponibles:"
+echo "   → Admin público:  http://localhost:8001/admin/"
+echo "   → Grupo Velton:   http://velton.localhost:8001/"
+echo ""
+echo "   Recordá agregar a /etc/hosts:"
+echo "   127.0.0.1  velton.localhost"

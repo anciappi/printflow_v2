@@ -33,3 +33,36 @@
 
 **Blockers/Open Questions:**
 - None.
+
+## Session: 2026-03-16
+**Tasks Completed:**
+- **Multi-tenant Foundation (Phase 1):** Installed `django-tenants==3.7.0`. Created `tenants` app with `PrintShop` (TenantMixin) and `Domain` (DomainMixin) models. Reconfigured `settings.py` with `SHARED_APPS`, `TENANT_APPS`, `django_tenants.postgresql_backend` engine, `TenantMainMiddleware` as first middleware, and `PUBLIC_SCHEMA_URLCONF`. Created `core/urls_public.py` for public schema routing. Normalized tenant URLs to English (`/inventory/`, `/customers/`, `/purchasing/`).
+- **Database Reset & Initialization:** Reset PostgreSQL DB. Ran `migrate_schemas --shared` to create public schema tables. Bootstrapped mandatory public tenant mapped to `localhost`.
+- **First Real Tenant (Phase 2):** Created `Velton` tenant with `schema_name='velton'` mapped to `velton.localhost`. Verified 17 isolated business tables in `velton` schema.
+- **Branch Promoted to Central Concept:** Moved `Branch` model from `inventory` to `tenants`. Added FK to `Branch` in `WorkOrder` (required), `QuoteRequest` (required), `CardJobOrder` (nullable — assigned by staff after client submits portal form). Updated `purchasing` and `inventory` references accordingly. Applied all migrations to both `public` and `velton` schemas.
+
+**Architecture decisions logged:**
+- Building analogy: PrintFlow (building) → PrintShop/tenant (floor) → Branch (department) → Apps (rooms) → Users (tenants)
+- Shared data within tenant: customers, materials, products, suppliers
+- Branch-scoped data: work orders, quotes, card job orders
+- CardJobOrder.branch is nullable: client submits externally, branch assigned on staff approval
+- Superadmin lives in public schema, operational users live in tenant schema
+
+**Files Created/Modified:**
+- `tenants/`: `models.py`, `admin.py`
+- `core/`: `settings.py`, `urls.py`, `urls_public.py`
+- `inventory/models.py`: removed local Branch, added import from tenants
+- `orders/models.py`: added Branch FK
+- `quotes/models.py`: added Branch FK to QuoteRequest and CardJobOrder
+- `purchasing/models.py`: updated Branch reference
+- `requirements.txt`: added django-tenants==3.7.0
+
+**Next Pending Tasks:**
+- Phase 3: Rewrite PortalMiddleware for multi-tenant + portal routing
+- Phase 3: Configure /etc/hosts for local tenant development
+- Phase 4: Full functional validation smoke test
+- Create Magtik branch under Grupo Velton tenant
+- Build onboarding flow for new tenants
+
+**Blockers/Open Questions:**
+- None.

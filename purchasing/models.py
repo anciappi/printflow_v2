@@ -28,8 +28,8 @@ class PurchaseOrder(models.Model):
     remito_number = models.CharField(max_length=50, unique=True, verbose_name="Cód. Interno OC")
     vendor_remito = models.CharField(max_length=50, blank=True, null=True, verbose_name="Remito Físico Proveedor")
     supplier = models.ForeignKey(Supplier, on_delete=models.CASCADE)
-    # String reference to avoid circular import: inventory imports from purchasing
-    branch = models.ForeignKey('inventory.Branch', on_delete=models.CASCADE)
+    # String reference to tenants.Branch (central model)
+    branch = models.ForeignKey('tenants.Branch', on_delete=models.CASCADE)
     customer_name = models.CharField(max_length=100, blank=True, null=True)
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='PENDING')
     order_date = models.DateField(default=timezone.now)

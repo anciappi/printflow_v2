@@ -130,6 +130,6 @@ class MaterialAdmin(admin.ModelAdmin):
         return f"{obj.width or '0'}x{obj.length or '0'} | {obj.grammage or '0'}g"
     get_specs.short_description = "Especificaciones"
 
-# --- 6. Registros Básicos ---
-admin.site.register(Branch)
+# --- 6. Basic Registrations ---
+# Note: Branch is now registered in tenants/admin.py
 # Note: Supplier is now registered in purchasing/admin.py
