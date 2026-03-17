@@ -8,7 +8,7 @@
 <div class="space-y-6">
     <!-- Header de Sección -->
     <div
-        class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-[#1a1d23] p-6 border border-[#2d333b] rounded-lg gap-4">
+        class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-surface p-6 border border-border-default rounded-lg gap-4">
         <div>
             <h2 class="text-2xl font-bold text-white">Órdenes de Trabajo</h2>
             <p class="text-slate-500 text-sm">Monitorea y gestiona el ciclo de vida de producción.</p>
@@ -20,11 +20,11 @@
     </div>
 
     <!-- Tabla de Órdenes -->
-    <div class="bg-[#1a1d23] border border-[#2d333b] rounded-lg overflow-hidden">
+    <div class="bg-surface border border-border-default rounded-lg overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="border-b border-[#2d333b] bg-[#0f1115]/50">
+                    <tr class="border-b border-border-default bg-surface-dark/50">
                         <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">OT # /
                             Creación</th>
                         <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Cliente /
@@ -43,7 +43,7 @@
                 </thead>
                 <tbody class="divide-y divide-[#2d333b]">
                     {% for order in orders %}
-                    <tr class="hover:bg-[#0f1115]/30 transition-colors group">
+                    <tr class="hover:bg-surface-dark/30 transition-colors group">
                         <td class="px-6 py-4">
                             <div class="text-sm font-bold text-orange-500">{{ order.ot_number }}</div>
                             <div class="text-[10px] text-slate-500">{{ order.created_at|date:"d/m/Y H:i" }}</div>

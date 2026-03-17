@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="max-w-xl mx-auto mt-12">
-    <div class="bg-[#1a1d23] border border-[#2d333b] rounded-lg p-8 text-center shadow-2xl">
+    <div class="bg-surface border border-border-default rounded-lg p-8 text-center shadow-2xl">
         <div class="mb-6">
             <div
                 class="w-16 h-16 bg-red-900/20 border border-red-900/40 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -26,7 +26,7 @@
             {% csrf_token %}
             <div class="flex flex-col sm:flex-row gap-3 justify-center">
                 <a href="{% url 'products:catalog' %}"
-                    class="px-6 py-2 bg-[#0f1115] hover:bg-[#252932] border border-[#2d333b] text-slate-300 rounded font-medium transition-colors text-sm">
+                    class="px-6 py-2 bg-surface-dark hover:bg-surface-mid border border-border-default text-slate-300 rounded font-medium transition-colors text-sm">
                     Cancelar
                 </a>
                 <button type="submit"

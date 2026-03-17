@@ -16,11 +16,11 @@
         </a>
     </div>
 
-    <div class="bg-[#1a1d23] border border-[#2d333b] overflow-hidden shadow-2xl rounded-sm">
+    <div class="bg-surface border border-border-default overflow-hidden shadow-2xl rounded-sm">
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr
-                    class="border-b border-[#2d333b] bg-[#0f1115]/50 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                    class="border-b border-border-default bg-surface-dark/50 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
                     <th class="px-6 py-4">Material / Marca</th>
                     <th class="px-6 py-4">Categoría</th>
                     <th class="px-6 py-4">Especificaciones</th>
@@ -30,7 +30,7 @@
             </thead>
             <tbody class="divide-y divide-[#2d333b]">
                 {% for item in materiales %}
-                <tr class="hover:bg-[#2d333b]/30 transition-colors group">
+                <tr class="hover:bg-surface-hover/30 transition-colors group">
                     <!-- Nombre y Marca -->
                     <td class="px-6 py-3">
                         <div class="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">{{ item.name }}</div>
@@ -39,7 +39,7 @@
 
                     <!-- Categoría -->
                     <td class="px-6 py-3">
-                        <span class="px-2 py-1 text-[10px] uppercase font-bold text-slate-300 bg-[#2d333b] rounded border border-slate-600"> {{ item.get_material_type_display }} </span>
+                        <span class="px-2 py-1 text-[10px] uppercase font-bold text-slate-300 bg-surface-hover rounded border border-slate-600"> {{ item.get_material_type_display }} </span>
                     </td>
 
                     <!-- Especificaciones -->

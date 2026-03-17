@@ -11,10 +11,10 @@
         </div>
     </div>
 
-    <div class="bg-[#1a1d23] border border-[#2d333b] overflow-hidden shadow-2xl rounded-sm">
+    <div class="bg-surface border border-border-default overflow-hidden shadow-2xl rounded-sm">
         <table class="w-full text-left border-collapse">
             <thead>
-                <tr class="border-b border-[#2d333b] bg-[#0f1115]/50 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                <tr class="border-b border-border-default bg-surface-dark/50 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
                     <th class="px-4 py-2 w-10"></th>
                     <th class="px-4 py-2">Material</th>
                     <th class="px-4 py-2">Especificaciones</th>
@@ -24,7 +24,7 @@
             </thead>
             <tbody class="divide-y divide-[#2d333b]">
                 {% for mat in materiales %}
-                <tr class="hover:bg-[#2d333b]/30 transition-colors cursor-pointer group" onclick="toggleRow('row-{{ mat.id }}', 'icon-{{ mat.id }}')">
+                <tr class="hover:bg-surface-hover/30 transition-colors cursor-pointer group" onclick="toggleRow('row-{{ mat.id }}', 'icon-{{ mat.id }}')">
                     <td class="px-4 py-2 text-center">
                         <span id="icon-{{ mat.id }}" class="text-blue-500 font-bold text-lg transition-transform inline-block">+</span>
                     </td>
@@ -38,7 +38,7 @@
                         </div>
                     </td>
                     <td class="px-4 py-2 text-center">
-                        <span class="bg-[#2d333b] text-slate-300 text-[12px] px-2 py-0.5 rounded-full border border-slate-600">
+                        <span class="bg-surface-hover text-slate-300 text-[12px] px-2 py-0.5 rounded-full border border-slate-600">
                             {{ mat.cant_bobinas }}
                         </span>
                     </td>
@@ -47,9 +47,9 @@
                     </td>
                 </tr>
 
-                <tr id="row-{{ mat.id }}" class="hidden bg-[#0f1115]">
+                <tr id="row-{{ mat.id }}" class="hidden bg-surface-dark">
                     <td colspan="5" class="p-0">
-                        <div class="border-y border-[#2d333b] bg-black/20 p-4 shadow-inner">
+                        <div class="border-y border-border-default bg-black/20 p-4 shadow-inner">
                             <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-2 ml-1">Detalle de Unidades para {{ mat.name }}</p>
 
                             <table class="w-full text-left">
@@ -83,15 +83,15 @@
                                             {% if unidad.parent_unit %}
                                             <form action="{% url 'inventory:deshacer_fraccionamiento' unidad.id %}" method="POST" class="inline">
                                                 {% csrf_token %}
-                                                <button type="submit" onclick="event.stopPropagation(); return confirm('¿Deshacer el corte?');" class="text-purple-400 hover:text-purple-300 bg-[#2d333b] px-2 py-0.5 rounded text-[10px] flex items-center gap-1 mr-2">
+                                                <button type="submit" onclick="event.stopPropagation(); return confirm('¿Deshacer el corte?');" class="text-purple-400 hover:text-purple-300 bg-surface-hover px-2 py-0.5 rounded text-[10px] flex items-center gap-1 mr-2">
                                                     Deshacer
                                                 </button>
                                             </form>
                                             {% endif %}
-                                            <button onclick="event.stopPropagation(); openFraccionarModal('{{ unidad.id }}', '{{ unidad.unit_number }}', '{{ unidad.get_width }}')" class="text-amber-500 hover:text-amber-300 bg-[#2d333b] px-2 py-0.5 rounded text-[10px]">
+                                            <button onclick="event.stopPropagation(); openFraccionarModal('{{ unidad.id }}', '{{ unidad.unit_number }}', '{{ unidad.get_width }}')" class="text-amber-500 hover:text-amber-300 bg-surface-hover px-2 py-0.5 rounded text-[10px]">
                                                 ✂ Fraccionar
                                             </button>
-                                            <button onclick="event.stopPropagation(); openModal('{{ unidad.id }}', '{{ mat.name }} - {{ unidad.unit_number }}', '{{ unidad.current_quantity }}')" class="text-slate-500 hover:text-red-400 bg-[#2d333b] px-2 py-0.5 rounded text-[10px]">
+                                            <button onclick="event.stopPropagation(); openModal('{{ unidad.id }}', '{{ mat.name }} - {{ unidad.unit_number }}', '{{ unidad.current_quantity }}')" class="text-slate-500 hover:text-red-400 bg-surface-hover px-2 py-0.5 rounded text-[10px]">
                                                 Consumir
                                             </button>
                                         </td>
@@ -117,7 +117,7 @@
 <div id="consumptionModal" class="fixed inset-0 z-50 hidden">
     <div class="fixed inset-0 bg-black/70 backdrop-blur-sm"></div>
     <div class="fixed inset-0 z-10 flex items-center justify-center p-4">
-        <div class="bg-[#1a1d23] border border-[#2d333b] w-full max-w-lg p-6 shadow-2xl">
+        <div class="bg-surface border border-border-default w-full max-w-lg p-6 shadow-2xl">
             <form id="consumptionForm" method="POST">
                 {% csrf_token %}
                 <h3 class="text-lg font-bold text-white mb-2">📉 Registrar Consumo</h3>
@@ -126,17 +126,17 @@
                 <div class="space-y-4">
                     <div>
                         <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Cantidad a usar</label>
-                        <input type="number" step="0.01" name="cantidad" id="cantidadInput" required class="w-full bg-[#0f1115] border border-[#2d333b] text-white text-lg px-4 py-2 focus:border-red-500 outline-none">
+                        <input type="number" step="0.01" name="cantidad" id="cantidadInput" required class="w-full bg-surface-dark border border-border-default text-white text-lg px-4 py-2 focus:border-red-500 outline-none">
                         <p class="text-[10px] text-slate-500 mt-1 text-right">Disponible: <span id="modalMaxQty" class="font-bold text-emerald-500"></span></p>
                     </div>
-                    <div class="grid grid-cols-2 gap-4 pt-2 border-t border-[#2d333b]">
+                    <div class="grid grid-cols-2 gap-4 pt-2 border-t border-border-default">
                         <div>
                             <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Fecha</label>
-                            <input type="date" name="fecha_consumo" class="w-full bg-[#0f1115] border border-[#2d333b] text-slate-300 text-xs px-3 py-2">
+                            <input type="date" name="fecha_consumo" class="w-full bg-surface-dark border border-border-default text-slate-300 text-xs px-3 py-2">
                         </div>
                         <div>
                             <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">OT Vinculada</label>
-                            <input type="text" name="ref_ot" placeholder="Ej: 11700" class="w-full bg-[#0f1115] border border-[#2d333b] text-slate-300 text-xs px-3 py-2">
+                            <input type="text" name="ref_ot" placeholder="Ej: 11700" class="w-full bg-surface-dark border border-border-default text-slate-300 text-xs px-3 py-2">
                         </div>
                     </div>
                 </div>
@@ -152,7 +152,7 @@
 <div id="fraccionarModal" class="fixed inset-0 z-50 hidden">
     <div class="fixed inset-0 bg-black/80 backdrop-blur-sm"></div>
     <div class="fixed inset-0 z-10 flex items-center justify-center p-4">
-        <div class="bg-[#1a1d23] border border-[#2d333b] w-full max-w-md p-6 shadow-2xl">
+        <div class="bg-surface border border-border-default w-full max-w-md p-6 shadow-2xl">
             <form id="fraccionarForm" method="POST">
                 {% csrf_token %}
                 <h3 class="text-lg font-bold text-white mb-1">✂ Fraccionar Bobina</h3>
@@ -161,7 +161,7 @@
                 <div class="mb-6">
                     <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Ancho del Primer Corte (Corte A)</label>
                     <div class="flex items-center gap-2">
-                        <input type="number" step="0.01" name="ancho_hija_a" id="inputAnchoA" required class="w-full bg-[#0f1115] border border-amber-500/50 text-white font-mono text-lg px-4 py-3 outline-none">
+                        <input type="number" step="0.01" name="ancho_hija_a" id="inputAnchoA" required class="w-full bg-surface-dark border border-amber-500/50 text-white font-mono text-lg px-4 py-3 outline-none">
                         <span class="text-slate-500 font-bold">cm</span>
                     </div>
                 </div>

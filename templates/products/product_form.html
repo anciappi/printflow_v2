@@ -16,8 +16,8 @@
         {% csrf_token %}
 
         <!-- SECCIÓN 1: DATOS GENERALES -->
-        <div class="bg-[#1a1d23] border border-[#2d333b] rounded-lg p-6">
-            <h3 class="text-lg font-medium text-emerald-500 mb-4 border-b border-[#2d333b] pb-2">Identificación</h3>
+        <div class="bg-surface border border-border-default rounded-lg p-6">
+            <h3 class="text-lg font-medium text-emerald-500 mb-4 border-b border-border-default pb-2">Identificación</h3>
 
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
                 <!-- Cliente -->
@@ -67,8 +67,8 @@
         </div>
 
         <!-- SECCIÓN 2: ESPECIFICACIONES FÍSICAS -->
-        <div class="bg-[#1a1d23] border border-[#2d333b] rounded-lg p-6">
-            <h3 class="text-lg font-medium text-blue-500 mb-4 border-b border-[#2d333b] pb-2">Medidas y material</h3>
+        <div class="bg-surface border border-border-default rounded-lg p-6">
+            <h3 class="text-lg font-medium text-blue-500 mb-4 border-b border-border-default pb-2">Medidas y material</h3>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 <!-- Ancho -->
@@ -102,8 +102,8 @@
         </div>
 
         <!-- SECCIÓN 3: IMPRESIÓN Y ACABADOS -->
-        <div class="bg-[#1a1d23] border border-[#2d333b] rounded-lg p-6">
-            <h3 class="text-lg font-medium text-purple-500 mb-4 border-b border-[#2d333b] pb-2">Colores y terminaciones
+        <div class="bg-surface border border-border-default rounded-lg p-6">
+            <h3 class="text-lg font-medium text-purple-500 mb-4 border-b border-border-default pb-2">Colores y terminaciones
             </h3>
 
             <!-- Colores Frente -->
@@ -111,7 +111,7 @@
                 <div class="flex justify-between items-center mb-4">
                     <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Colores Frente</label>
                     <button type="button" onclick="addColorRow('colors-front-container')"
-                        class="text-[10px] bg-[#2d333b] hover:bg-emerald-600 text-slate-300 hover:text-white px-2 py-1 rounded transition-colors flex items-center gap-1">
+                        class="text-[10px] bg-surface-hover hover:bg-emerald-600 text-slate-300 hover:text-white px-2 py-1 rounded transition-colors flex items-center gap-1">
                         <span>+</span> Agregar color
                     </button>
                 </div>
@@ -123,11 +123,11 @@
             </div>
 
             <!-- Colores Dorso -->
-            <div class="mb-8 pt-6 border-t border-[#2d333b]/50">
+            <div class="mb-8 pt-6 border-t border-border-default/50">
                 <div class="flex justify-between items-center mb-4">
                     <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Colores Dorso</label>
                     <button type="button" onclick="addColorRow('colors-back-container')"
-                        class="text-[10px] bg-[#2d333b] hover:bg-emerald-600 text-slate-300 hover:text-white px-2 py-1 rounded transition-colors flex items-center gap-1">
+                        class="text-[10px] bg-surface-hover hover:bg-emerald-600 text-slate-300 hover:text-white px-2 py-1 rounded transition-colors flex items-center gap-1">
                         <span>+</span> Agregar color
                     </button>
                 </div>
@@ -139,9 +139,9 @@
             </div>
 
             <!-- Laminado, Barniz, Banda, Chip -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 pt-6 border-t border-[#2d333b]">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 pt-6 border-t border-border-default">
                 <!-- Laminado -->
-                <div class="bg-[#0f1115]/50 p-4 border border-[#2d333b] rounded-sm">
+                <div class="bg-surface-dark/50 p-4 border border-border-default rounded-sm">
                     <div class="flex items-center gap-3 mb-4">
                         {{ form.has_laminate }}
                         <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider cursor-pointer"
@@ -153,7 +153,7 @@
                 </div>
 
                 <!-- Barniz -->
-                <div class="bg-[#0f1115]/50 p-4 border border-[#2d333b] rounded-sm">
+                <div class="bg-surface-dark/50 p-4 border border-border-default rounded-sm">
                     <div class="flex items-center gap-3 mb-4">
                         {{ form.has_varnish }}
                         <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider cursor-pointer"
@@ -165,7 +165,7 @@
                 </div>
 
                 <!-- Banda Magnética -->
-                <div class="bg-[#0f1115]/50 p-4 border border-[#2d333b] rounded-sm">
+                <div class="bg-surface-dark/50 p-4 border border-border-default rounded-sm">
                     <div class="flex items-center gap-3 mb-4">
                         {{ form.has_mag_stripe }}
                         <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider cursor-pointer"
@@ -177,7 +177,7 @@
                 </div>
 
                 <!-- Chip / RFID -->
-                <div class="bg-[#0f1115]/50 p-4 border border-[#2d333b] rounded-sm">
+                <div class="bg-surface-dark/50 p-4 border border-border-default rounded-sm">
                     <div class="flex items-center gap-3 mb-4">
                         {{ form.has_chip }}
                         <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider cursor-pointer"
@@ -191,32 +191,32 @@
             </div>
 
             <!-- Otras Terminaciones -->
-            <div class="pt-6 border-t border-[#2d333b]">
+            <div class="pt-6 border-t border-border-default">
                 <label class="block mb-4 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Otras
                     Terminaciones</label>
 
-                <div class="border border-[#2d333b] rounded-sm divide-y divide-[#2d333b]">
+                <div class="border border-border-default rounded-sm divide-y divide-[#2d333b]">
                     <!-- Row: Laca UV -->
                     <div
-                        class="flex items-center justify-between p-3 bg-[#0f1115]/20 hover:bg-[#0f1115]/40 transition-colors">
+                        class="flex items-center justify-between p-3 bg-surface-dark/20 hover:bg-surface-dark/40 transition-colors">
                         <span class="text-xs font-medium text-slate-400">Laca UV Sectorizada</span>
                         {{ form.has_uv_sectorizado }}
                     </div>
                     <!-- Row: Hot Stamping -->
                     <div
-                        class="flex items-center justify-between p-3 bg-[#0f1115]/20 hover:bg-[#0f1115]/40 transition-colors">
+                        class="flex items-center justify-between p-3 bg-surface-dark/20 hover:bg-surface-dark/40 transition-colors">
                         <span class="text-xs font-medium text-slate-400">Hot Stamping</span>
                         {{ form.has_hot_stamping }}
                     </div>
                     <!-- Row: Holograma -->
                     <div
-                        class="flex items-center justify-between p-3 bg-[#0f1115]/20 hover:bg-[#0f1115]/40 transition-colors">
+                        class="flex items-center justify-between p-3 bg-surface-dark/20 hover:bg-surface-dark/40 transition-colors">
                         <span class="text-xs font-medium text-slate-400">Holograma</span>
                         {{ form.has_holograma }}
                     </div>
                     <!-- Row: Troquelado -->
                     <div
-                        class="flex items-center justify-between p-3 bg-[#0f1115]/20 hover:bg-[#0f1115]/40 transition-colors">
+                        class="flex items-center justify-between p-3 bg-surface-dark/20 hover:bg-surface-dark/40 transition-colors">
                         <span class="text-xs font-medium text-slate-400">Troquelado</span>
                         {{ form.has_troquelado }}
                     </div>
@@ -225,8 +225,8 @@
         </div>
 
         <!-- SECCIÓN 4: LOGÍSTICA Y EMPAQUE -->
-        <div class="bg-[#1a1d23] border border-[#2d333b] rounded-lg p-6">
-            <h3 class="text-lg font-medium text-orange-400 mb-4 border-b border-[#2d333b] pb-2 uppercase tracking-wide">
+        <div class="bg-surface border border-border-default rounded-lg p-6">
+            <h3 class="text-lg font-medium text-orange-400 mb-4 border-b border-border-default pb-2 uppercase tracking-wide">
                 Logística y Empaque</h3>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -249,8 +249,8 @@
         </div>
 
         <!-- SECCIÓN 5: DOCUMENTACIÓN TÉCNICA -->
-        <div class="bg-[#1a1d23] border border-[#2d333b] rounded-lg p-6">
-            <h3 class="text-lg font-medium text-yellow-500 mb-4 border-b border-[#2d333b] pb-2 uppercase tracking-wide">
+        <div class="bg-surface border border-border-default rounded-lg p-6">
+            <h3 class="text-lg font-medium text-yellow-500 mb-4 border-b border-border-default pb-2 uppercase tracking-wide">
                 Documentación Técnica</h3>
 
             <style>
@@ -362,7 +362,7 @@
                         {% endif %}
                     </div>
                     <div id="preview-design_front"
-                        class="file-preview-container w-full border border-[#2d333b] rounded-lg overflow-hidden flex items-center justify-center bg-[#0f1115] transition-all group-hover:border-emerald-500/50">
+                        class="file-preview-container w-full border border-border-default rounded-lg overflow-hidden flex items-center justify-center bg-surface-dark transition-all group-hover:border-emerald-500/50">
                         {% if form.instance.design_front %}
                         <img src="{{ form.instance.design_front.url }}" class="w-full h-full object-contain">
                         {% else %}
@@ -425,7 +425,7 @@
                         {% endif %}
                     </div>
                     <div id="preview-design_back"
-                        class="file-preview-container w-full border border-[#2d333b] rounded-lg overflow-hidden flex items-center justify-center bg-[#0f1115] transition-all group-hover:border-blue-500/50">
+                        class="file-preview-container w-full border border-border-default rounded-lg overflow-hidden flex items-center justify-center bg-surface-dark transition-all group-hover:border-blue-500/50">
                         {% if form.instance.design_back %}
                         <img src="{{ form.instance.design_back.url }}" class="w-full h-full object-contain">
                         {% else %}
@@ -476,7 +476,7 @@
             </div>
 
             <!-- SECCIÓN HÍBRIDA: LISTA CRUD (Sacabocados/Adjuntos) -->
-            <div class="mt-8 space-y-1 divide-y divide-[#2d333b] border-t border-[#2d333b] hide-django-file-labels">
+            <div class="mt-8 space-y-1 divide-y divide-[#2d333b] border-t border-border-default hide-django-file-labels">
 
                 <!-- Fila: Sacabocados -->
                 <div class="doc-crud-row">
@@ -619,7 +619,7 @@
 </div>
 
 <!-- BOTONES DE ACCIÓN -->
-<div class="flex items-center justify-between border-t border-[#2d333b] mt-8 pt-6 pb-8">
+<div class="flex items-center justify-between border-t border-border-default mt-8 pt-6 pb-8">
     <div>
         {% if form.instance.pk %}
         <a href="{% url 'products:delete' form.instance.pk %}"
@@ -660,16 +660,16 @@
 
         // Clonar las opciones del select original con estilo dark
         const optionsHtml = Array.from(hiddenSelect.options).map(opt =>
-            `<option value="${opt.value}" class="bg-[#0f1115] text-slate-300">${opt.text}</option>`
+            `<option value="${opt.value}" class="bg-surface-dark text-slate-300">${opt.text}</option>`
         ).join('');
 
         const rowId = 'color-row-' + Math.random().toString(36).substr(2, 9);
         const row = document.createElement('div');
         row.id = rowId;
-        row.className = 'flex items-center gap-2 animate-fade-in bg-[#0f1115] p-2 border border-[#2d333b] rounded-sm';
+        row.className = 'flex items-center gap-2 animate-fade-in bg-surface-dark p-2 border border-border-default rounded-sm';
         row.innerHTML = `
-            <select class="dynamic-color-select flex-1 bg-[#0f1115] border-none text-slate-400 text-[11px] focus:ring-0 cursor-pointer p-1" onchange="syncColors('${fieldName}')">
-                <option value="" class="bg-[#0f1115]">Seleccionar...</option>
+            <select class="dynamic-color-select flex-1 bg-surface-dark border-none text-slate-400 text-[11px] focus:ring-0 cursor-pointer p-1" onchange="syncColors('${fieldName}')">
+                <option value="" class="bg-surface-dark">Seleccionar...</option>
                 ${optionsHtml}
             </select>
             <button type="button" onclick="removeColorRow('${rowId}', '${fieldName}')" class="text-slate-600 hover:text-red-500 transition-colors">

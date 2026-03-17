@@ -31,14 +31,14 @@ CLIENT PORTAL / ORDERS / {{ job.job_description|truncatechars:30 }}
                 </span>
             </div>
             <div
-                class="bg-[#0f1115] border border-[#2d333b] px-3 py-1.5 rounded text-[10px] font-mono text-blue-400 uppercase">
+                class="bg-surface-dark border border-border-default px-3 py-1.5 rounded text-[10px] font-mono text-blue-400 uppercase">
                 FECHA: {{ job.updated_at|date:"d/m/Y H:i" }}
             </div>
         </div>
     </header>
 
     <!-- Metadata Grid -->
-    <section class="bg-[#1a1d23] border border-[#2d333b] rounded-sm p-6">
+    <section class="bg-surface border border-border-default rounded-sm p-6">
         <h3 class="text-sm font-bold uppercase tracking-wider mb-6 flex items-center gap-2 text-white">
             <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -50,54 +50,54 @@ CLIENT PORTAL / ORDERS / {{ job.job_description|truncatechars:30 }}
             <div class="space-y-1">
                 <label class="block text-[10px] font-bold text-slate-500 uppercase px-1">Cliente</label>
                 <input type="text" value="{{ job.requester_name }}" readonly
-                    class="w-full bg-[#0f1115] border border-[#2d333b] text-white px-4 py-2 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm">
+                    class="w-full bg-surface-dark border border-border-default text-white px-4 py-2 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm">
             </div>
             <div class="space-y-1">
                 <label class="block text-[10px] font-bold text-slate-500 uppercase px-1">N° Orden</label>
                 <input type="text" name="order_number" value="{{ job.order_number|default:'' }}" {% if
                     request.user.role=='PORTAL' %}readonly{% endif %}
-                    class="w-full bg-[#0f1115] border border-[#2d333b] text-white px-4 py-2 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm">
+                    class="w-full bg-surface-dark border border-border-default text-white px-4 py-2 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm">
             </div>
             <div class="space-y-1">
                 <label class="block text-[10px] font-bold text-slate-500 uppercase px-1">OP Anterior</label>
                 <input type="text" name="op_anterior" value="{{ job.op_anterior|default:'' }}" {% if
                     request.user.role=='PORTAL' %}readonly{% endif %} placeholder="N/A"
-                    class="w-full bg-[#0f1115] border border-[#2d333b] text-white px-4 py-2 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm">
+                    class="w-full bg-surface-dark border border-border-default text-white px-4 py-2 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm">
             </div>
             <div class="space-y-1">
                 <label class="block text-[10px] font-bold text-slate-500 uppercase px-1">N° BIN</label>
                 <input type="text" name="bin_number" value="{{ job.bin_number|default:'' }}" {% if
                     request.user.role=='PORTAL' %}readonly{% endif %}
-                    class="w-full bg-[#0f1115] border border-[#2d333b] text-white px-4 py-2 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm">
+                    class="w-full bg-surface-dark border border-border-default text-white px-4 py-2 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm">
             </div>
             <div class="space-y-1">
                 <label class="block text-[10px] font-bold text-slate-500 uppercase px-1">Versión</label>
                 <input type="text" name="version" value="{{ job.version|default:'' }}" {% if request.user.role=='PORTAL'
                     %}readonly{% endif %}
-                    class="w-full bg-[#0f1115] border border-[#2d333b] text-white px-4 py-2 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm">
+                    class="w-full bg-surface-dark border border-border-default text-white px-4 py-2 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm">
             </div>
             <div class="space-y-1">
                 <label class="block text-[10px] font-bold text-slate-500 uppercase px-1">PIF/RPP</label>
                 <input type="text" name="pif_rpp" value="{{ job.pif_rpp|default:'' }}" {% if request.user.role=='PORTAL'
                     %}readonly{% endif %}
-                    class="w-full bg-[#0f1115] border border-[#2d333b] text-white px-4 py-2 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm">
+                    class="w-full bg-surface-dark border border-border-default text-white px-4 py-2 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm">
             </div>
             <div class="space-y-1">
                 <label class="block text-[10px] font-bold text-slate-500 uppercase px-1">N° ICA</label>
                 <input type="text" name="ica_number" value="{{ job.ica_number|default:'' }}" {% if
                     request.user.role=='PORTAL' %}readonly{% endif %}
-                    class="w-full bg-[#0f1115] border border-[#2d333b] text-white px-4 py-2 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm">
+                    class="w-full bg-surface-dark border border-border-default text-white px-4 py-2 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm">
             </div>
             <div class="space-y-1">
                 <label class="block text-[10px] font-bold text-slate-500 uppercase px-1">Fecha</label>
                 <input type="text" value="{{ job.created_at|date:'Y-m-d' }}" readonly
-                    class="w-full bg-[#0f1115] border border-[#2d333b] text-white px-4 py-2 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm">
+                    class="w-full bg-surface-dark border border-border-default text-white px-4 py-2 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm">
             </div>
             <div class="sm:col-span-2 lg:col-span-4 space-y-1">
                 <label class="block text-[10px] font-bold text-slate-500 uppercase px-1">Descripción</label>
                 <input type="text" name="job_description" value="{{ job.job_description }}" {% if
                     request.user.role=='PORTAL' %}readonly{% endif %}
-                    class="w-full bg-[#0f1115] border border-[#2d333b] text-white px-4 py-2 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm">
+                    class="w-full bg-surface-dark border border-border-default text-white px-4 py-2 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm">
             </div>
         </div>
     </section>
@@ -105,7 +105,7 @@ CLIENT PORTAL / ORDERS / {{ job.job_description|truncatechars:30 }}
     <!-- Anverso & Reverso Sections -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- ANVERSO -->
-        <section class="bg-[#1a1d23] border border-[#2d333b] rounded-sm p-6 flex flex-col gap-6">
+        <section class="bg-surface border border-border-default rounded-sm p-6 flex flex-col gap-6">
             <div class="flex items-center justify-between">
                 <h3 class="text-white font-bold flex items-center gap-2">
                     <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -147,14 +147,14 @@ CLIENT PORTAL / ORDERS / {{ job.job_description|truncatechars:30 }}
                     <p class="text-[10px] font-bold text-slate-500 uppercase">Gestión de Tintas (Front)</p>
                     <div class="space-y-2">
                         <div
-                            class="flex items-center justify-between p-2 rounded-sm bg-[#0f1115] border border-[#2d333b]">
+                            class="flex items-center justify-between p-2 rounded-sm bg-surface-dark border border-border-default">
                             <div class="flex items-center gap-3">
                                 <span class="text-xs text-slate-300 font-mono">{{ job.front_colors }}</span>
                             </div>
                         </div>
                         {% if job.front_special_colors %}
                         <div
-                            class="flex items-center justify-between p-2 rounded-sm bg-[#0f1115] border border-[#2d333b]">
+                            class="flex items-center justify-between p-2 rounded-sm bg-surface-dark border border-border-default">
                             <div class="flex items-center gap-3">
                                 <span class="text-xs text-purple-400 font-mono">{{ job.front_special_colors }}</span>
                             </div>
@@ -168,13 +168,13 @@ CLIENT PORTAL / ORDERS / {{ job.job_description|truncatechars:30 }}
             <div class="w-full space-y-2">
                 <label class="block text-[10px] font-bold text-slate-500 uppercase px-1">Observaciones Anverso</label>
                 <textarea name="front_observations" rows="3" {% if request.user.role=='PORTAL' %}readonly{% endif %}
-                    class="w-full bg-[#0f1115] border border-[#2d333b] text-white px-4 py-2 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm resize-none"
+                    class="w-full bg-surface-dark border border-border-default text-white px-4 py-2 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm resize-none"
                     placeholder="Indicar detalles específicos...">{{ job.front_observations }}</textarea>
             </div>
         </section>
 
         <!-- REVERSO -->
-        <section class="bg-[#1a1d23] border border-[#2d333b] rounded-sm p-6 flex flex-col gap-6">
+        <section class="bg-surface border border-border-default rounded-sm p-6 flex flex-col gap-6">
             <div class="flex items-center justify-between">
                 <h3 class="text-white font-bold flex items-center gap-2">
                     <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -212,7 +212,7 @@ CLIENT PORTAL / ORDERS / {{ job.job_description|truncatechars:30 }}
                     <p class="text-[10px] font-bold text-slate-500 uppercase">Gestión de Tintas (Back)</p>
                     <div class="space-y-2">
                         <div
-                            class="flex items-center justify-between p-2 rounded-sm bg-[#0f1115] border border-[#2d333b]">
+                            class="flex items-center justify-between p-2 rounded-sm bg-surface-dark border border-border-default">
                             <div class="flex items-center gap-3">
                                 <span class="text-xs text-slate-300 font-mono">{{ job.back_colors|default:"N/A"
                                     }}</span>
@@ -220,7 +220,7 @@ CLIENT PORTAL / ORDERS / {{ job.job_description|truncatechars:30 }}
                         </div>
                         {% if job.back_special_colors %}
                         <div
-                            class="flex items-center justify-between p-2 rounded-sm bg-[#0f1115] border border-[#2d333b]">
+                            class="flex items-center justify-between p-2 rounded-sm bg-surface-dark border border-border-default">
                             <div class="flex items-center gap-3">
                                 <span class="text-xs text-purple-400 font-mono">{{ job.back_special_colors }}</span>
                             </div>
@@ -234,14 +234,14 @@ CLIENT PORTAL / ORDERS / {{ job.job_description|truncatechars:30 }}
             <div class="w-full space-y-2">
                 <label class="block text-[10px] font-bold text-slate-500 uppercase px-1">Observaciones Reverso</label>
                 <textarea name="back_observations" rows="3" {% if request.user.role=='PORTAL' %}readonly{% endif %}
-                    class="w-full bg-[#0f1115] border border-[#2d333b] text-white px-4 py-2 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm resize-none"
+                    class="w-full bg-surface-dark border border-border-default text-white px-4 py-2 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm resize-none"
                     placeholder="Indicar detalles específicos...">{{ job.back_observations }}</textarea>
             </div>
         </section>
     </div>
 
     <!-- File Upload Section -->
-    <section class="bg-[#1a1d23] border border-[#2d333b] rounded-sm p-6">
+    <section class="bg-surface border border-border-default rounded-sm p-6">
         <h3 class="text-sm font-bold uppercase tracking-wider mb-6 flex items-center gap-2 text-white">
             <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -251,7 +251,7 @@ CLIENT PORTAL / ORDERS / {{ job.job_description|truncatechars:30 }}
         </h3>
         <div class="space-y-4">
             {% if job.attached_file %}
-            <div class="flex items-center justify-between p-4 bg-[#0f1115] border border-blue-500/20 rounded-sm">
+            <div class="flex items-center justify-between p-4 bg-surface-dark border border-blue-500/20 rounded-sm">
                 <div class="flex items-center gap-3">
                     <svg class="w-8 h-8 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -264,14 +264,14 @@ CLIENT PORTAL / ORDERS / {{ job.job_description|truncatechars:30 }}
                     </div>
                 </div>
                 <a href="{{ job.attached_file.url }}" target="_blank"
-                    class="px-3 py-1 bg-[#2d333b] text-xs text-blue-400 hover:text-white rounded-sm transition-colors border border-[#2d333b]">
+                    class="px-3 py-1 bg-surface-hover text-xs text-blue-400 hover:text-white rounded-sm transition-colors border border-border-default">
                     Ver Original
                 </a>
             </div>
             {% endif %}
 
             <div
-                class="relative border-2 border-dashed border-[#2d333b] rounded-sm p-8 flex flex-col items-center justify-center bg-[#0f1115] hover:border-emerald-500/50 transition-colors group">
+                class="relative border-2 border-dashed border-border-default rounded-sm p-8 flex flex-col items-center justify-center bg-surface-dark hover:border-emerald-500/50 transition-colors group">
                 <input type="file" name="attached_file" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
                 <svg class="w-10 h-10 text-slate-500 group-hover:text-emerald-500 mb-4 transition-colors" fill="none"
                     stroke="currentColor" viewBox="0 0 24 24">
@@ -297,8 +297,8 @@ CLIENT PORTAL / ORDERS / {{ job.job_description|truncatechars:30 }}
     </section>
 
     <!-- Specifications Table -->
-    <section class="bg-[#1a1d23] border border-[#2d333b] rounded-sm overflow-hidden">
-        <div class="p-6 border-b border-[#2d333b]">
+    <section class="bg-surface border border-border-default rounded-sm overflow-hidden">
+        <div class="p-6 border-b border-border-default">
             <h3 class="text-white font-bold flex items-center gap-2 uppercase tracking-widest text-sm">
                 <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -310,18 +310,18 @@ CLIENT PORTAL / ORDERS / {{ job.job_description|truncatechars:30 }}
         </div>
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
-                <thead class="bg-[#0f1115]/50 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                <thead class="bg-surface-dark/50 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
                     <tr>
-                        <th class="px-6 py-4 border-b border-[#2d333b]">Especificación</th>
-                        <th class="px-6 py-4 text-center border-b border-[#2d333b]">Activo</th>
-                        <th class="px-6 py-4 text-center border-b border-[#2d333b]">Anverso</th>
-                        <th class="px-6 py-4 text-center border-b border-[#2d333b]">Reverso</th>
-                        <th class="px-6 py-4 border-b border-[#2d333b]">Configuración / Detalle</th>
+                        <th class="px-6 py-4 border-b border-border-default">Especificación</th>
+                        <th class="px-6 py-4 text-center border-b border-border-default">Activo</th>
+                        <th class="px-6 py-4 text-center border-b border-border-default">Anverso</th>
+                        <th class="px-6 py-4 text-center border-b border-border-default">Reverso</th>
+                        <th class="px-6 py-4 border-b border-border-default">Configuración / Detalle</th>
                     </tr>
                 </thead>
                 <tbody class="text-sm divide-y divide-[#2d333b]">
                     <!-- Laminado -->
-                    <tr class="hover:bg-[#2d333b]/10 transition-colors">
+                    <tr class="hover:bg-surface-hover/10 transition-colors">
                         <td class="px-6 py-4 text-slate-300 font-medium">Laminado</td>
                         <td class="px-6 py-4 text-center">
                             {{ staff_form.lamination }}
@@ -337,7 +337,7 @@ CLIENT PORTAL / ORDERS / {{ job.job_description|truncatechars:30 }}
                         </td>
                     </tr>
                     <!-- Banda Magnética -->
-                    <tr class="hover:bg-[#2d333b]/10 transition-colors">
+                    <tr class="hover:bg-surface-hover/10 transition-colors">
                         <td class="px-6 py-4 text-slate-300 font-medium">Banda Magnética</td>
                         <td class="px-6 py-4 text-center">
                             {{ staff_form.magnetic_band }}
@@ -352,7 +352,7 @@ CLIENT PORTAL / ORDERS / {{ job.job_description|truncatechars:30 }}
                         </td>
                     </tr>
                     <!-- UV -->
-                    <tr class="hover:bg-[#2d333b]/10 transition-colors">
+                    <tr class="hover:bg-surface-hover/10 transition-colors">
                         <td class="px-6 py-4 text-slate-300 font-medium">Barniz UV / Relieve</td>
                         <td class="px-6 py-4 text-center">
                             {{ staff_form.uv }}
@@ -370,12 +370,12 @@ CLIENT PORTAL / ORDERS / {{ job.job_description|truncatechars:30 }}
                     </tr>
                     <!-- Others (Checkboxes only) -->
                     {% for field_name, label in others_specs %}
-                    <tr class="hover:bg-[#2d333b]/10 transition-colors">
+                    <tr class="hover:bg-surface-hover/10 transition-colors">
                         <td class="px-6 py-4 text-slate-300 font-medium">{{ label }}</td>
                         <td class="px-6 py-4 text-center">
                             <input type="checkbox" name="{{ field_name }}" {% if getattr_job_field_name %}checked{%
                                 endif %}
-                                class="rounded border-[#2d333b] bg-[#0f1115] text-blue-500 focus:ring-blue-500/20">
+                                class="rounded border-border-default bg-surface-dark text-blue-500 focus:ring-blue-500/20">
                         </td>
                         <td class="px-6 py-4 text-center">-</td>
                         <td class="px-6 py-4 text-center">-</td>
@@ -383,14 +383,14 @@ CLIENT PORTAL / ORDERS / {{ job.job_description|truncatechars:30 }}
                     </tr>
                     {% endfor %}
                     <!-- Placeholder logic for loop if helpers available, otherwise explicit rows -->
-                    <tr class="hover:bg-[#2d333b]/10 transition-colors">
+                    <tr class="hover:bg-surface-hover/10 transition-colors">
                         <td class="px-6 py-4 text-slate-300 font-medium">Holograma / Stamping</td>
                         <td class="px-6 py-4 text-center">{{ staff_form.hologram }} / {{ staff_form.stamping }}</td>
                         <td class="px-6 py-4 text-center">-</td>
                         <td class="px-6 py-4 text-center">-</td>
                         <td class="px-6 py-4 text-slate-500 italic text-[10px]">Efectos especiales</td>
                     </tr>
-                    <tr class="hover:bg-[#2d333b]/10 transition-colors">
+                    <tr class="hover:bg-surface-hover/10 transition-colors">
                         <td class="px-6 py-4 text-slate-300 font-medium">Chip / Pre-perso / Variable</td>
                         <td class="px-6 py-4 text-center">{{ staff_form.chip }} / {{ staff_form.pre_perso }} / {{
                             staff_form.variable_data }}</td>
@@ -406,7 +406,7 @@ CLIENT PORTAL / ORDERS / {{ job.job_description|truncatechars:30 }}
     <!-- Approval & Signature Section -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <!-- Revision Result -->
-        <section class="bg-[#1a1d23] border border-[#2d333b] rounded-sm p-6 space-y-6">
+        <section class="bg-surface border border-border-default rounded-sm p-6 space-y-6">
             <h3 class="text-white font-bold flex items-center gap-2">
                 <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -421,10 +421,10 @@ CLIENT PORTAL / ORDERS / {{ job.job_description|truncatechars:30 }}
                 {% for choice in staff_form.review_result.field.choices %}
                 {% if choice.0 %}
                 <label
-                    class="flex items-center gap-3 p-4 rounded-sm border border-[#2d333b] bg-[#0f1115] cursor-pointer hover:border-blue-500/50 transition-all group">
+                    class="flex items-center gap-3 p-4 rounded-sm border border-border-default bg-surface-dark cursor-pointer hover:border-blue-500/50 transition-all group">
                     <input type="radio" name="review_result" value="{{ choice.0 }}" {% if job.review_result==choice.0
                         %}checked{% endif %}
-                        class="w-5 h-5 border-[#2d333b] bg-[#0f1115] text-blue-500 focus:ring-blue-500/20">
+                        class="w-5 h-5 border-border-default bg-surface-dark text-blue-500 focus:ring-blue-500/20">
                     <div class="flex-1">
                         <p class="text-sm font-bold text-slate-100 group-hover:text-blue-400">{{ choice.1 }}</p>
                         <p class="text-[10px] text-slate-500 uppercase tracking-tight">Seleccionar este dictamen técnico
@@ -437,7 +437,7 @@ CLIENT PORTAL / ORDERS / {{ job.job_description|truncatechars:30 }}
         </section>
 
         <!-- Digital Signature -->
-        <section class="bg-[#1a1d23] border border-[#2d333b] rounded-sm p-6 space-y-6 flex flex-col">
+        <section class="bg-surface border border-border-default rounded-sm p-6 space-y-6 flex flex-col">
             <h3 class="text-white font-bold flex items-center gap-2">
                 <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -447,7 +447,7 @@ CLIENT PORTAL / ORDERS / {{ job.job_description|truncatechars:30 }}
                 Firma de Aprobación
             </h3>
             <div
-                class="flex-1 min-h-[120px] bg-[#0f1115] border border-dashed border-[#2d333b] rounded-sm relative overflow-hidden group">
+                class="flex-1 min-h-[120px] bg-surface-dark border border-dashed border-border-default rounded-sm relative overflow-hidden group">
                 <div
                     class="absolute inset-0 flex items-center justify-center text-slate-600 text-xs pointer-events-none uppercase font-bold tracking-tighter opacity-50">
                     Área de Firma Digital (Simulada)
@@ -468,7 +468,7 @@ CLIENT PORTAL / ORDERS / {{ job.job_description|truncatechars:30 }}
     </div>
 
     <!-- Footer Actions -->
-    <footer class="pt-8 border-t border-[#2d333b]">
+    <footer class="pt-8 border-t border-border-default">
         <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
             <p class="text-[10px] text-slate-500 italic max-w-2xl leading-relaxed uppercase tracking-tighter">
                 La aprobación de este documento confirma que el diseño y las especificaciones técnicas son correctas.
@@ -477,7 +477,7 @@ CLIENT PORTAL / ORDERS / {{ job.job_description|truncatechars:30 }}
             </p>
             <div class="flex gap-4 w-full lg:w-auto">
                 <a href="{% url 'quotes:card_job_list' %}"
-                    class="flex-1 lg:flex-none text-center px-6 py-3 rounded-sm bg-[#2d333b] text-slate-400 text-xs font-bold uppercase hover:text-white transition-colors border border-transparent hover:border-slate-600">
+                    class="flex-1 lg:flex-none text-center px-6 py-3 rounded-sm bg-surface-hover text-slate-400 text-xs font-bold uppercase hover:text-white transition-colors border border-transparent hover:border-slate-600">
                     Cancelar
                 </a>
                 <button type="submit"
@@ -495,11 +495,11 @@ CLIENT PORTAL / ORDERS / {{ job.job_description|truncatechars:30 }}
     input[type="date"],
     select,
     textarea {
-        @apply w-full bg-[#0f1115] border border-[#2d333b] text-white px-4 py-2 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm;
+        @apply w-full bg-surface-dark border border-border-default text-white px-4 py-2 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm;
     }
 
     input[type="checkbox"] {
-        @apply rounded border-[#2d333b] bg-[#0f1115] text-blue-500 focus:ring-blue-500/20 w-4 h-4;
+        @apply rounded border-border-default bg-surface-dark text-blue-500 focus:ring-blue-500/20 w-4 h-4;
     }
 
     .custom-scrollbar::-webkit-scrollbar {

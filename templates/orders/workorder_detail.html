@@ -10,7 +10,7 @@
 
     <!-- Header / Status Bar -->
     <div
-        class="bg-[#1a1d23] border border-[#2d333b] rounded-lg p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        class="bg-surface border border-border-default rounded-lg p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
             <div class="flex items-center gap-3 mb-1">
                 <h2 class="text-2xl font-bold text-white">OT #{{ object.ot_number }}</h2>
@@ -24,7 +24,7 @@
         </div>
 
         <div class="flex items-center gap-3 w-full md:w-auto">
-            <div class="px-4 py-2 bg-[#0f1115] border border-[#2d333b] rounded text-center min-w-[140px]">
+            <div class="px-4 py-2 bg-surface-dark border border-border-default rounded text-center min-w-[140px]">
                 <p class="text-[9px] text-slate-500 uppercase font-bold tracking-widest leading-none mb-1">Estado Actual
                 </p>
                 <p class="text-xs font-bold text-orange-500">{{ object.get_current_status_display|upper }}</p>
@@ -41,8 +41,8 @@
         <!-- Columna Izquierda: Detalles del Trabajo -->
         <div class="lg:col-span-2 space-y-6">
             <!-- Información del Producto -->
-            <div class="bg-[#1a1d23] border border-[#2d333b] rounded-lg overflow-hidden">
-                <div class="bg-[#0f1115]/50 px-6 py-3 border-b border-[#2d333b]">
+            <div class="bg-surface border border-border-default rounded-lg overflow-hidden">
+                <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default">
                     <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Información del Trabajo</h3>
                 </div>
                 <div class="p-6 grid grid-cols-1 sm:grid-cols-2 gap-8">
@@ -72,8 +72,8 @@
             </div>
 
             <!-- Notas de Producción -->
-            <div class="bg-[#1a1d23] border border-[#2d333b] rounded-lg overflow-hidden">
-                <div class="bg-[#0f1115]/50 px-6 py-3 border-b border-[#2d333b]">
+            <div class="bg-surface border border-border-default rounded-lg overflow-hidden">
+                <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default">
                     <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Notas de Producción</h3>
                 </div>
                 <div class="p-6">
@@ -89,15 +89,15 @@
 
         <!-- Columna Derecha: Sidebar con KPIs / Resumen -->
         <div class="space-y-6">
-            <div class="bg-[#1a1d23] border border-[#2d333b] rounded-lg p-6">
+            <div class="bg-surface border border-border-default rounded-lg p-6">
                 <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Métricas Estimadas</h3>
                 <div class="space-y-4">
-                    <div class="flex justify-between items-center py-2 border-b border-[#2d333b]/50">
+                    <div class="flex justify-between items-center py-2 border-b border-border-default/50">
                         <span class="text-[11px] text-slate-500">Uso de Material:</span>
                         <span class="text-sm text-white font-bold">{{ object.estimated_material_usage|default:"--" }}
                             ml</span>
                     </div>
-                    <div class="flex justify-between items-center py-2 border-b border-[#2d333b]/50">
+                    <div class="flex justify-between items-center py-2 border-b border-border-default/50">
                         <span class="text-[11px] text-slate-500">Prioridad:</span>
                         <span
                             class="text-[10px] font-bold uppercase {% if object.priority == 'URGENT' %}text-red-500{% elif object.priority == 'HIGH' %}text-orange-500{% else %}text-slate-400{% endif %}">
@@ -111,10 +111,10 @@
                 <h3 class="text-[10px] font-bold text-orange-500 uppercase tracking-widest mb-3">Acciones Rápidas</h3>
                 <div class="grid grid-cols-1 gap-2">
                     <button
-                        class="w-full bg-[#1a1d23] hover:bg-[#2d333b] text-slate-300 text-[10px] font-bold py-2 rounded transition-colors uppercase">Imprimir
+                        class="w-full bg-surface hover:bg-surface-hover text-slate-300 text-[10px] font-bold py-2 rounded transition-colors uppercase">Imprimir
                         Hoja de Ruta</button>
                     <button
-                        class="w-full bg-[#1a1d23] hover:bg-[#2d333b] text-slate-300 text-[10px] font-bold py-2 rounded transition-colors uppercase">Generar
+                        class="w-full bg-surface hover:bg-surface-hover text-slate-300 text-[10px] font-bold py-2 rounded transition-colors uppercase">Generar
                         Remito</button>
                 </div>
             </div>

@@ -23,10 +23,10 @@
     </div>
 
     <!-- Contenedor de la Tabla -->
-    <div class="border border-[#2d333b] rounded-lg overflow-hidden bg-[#1a1d23]">
+    <div class="border border-border-default rounded-lg overflow-hidden bg-surface">
         <table class="w-full text-left border-collapse">
             <thead>
-                <tr class="text-[10px] uppercase tracking-widest text-slate-500 border-b border-[#2d333b] bg-[#16181d]">
+                <tr class="text-[10px] uppercase tracking-widest text-slate-500 border-b border-border-default bg-surface-mid">
                     <th class="p-4 w-12 text-center">#</th>
                     <th class="p-4">Cliente</th>
                     <th class="p-4 text-center">Ref. Productos</th>
@@ -36,7 +36,7 @@
             <tbody class="divide-y divide-[#2d333b]">
                 {% for client in customers %}
                 <!-- FILA PADRE (CLIENTE) -->
-                <tr class="hover:bg-[#252932] transition-colors cursor-pointer group"
+                <tr class="hover:bg-surface-mid transition-colors cursor-pointer group"
                     onclick="toggleRow('row-{{ client.id }}', 'icon-{{ client.id }}')">
                     <td class="p-4 text-center">
                         <!-- Icono + / - -->
@@ -49,7 +49,7 @@
                     </td>
                     <td class="p-4 text-center">
                         <span
-                            class="bg-[#0f1115] border border-[#2d333b] text-slate-300 px-2 py-1 rounded text-xs font-mono">
+                            class="bg-surface-dark border border-border-default text-slate-300 px-2 py-1 rounded text-xs font-mono">
                             {{ client.products.count }} Modelos
                         </span>
                     </td>
@@ -65,14 +65,14 @@
                 </tr>
 
                 <!-- FILA HIJA (PRODUCTOS) - OCULTA INICIALMENTE -->
-                <tr id="row-{{ client.id }}" class="hidden bg-[#0f1115] border-b border-[#2d333b]">
+                <tr id="row-{{ client.id }}" class="hidden bg-surface-dark border-b border-border-default">
                     <td colspan="4" class="p-0">
                         <div class="pl-12 pr-4 py-4 border-l-2 border-emerald-500/30 ml-6 my-2">
 
                             <!-- TABLA INTERNA DE PRODUCTOS -->
                             <table class="w-full text-sm">
                                 <thead>
-                                    <tr class="text-xs text-slate-600 border-b border-[#2d333b]">
+                                    <tr class="text-xs text-slate-600 border-b border-border-default">
                                         <th class="pb-2 pl-2 text-left font-normal">Imagen</th>
                                         <th class="pb-2 text-left font-normal">Cód. / Nombre</th>
                                         <th class="pb-2 text-left font-normal">Ficha Técnica</th>
@@ -82,15 +82,15 @@
                                 </thead>
                                 <tbody class="divide-y divide-[#2d333b]">
                                     {% for product in client.products.all %}
-                                    <tr class="group/item hover:bg-[#1a1d23] transition-colors">
+                                    <tr class="group/item hover:bg-surface transition-colors">
                                         <!-- Imagen -->
                                         <td class="py-3 pl-2 w-16 align-middle">
                                             {% if product.preview_image %}
                                             <img src="{{ product.preview_image.url }}"
-                                                class="h-10 w-10 object-cover rounded bg-white/5 border border-[#2d333b]">
+                                                class="h-10 w-10 object-cover rounded bg-white/5 border border-border-default">
                                             {% else %}
                                             <div
-                                                class="h-10 w-10 bg-[#1a1d23] border border-[#2d333b] rounded flex items-center justify-center text-xs text-slate-600">
+                                                class="h-10 w-10 bg-surface border border-border-default rounded flex items-center justify-center text-xs text-slate-600">
                                                 N/A
                                             </div>
                                             {% endif %}
@@ -109,7 +109,7 @@
                                                 <div class="flex gap-1">
                                                     {% if product.colors_front %}
                                                     <span
-                                                        class="text-[10px] px-1.5 py-0.5 rounded border border-[#2d333b] bg-[#1a1d23] text-slate-500">F:{{
+                                                        class="text-[10px] px-1.5 py-0.5 rounded border border-border-default bg-surface text-slate-500">F:{{
                                                         product.colors_front }}</span>
                                                     {% endif %}
                                                 </div>
@@ -129,7 +129,7 @@
                                             <div
                                                 class="flex justify-end gap-2 opacity-100 sm:opacity-0 sm:group-hover/item:opacity-100 transition-opacity">
                                                 <a href="{% url 'products:update' product.id %}"
-                                                    class="text-xs bg-[#1a1d23] hover:bg-[#2d333b] border border-[#2d333b] text-slate-300 px-3 py-1.5 rounded transition flex items-center gap-1">
+                                                    class="text-xs bg-surface hover:bg-surface-hover border border-border-default text-slate-300 px-3 py-1.5 rounded transition flex items-center gap-1">
                                                     <svg class="w-3 h-3" fill="none" stroke="currentColor"
                                                         viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round"

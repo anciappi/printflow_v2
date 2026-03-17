@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" class="h-full bg-[#0f1115]">
+<html lang="es" class="h-full bg-surface-dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +18,7 @@
         </div>
 
         <!-- Caja de Login (Estética VS Code) -->
-        <div class="bg-[#1a1d23] border border-[#2d333b] p-8 shadow-2xl">
+        <div class="bg-surface border border-border-default p-8 shadow-2xl">
             <form method="post" class="space-y-6">
                 {% csrf_token %}
                 
@@ -31,14 +31,14 @@
                 <div>
                     <label for="username" class="block text-xs font-medium uppercase tracking-wider text-slate-500 mb-2">Usuario</label>
                     <input type="text" name="username" id="username" required
-                        class="w-full bg-[#0f1115] border border-[#2d333b] text-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors"
+                        class="w-full bg-surface-dark border border-border-default text-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors"
                         placeholder="admin">
                 </div>
 
                 <div>
                     <label for="password" class="block text-xs font-medium uppercase tracking-wider text-slate-500 mb-2">Contraseña</label>
                     <input type="password" name="password" id="password" required
-                        class="w-full bg-[#0f1115] border border-[#2d333b] text-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors"
+                        class="w-full bg-surface-dark border border-border-default text-slate-200 px-4 py-2.5 text-sm focus:outline-none focus:border-blue-500 transition-colors"
                         placeholder="••••••••">
                 </div>
 

@@ -14,11 +14,11 @@
     </div>
 
     <!-- Tabla Principal -->
-    <div class="bg-[#1a1d23] border border-[#2d333b] overflow-hidden shadow-2xl rounded-sm">
+    <div class="bg-surface border border-border-default overflow-hidden shadow-2xl rounded-sm">
         <table class="w-full text-left border-collapse">
             <thead>
                 <tr
-                    class="border-b border-[#2d333b] bg-[#0f1115]/50 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                    class="border-b border-border-default bg-surface-dark/50 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
                     <th class="px-4 py-2 w-10"></th>
                     <th class="px-4 py-2">Material</th>
                     <th class="px-4 py-2 text-center">Movimientos</th>
@@ -28,7 +28,7 @@
             <tbody class="divide-y divide-[#2d333b]">
                 {% for mat in materiales_con_consumo %}
                 <!-- FILA PADRE -->
-                <tr class="hover:bg-[#2d333b]/30 transition-colors cursor-pointer group"
+                <tr class="hover:bg-surface-hover/30 transition-colors cursor-pointer group"
                     onclick="toggleRow('hist-{{ mat.id }}', 'icon-{{ mat.id }}')">
                     <td class="px-4 py-2 text-center">
                         <span id="icon-{{ mat.id }}"
@@ -39,15 +39,15 @@
                         <div class="text-[10px] text-slate-500">{{ mat.brand }} | {{ mat.get_material_type_display }} </div>
                     </td>
                     <td class="px-4 py-2 text-center">
-                        <span class="bg-[#2d333b] text-slate-300 text-[10px] px-2 py-0.5 rounded-full border border-slate-600"> {{ mat.historial_consumos|length }} reg </span>
+                        <span class="bg-surface-hover text-slate-300 text-[10px] px-2 py-0.5 rounded-full border border-slate-600"> {{ mat.historial_consumos|length }} reg </span>
                     </td>
                     <td class="px-4 py-2 text-right font-mono text-sm text-red-400 font-bold"> - {{ mat.total_consumido }}</td>
                 </tr>
 
                 <!-- FILA HIJA (DETALLE DE CONSUMOS) -->
-                <tr id="hist-{{ mat.id }}" class="hidden bg-[#0f1115]">
+                <tr id="hist-{{ mat.id }}" class="hidden bg-surface-dark">
                     <td colspan="4" class="p-0">
-                        <div class="border-y border-[#2d333b] bg-black/20 p-4 shadow-inner">
+                        <div class="border-y border-border-default bg-black/20 p-4 shadow-inner">
                             <table class="w-full text-left">
                                 <thead>
                                     <tr class="text-[9px] text-slate-600 uppercase border-b border-slate-800">

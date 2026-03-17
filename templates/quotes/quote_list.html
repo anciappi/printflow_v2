@@ -13,12 +13,12 @@
     </div>
 
     <!-- Table Card -->
-    <div class="bg-[#1a1d23] border border-[#2d333b] rounded-xl overflow-hidden shadow-xl">
+    <div class="bg-surface border border-border-default rounded-xl overflow-hidden shadow-xl">
         <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr
-                        class="bg-[#21262d] text-[10px] uppercase font-bold text-slate-500 tracking-widest border-b border-[#2d333b]">
+                        class="bg-surface-mid text-[10px] uppercase font-bold text-slate-500 tracking-widest border-b border-border-default">
                         <th class="px-6 py-4">Fecha</th>
                         <th class="px-6 py-4">Solicitante / CUIT</th>
                         <th class="px-6 py-4">Contacto</th>
@@ -28,7 +28,7 @@
                 </thead>
                 <tbody class="divide-y divide-[#2d333b]">
                     {% for quote in quotes %}
-                    <tr class="hover:bg-[#2d333b]/30 transition-colors">
+                    <tr class="hover:bg-surface-hover/30 transition-colors">
                         <td class="px-6 py-4 text-xs">
                             <div class="text-white font-medium">{{ quote.created_at|date:"d/m/Y" }}</div>
                             <div class="text-slate-500">{{ quote.created_at|time:"H:i" }}</div>
@@ -68,7 +68,7 @@
                         <td class="px-6 py-4 text-right">
                             <div class="flex justify-end gap-2">
                                 <a href="#"
-                                    class="p-2 text-slate-400 hover:text-white hover:bg-[#2d333b] rounded transition-colors"
+                                    class="p-2 text-slate-400 hover:text-white hover:bg-surface-hover rounded transition-colors"
                                     title="Ver detalle">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -113,7 +113,7 @@
 
         <!-- Pagination Area -->
         {% if is_paginated %}
-        <div class="px-6 py-4 bg-[#21262d]/50 border-t border-[#2d333b]">
+        <div class="px-6 py-4 bg-surface-mid/50 border-t border-border-default">
             {% include 'components/pagination.html' %}
         </div>
         {% endif %}

@@ -34,8 +34,8 @@
         {% csrf_token %}
 
         <!-- SECCIÓN 1: IDENTIFICACIÓN -->
-        <div class="bg-[#1a1d23] border border-[#2d333b] rounded-lg p-6">
-            <h3 class="text-lg font-medium text-orange-500 mb-4 border-b border-[#2d333b] pb-2">Datos de Identificación
+        <div class="bg-surface border border-border-default rounded-lg p-6">
+            <h3 class="text-lg font-medium text-orange-500 mb-4 border-b border-border-default pb-2">Datos de Identificación
             </h3>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -66,8 +66,8 @@
         </div>
 
         <!-- SECCIÓN 2: CONTACTO Y UBICACIÓN -->
-        <div class="bg-[#1a1d23] border border-[#2d333b] rounded-lg p-6">
-            <h3 class="text-lg font-medium text-blue-500 mb-4 border-b border-[#2d333b] pb-2">Contacto y Ubicación</h3>
+        <div class="bg-surface border border-border-default rounded-lg p-6">
+            <h3 class="text-lg font-medium text-blue-500 mb-4 border-b border-border-default pb-2">Contacto y Ubicación</h3>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Email -->
@@ -91,13 +91,13 @@
         </div>
 
         <!-- SECCIÓN 3: CONFIGURACIÓN Y NOTAS -->
-        <div class="bg-[#1a1d23] border border-[#2d333b] rounded-lg p-6">
-            <h3 class="text-lg font-medium text-slate-400 mb-4 border-b border-[#2d333b] pb-2">Información Adicional
+        <div class="bg-surface border border-border-default rounded-lg p-6">
+            <h3 class="text-lg font-medium text-slate-400 mb-4 border-b border-border-default pb-2">Información Adicional
             </h3>
 
             <div class="space-y-6">
                 <!-- Estado Activo -->
-                <div class="flex items-center gap-3 bg-[#0f1115]/50 p-4 border border-[#2d333b] rounded-sm">
+                <div class="flex items-center gap-3 bg-surface-dark/50 p-4 border border-border-default rounded-sm">
                     {{ form.is_active }}
                     <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider cursor-pointer"
                         for="{{ form.is_active.id_for_label }}">
@@ -116,7 +116,7 @@
         </div>
 
         <!-- BOTONES DE ACCIÓN -->
-        <div class="flex items-center justify-between border-t border-[#2d333b] mt-8 pt-6 pb-8">
+        <div class="flex items-center justify-between border-t border-border-default mt-8 pt-6 pb-8">
             <div>
                 {% if form.instance.pk %}
                 <a href="{% url 'customers:delete' form.instance.pk %}"

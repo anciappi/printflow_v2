@@ -6,7 +6,7 @@
 <div class="max-w-5xl mx-auto pb-10">
 
     <!-- HEADER -->
-    <div class="mb-6 border-b border-[#2d333b] pb-4">
+    <div class="mb-6 border-b border-border-default pb-4">
         <h2 class="text-xl font-bold text-white tracking-tight">{{ titulo }}</h2>
         <p class="text-xs text-slate-500 mt-1">{% if is_edit %}Modificá los datos de la orden pendiente.{% else %}Cargá
             los datos de la nueva orden de compra.{% endif %}</p>
@@ -16,7 +16,7 @@
         {% csrf_token %}
 
         <!-- CABECERA -->
-        <div class="bg-[#1a1d23] border border-[#2d333b] p-6 shadow-lg mb-6">
+        <div class="bg-surface border border-border-default p-6 shadow-lg mb-6">
             <h3 class="text-xs font-bold text-blue-400 uppercase tracking-widest mb-4">Datos de la Orden</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {% for field in form %}
@@ -34,11 +34,11 @@
         </div>
 
         <!-- DETALLE DE ÍTEMS -->
-        <div class="bg-[#1a1d23] border border-[#2d333b] p-6 shadow-lg">
+        <div class="bg-surface border border-border-default p-6 shadow-lg">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xs font-bold text-blue-400 uppercase tracking-widest">Materiales a Comprar</h3>
                 <button type="button" id="add-item"
-                    class="text-xs bg-[#2d333b] hover:bg-blue-600 text-slate-300 hover:text-white px-3 py-1.5 rounded transition-colors flex items-center gap-1">
+                    class="text-xs bg-surface-hover hover:bg-blue-600 text-slate-300 hover:text-white px-3 py-1.5 rounded transition-colors flex items-center gap-1">
                     <span>+</span> Agregar Ítem
                 </button>
             </div>
@@ -48,7 +48,7 @@
             <div id="items-container" class="space-y-2">
                 {% for item_form in formset %}
                 <div
-                    class="item-row grid grid-cols-12 gap-3 items-end bg-[#0f1115]/50 p-3 border border-[#2d333b] rounded-sm">
+                    class="item-row grid grid-cols-12 gap-3 items-end bg-surface-dark/50 p-3 border border-border-default rounded-sm">
                     {% for hidden in item_form.hidden_fields %}{{ hidden }}{% endfor %}
 
                     <div class="col-span-5">
@@ -107,7 +107,7 @@
 
 <!-- Template vacío para JS -->
 <div id="empty-form-template" class="hidden">
-    <div class="item-row grid grid-cols-12 gap-3 items-end bg-[#0f1115]/50 p-3 border border-[#2d333b] rounded-sm">
+    <div class="item-row grid grid-cols-12 gap-3 items-end bg-surface-dark/50 p-3 border border-border-default rounded-sm">
         <div class="col-span-5">
             <label class="block text-[10px] text-slate-500 uppercase mb-1">Material</label>
             {{ formset.empty_form.material }}

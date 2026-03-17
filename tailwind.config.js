@@ -9,8 +9,9 @@ module.exports = {
       colors: {
         // ─── BACKGROUNDS ──────────────────────────────
         'surface':        '#1a1d23', // Primary card/page background
-        'surface-dark':   '#0f1115', // Secondary/nested background
-        'surface-hover':  '#2d333b', // Row hover state
+        'surface-dark':   '#0f1115', // Secondary/nested background  
+        'surface-mid':    '#252932', // Intermediate — merge #21262d, #16181d here
+        'surface-hover':  '#2d333b', // Row hover / interactive state
 
         // ─── BORDERS ──────────────────────────────────
         'border-default': '#2d333b', // Default border

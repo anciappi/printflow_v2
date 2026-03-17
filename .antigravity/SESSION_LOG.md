@@ -210,3 +210,30 @@ pytest users/tests/test_rls.py
 - Onboarding UI flow
 - SaaS Super Admin Dashboard (Phase 5)
 
+## Session: 2026-03-17 (continuación tarde)
+
+**Tasks Completed:**
+- **RLS Tests — 9/9 passing:** Created `users/tests/test_rls.py`, `users/tests/conftest.py`, `pytest.ini`. Fixed fixture ordering with `apply_rls_policies` depending on `django_db_setup`. Added `usefixtures = apply_rls_policies` to `pytest.ini`. Granted `CREATEDB` to `printflow_user`.
+- **URL normalization:** Fixed hardcoded Spanish URLs in 8 templates via `sed`. Verified zero remaining Spanish URL paths.
+- **Tailwind CSS refactor:** Replaced all hardcoded hex colors in 33 templates with semantic tokens from `tailwind.config.js`. Added `surface-mid`, `surface-alt`, `surface-deep` tokens (consolidated to `surface-mid`). Fixed CDN config — added `tailwind.config` inline script to `base.html` so custom tokens are recognized by the CDN.
+
+**Files Modified:**
+- `users/tests/test_rls.py`, `users/tests/conftest.py`, `pytest.ini`
+- 8 templates: Spanish URL paths fixed
+- 33 templates: hex colors replaced with tokens
+- `tailwind.config.js`: added surface-mid token
+- `templates/base.html`: added inline tailwind.config for CDN
+
+**Run tests:**
+```bash
+pytest users/tests/test_rls.py
+```
+
+**Pending:**
+- Expand test suite to customers, orders, inventory
+- Load/stress test
+- CardJobOrder approval flow (UUID token, public URL, standalone template)
+- Velton stock import (file pending)
+- Onboarding UI
+- Super Admin Dashboard (Phase 5)
+- Tailwind CLI compilation for production (replace CDN)

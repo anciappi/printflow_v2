@@ -47,7 +47,7 @@
 <body class="min-h-screen flex flex-col antialiased">
 
     <!-- Header -->
-    <header class="bg-[#1a1d23] border-b border-[#2d333b] sticky top-0 z-40">
+    <header class="bg-surface border-b border-border-default sticky top-0 z-40">
         <div class="max-w-4xl mx-auto px-4 flex justify-between h-14 items-center">
             <h1 class="text-white text-xs font-bold uppercase tracking-widest">Solicitud de Cotización</h1>
             <a href="{% url 'quotes:portal_home' %}"
@@ -62,7 +62,7 @@
             <!-- Section 1: Contact -->
             <div class="card p-6 mb-4 shadow-xl">
                 <h3
-                    class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-[#2d333b] pb-1">
+                    class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-border-default pb-1">
                     Sección 1: Contacto</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="space-y-1.5">
@@ -92,7 +92,7 @@
             <!-- Section 2: Billing & Delivery -->
             <div class="card p-6 mb-4 shadow-xl">
                 <h3
-                    class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-[#2d333b] pb-1">
+                    class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-border-default pb-1">
                     Sección 2: Logística</h3>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
@@ -109,7 +109,7 @@
                     </div>
                 </div>
 
-                <div class="pt-6 border-t border-[#2d333b]">
+                <div class="pt-6 border-t border-border-default">
                     <div class="flex items-center justify-between mb-6">
                         <h4 class="text-white text-xs font-bold uppercase tracking-widest">Entrega</h4>
                         <label
@@ -144,13 +144,13 @@
             <!-- Section 3: Products -->
             <div class="card p-6 mb-4 shadow-xl">
                 <h3
-                    class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-[#2d333b] pb-1">
+                    class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-border-default pb-1">
                     Sección 3: Requerimientos</h3>
                 {{ products.management_form }}
                 <div id="product-list" class="space-y-4">
                     {% for pform in products %}
                     <div
-                        class="p-4 bg-[#0f1115] border border-[#2d333b] focus-within:border-blue-500/50 transition-colors rounded-sm">
+                        class="p-4 bg-surface-dark border border-border-default focus-within:border-blue-500/50 transition-colors rounded-sm">
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <div class="sm:col-span-2 space-y-1.5">
                                 <label
@@ -170,7 +170,7 @@
                             </div>
                         </div>
                         {% if pform.can_delete %}
-                        <div class="mt-3 pt-3 border-t border-[#2d333b] text-right">
+                        <div class="mt-3 pt-3 border-t border-border-default text-right">
                             <label
                                 class="text-[10px] text-slate-600 hover:text-red-500 transition-colors cursor-pointer uppercase tracking-widest">Eliminar:
                                 {{ pform.DELETE }}</label>
@@ -184,7 +184,7 @@
             <!-- Section 4: Design Files -->
             <div class="card p-6 mb-12 shadow-xl">
                 <h3
-                    class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-[#2d333b] pb-1">
+                    class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-border-default pb-1">
                     Sección 4: Archivos</h3>
                 <div class="space-y-6">
                     <div>
@@ -192,7 +192,7 @@
                             class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Adjuntar
                             Originales / Referencias</label>
                         <div
-                            class="border-2 border-dashed border-[#2d333b] bg-[#0f1115] p-8 text-center rounded-sm hover:border-blue-500/50 transition-colors">
+                            class="border-2 border-dashed border-border-default bg-surface-dark p-8 text-center rounded-sm hover:border-blue-500/50 transition-colors">
                             <div class="flex flex-col items-center">
                                 <svg class="w-8 h-8 text-slate-600 mb-2" fill="none" stroke="currentColor"
                                     viewBox="0 0 24 24">
@@ -202,7 +202,7 @@
                                 <span class="text-xs text-slate-500 mb-4">Click para cargar archivo (PDF, JPG,
                                     PNG)</span>
                                 <div
-                                    class="px-4 py-2 bg-[#1a1d23] border border-[#2d333b] rounded-sm text-xs text-white">
+                                    class="px-4 py-2 bg-surface border border-border-default rounded-sm text-xs text-white">
                                     {{ form.attached_file }}
                                 </div>
                             </div>
@@ -224,7 +224,7 @@
                     Enviar Solicitud
                 </button>
                 <a href="{% url 'quotes:portal_home' %}"
-                    class="px-8 py-4 bg-[#1a1d23] border border-[#2d333b] text-slate-500 hover:text-white text-xs font-bold uppercase tracking-widest rounded-sm text-center transition-all">
+                    class="px-8 py-4 bg-surface border border-border-default text-slate-500 hover:text-white text-xs font-bold uppercase tracking-widest rounded-sm text-center transition-all">
                     Cancelar
                 </a>
             </div>
