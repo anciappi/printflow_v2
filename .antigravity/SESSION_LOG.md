@@ -153,3 +153,38 @@ python manage.py import_stock --file=imports/FILE.xlsx --branch=BRANCH --schema=
 
 **Blockers/Open Questions:**
 - None.
+
+**RLS — Full Validation Completed:**
+- Added `superadmin_bypass` policy to `scripts/rls_setup.sql` — allows superadmin to manage all tenants from global admin
+- Added `WITH CHECK` clause to both policies for INSERT/UPDATE protection
+- Updated `users/admin.py` — added `tenant` field to Django Admin forms (list, filter, add, edit)
+
+**End-to-End Smoke Test — PASSED:**
+- ✅ Superadmin (`anciappi`) manages all tenants from `localhost/admin/`
+- ✅ Created new tenant from global admin — schema auto-created correctly
+- ✅ Created users and assigned to specific tenants from global admin
+- ✅ Each tenant user can only login to their own subdomain
+- ✅ Cross-tenant login attempts blocked by RLS
+- ✅ Three simultaneous tenant instances operating without interference
+
+**Security Architecture — CLOSED:**
+PrintFlow (building)
+└── PostgreSQL schemas (django-tenants) → business data isolation
+└── RLS policies (PostgreSQL) → user isolation
+├── superadmin_bypass → anciappi sees and manages everything
+└── tenant_isolation → users see only their tenant
+└── TenantMainMiddleware → resolves tenant by subdomain
+└── TenantContextMiddleware → sets RLS context per request
+└── PortalMiddleware → portal vs staff routing
+
+**Next Session:**
+- Implement automated test suite (QAEngineer)
+  - RLS isolation tests
+  - Tenant isolation tests
+  - Superadmin access tests
+  - Onboarding flow tests
+- Load/stress test — simulate multiple tenants operating simultaneously
+- Fix hardcoded Spanish URLs in templates
+- Tailwind CSS refactor
+- Onboarding UI flow
+- SaaS Super Admin Dashboard (Phase 5)
