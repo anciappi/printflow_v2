@@ -177,14 +177,36 @@ PrintFlow (building)
 └── TenantContextMiddleware → sets RLS context per request
 └── PortalMiddleware → portal vs staff routing
 
+
+**Test Suite — RLS Isolation Tests:**
+- Created `users/tests/__init__.py` and `users/tests/test_rls.py`
+- Created `users/tests/conftest.py` with session-scoped RLS policy fixture
+- Created `pytest.ini` in project root
+- Granted `CREATEDB` permission to `printflow_user` for test DB creation
+- Fixed conftest fixture ordering — `apply_rls_policies` depends explicitly on `django_db_setup`
+- Added `usefixtures = apply_rls_policies` to `pytest.ini`
+
+**Final Result: 9/9 tests passing**
+- TestRLSSuperadmin::test_superadmin_sees_all_users ✅
+- TestRLSSuperadmin::test_superadmin_has_no_tenant ✅
+- TestRLSSuperadmin::test_superadmin_is_superadmin_property ✅
+- TestRLSTenantIsolation::test_velton_context_sees_only_velton_users ✅
+- TestRLSTenantIsolation::test_magtik_context_sees_only_magtik_users ✅
+- TestRLSTenantIsolation::test_unknown_tenant_context_sees_only_superadmin ✅
+- TestRLSTenantIsolation::test_rls_blocks_cross_tenant_insert ✅
+- TestTenantUserProperty::test_tenant_user_is_not_superadmin ✅
+- TestTenantUserProperty::test_tenant_user_has_tenant ✅
+
+**Run tests with:**
+```bash
+pytest users/tests/test_rls.py
+```
+
 **Next Session:**
-- Implement automated test suite (QAEngineer)
-  - RLS isolation tests
-  - Tenant isolation tests
-  - Superadmin access tests
-  - Onboarding flow tests
+- Expand test suite to other apps (customers, orders, inventory)
 - Load/stress test — simulate multiple tenants operating simultaneously
 - Fix hardcoded Spanish URLs in templates
 - Tailwind CSS refactor
 - Onboarding UI flow
 - SaaS Super Admin Dashboard (Phase 5)
+
