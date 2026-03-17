@@ -192,9 +192,9 @@
         // Pre-llenar el input con el número de OC actual
         document.getElementById('modalRemitoInput').value = currentRemito;
 
-        // Configurar la URL de envío (ajusta 'inventario' si tu url base es distinta)
+        // Configurar la URL de envío (ajusta 'inventory' si tu url base es distinta)
         const form = document.getElementById('receptionForm');
-        form.action = `/inventario/remitos/recibir/${pk}/`;
+        form.action = `/inventory/remitos/recibir/${pk}/`;
 
         // Mostrar modal
         document.getElementById('receptionModal').classList.remove('hidden');

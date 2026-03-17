@@ -35,34 +35,121 @@
 - None.
 
 ## Session: 2026-03-16
+
 **Tasks Completed:**
 - **Multi-tenant Foundation (Phase 1):** Installed `django-tenants==3.7.0`. Created `tenants` app with `PrintShop` (TenantMixin) and `Domain` (DomainMixin) models. Reconfigured `settings.py` with `SHARED_APPS`, `TENANT_APPS`, `django_tenants.postgresql_backend` engine, `TenantMainMiddleware` as first middleware, and `PUBLIC_SCHEMA_URLCONF`. Created `core/urls_public.py` for public schema routing. Normalized tenant URLs to English (`/inventory/`, `/customers/`, `/purchasing/`).
 - **Database Reset & Initialization:** Reset PostgreSQL DB. Ran `migrate_schemas --shared` to create public schema tables. Bootstrapped mandatory public tenant mapped to `localhost`.
-- **First Real Tenant (Phase 2):** Created `Velton` tenant with `schema_name='velton'` mapped to `velton.localhost`. Verified 17 isolated business tables in `velton` schema.
+- **First Real Tenant (Phase 2):** Created `Grupo Velton` tenant with `schema_name='velton'` mapped to `velton.localhost`. Verified 17 isolated business tables in `velton` schema.
 - **Branch Promoted to Central Concept:** Moved `Branch` model from `inventory` to `tenants`. Added FK to `Branch` in `WorkOrder` (required), `QuoteRequest` (required), `CardJobOrder` (nullable — assigned by staff after client submits portal form). Updated `purchasing` and `inventory` references accordingly. Applied all migrations to both `public` and `velton` schemas.
+- **PortalMiddleware Updated:** Rewrote `PortalMiddleware` to be multi-tenant aware. Added `request.tenant.schema_name == 'public'` bypass for superadmin. Maintained existing PORTAL vs internal staff routing logic.
+- **Local Development Configured:** Added `velton.localhost` to `/etc/hosts`. Fixed logout redirect error in public schema by adding `login` and `logout` routes to `core/urls_public.py`.
+- **Scripts Updated:** Updated `reset_app.sh` to use `migrate_schemas` instead of `migrate`, auto-create public tenant, superadmin, Grupo Velton tenant with Velton and Magtik branches, and velton_admin test user. Updated `runserver.sh` to bind to `0.0.0.0:8001`.
+- **Full Smoke Test Passed:** Verified end-to-end flow — superadmin on `localhost`, velton_admin login on `velton.localhost`, dashboard access, schema isolation confirmed.
 
-**Architecture decisions logged:**
+**Architecture Decisions Logged:**
 - Building analogy: PrintFlow (building) → PrintShop/tenant (floor) → Branch (department) → Apps (rooms) → Users (tenants)
 - Shared data within tenant: customers, materials, products, suppliers
 - Branch-scoped data: work orders, quotes, card job orders
 - CardJobOrder.branch is nullable: client submits externally, branch assigned on staff approval
 - Superadmin lives in public schema, operational users live in tenant schema
+- approved_by in CardJobOrder stays as CharField — external client signature, not a system user
 
 **Files Created/Modified:**
 - `tenants/`: `models.py`, `admin.py`
-- `core/`: `settings.py`, `urls.py`, `urls_public.py`
+- `core/`: `settings.py`, `urls.py`, `urls_public.py`, `middleware.py`
 - `inventory/models.py`: removed local Branch, added import from tenants
 - `orders/models.py`: added Branch FK
 - `quotes/models.py`: added Branch FK to QuoteRequest and CardJobOrder
 - `purchasing/models.py`: updated Branch reference
 - `requirements.txt`: added django-tenants==3.7.0
+- `reset_app.sh`: full rewrite for multi-tenant
+- `runserver.sh`: updated to bind 0.0.0.0:8001
 
-**Next Pending Tasks:**
-- Phase 3: Rewrite PortalMiddleware for multi-tenant + portal routing
-- Phase 3: Configure /etc/hosts for local tenant development
-- Phase 4: Full functional validation smoke test
-- Create Magtik branch under Grupo Velton tenant
-- Build onboarding flow for new tenants
+**Pending Tasks — Next Session:**
+- Phase 5: SaaS Super Admin Dashboard (create tenants, branches, users from UI)
+- Onboarding flow for new tenants
+- Create Magtik tenant when needed
+- UI/Frontend details noted separately
+- Module enable/disable per tenant
+
+**Blockers/Open Questions:**
+- None.
+
+**Stock Import — Magtik:**
+- Created `inventory/management/commands/import_stock.py` — management command to import stock history from Excel files
+- Made `InventoryUnit.purchase_order` nullable to support historical imports without purchase orders
+- Fixed `natural_sort_key` in `inventory/views.py` to handle None purchase_order
+- Fixed `InventoryUnit.__str__` to handle None purchase_order (shows 'IMPORT')
+- Successfully imported 10 years of Magtik stock history: 31 materials, 4.846 units, 63 skipped
+- Installed `openpyxl` dependency
+
+**Usage:**
+```bash
+# Dry run first
+python manage.py import_stock --file=imports/FILE.xlsx --branch=BRANCH --schema=SCHEMA --dry-run
+# Real import
+python manage.py import_stock --file=imports/FILE.xlsx --branch=BRANCH --schema=SCHEMA
+```
+
+**Pending:**
+- Import Velton stock file when available
+- UI import form (Phase post-MVP)
+- Fix source data issues in Magtik Excel (less than 48hs of configuration)
+
+**Security Issue Identified & Pending Resolution:**
+- Detected critical security flaw: users in `public` schema are visible across all tenants
+- Attempted solutions: users in TENANT_APPS, Option C (tenant FK), signals — all failed or deemed insufficient
+- Root cause: `django-tenants` limitation — Django Admin requires auth tables in `public`
+- Decision: Implement PostgreSQL Row Level Security (RLS) for true DB-level user isolation
+- Current state: Reverted to original working configuration (users in SHARED_APPS)
+- RLS implementation planned for next session — requires fresh architectural design
+
+**Known Security Risk (temporary):**
+- User isolation is currently enforced by code (middleware + view scoping) not by DB
+- Acceptable for development phase with single client (Grupo Velton)
+- Must be resolved before onboarding second real client
+
+## Session: 2026-03-17
+
+**Tasks Completed:**
+- **RLS Implementation:** Implemented PostgreSQL Row Level Security for user isolation.
+  - Added `tenant` FK to `User` model (`null=True` = superadmin)
+  - Created `scripts/rls_setup.sql` with RLS policy, index, and FORCE RLS
+  - Created `core/tenant_context.py` — `TenantContextMiddleware` sets `app.current_tenant_id` per request
+  - Added `TenantContextMiddleware` to MIDDLEWARE after `TenantMainMiddleware`
+  - Fixed `set_config` parameter from `true` (transaction-local) to `false` (session-persistent)
+  - Updated `reset_app.sh` to set RLS context before creating tenant users
+
+**Security Architecture — Final State:**
+- Business data isolation: PostgreSQL schemas via django-tenants
+- User isolation: PostgreSQL RLS via tenant_isolation policy
+- Routing: TenantMainMiddleware
+- RLS context: TenantContextMiddleware
+- Portal vs Staff routing: PortalMiddleware
+
+**Verified:**
+- velton_admin can only see users belonging to Velton tenant
+- anciappi (superadmin, tenant=None) visible to all tenants
+- Users from other tenants completely invisible across tenant boundaries
+- RLS blocks inserts without proper context (confirmed during reset)
+- Login flow working correctly with RLS active
+
+**Files Created/Modified:**
+- `users/models.py`: added `tenant` FK and `is_superadmin` property
+- `core/tenant_context.py`: new TenantContextMiddleware
+- `core/settings.py`: added TenantContextMiddleware to MIDDLEWARE
+- `core/middleware.py`: added tenant scoping check
+- `scripts/rls_setup.sql`: RLS policy, index, FORCE RLS
+- `reset_app.sh`: updated with RLS context for user creation
+
+**Pending Tasks — Next:**
+- Implement test suite (critical — identified as technical debt)
+- QAEngineer: write RLS isolation tests
+- QAEngineer: write tenant isolation tests
+- Fix hardcoded Spanish URLs in templates (/inventario/ → /inventory/)
+- Tailwind CSS refactor — replace hardcoded hex values with tailwind.config.js tokens
+- Onboarding flow for new tenants (UI)
+- SaaS Super Admin Dashboard (Phase 5)
 
 **Blockers/Open Questions:**
 - None.

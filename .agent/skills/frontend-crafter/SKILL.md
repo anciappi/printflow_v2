@@ -56,6 +56,7 @@ templates/
 ```
 
 ### Tailwind CSS Rules
+- **MANDATORY**: Before writing any CSS or Tailwind classes, read `tailwind.config.js` and use the design tokens defined there. Never use hardcoded hex values or arbitrary Tailwind values for theme colors.
 - Use only Tailwind utility classes — no custom CSS unless strictly necessary
 - If custom CSS is needed, document why in a comment
 - Never use inline `style=""` attributes

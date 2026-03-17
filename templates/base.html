@@ -36,7 +36,7 @@
 
             <!-- SECCIÓN 2: GESTIÓN DE INVENTARIO (Desplegable) -->
             <div>
-                <button onclick="toggleMenu('menu-inventario', 'arrow-inv')"
+                <button onclick="toggleMenu('menu-inventory', 'arrow-inv')"
                     class="w-full flex items-center justify-between px-3 py-2 text-sm font-bold text-slate-400 hover:text-white hover:bg-[#2d333b] rounded transition-colors group">
                     <div class="flex items-center">
                         <svg class="w-5 h-5 mr-3 text-emerald-500 group-hover:text-emerald-400" fill="none"
@@ -44,7 +44,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                         </svg>
-                        Inventario
+                        Inventory
                     </div>
                     <svg id="arrow-inv" class="w-4 h-4 transition-transform transform -rotate-90" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
@@ -53,7 +53,7 @@
                 </button>
 
                 <!-- Submenú (Oculto por defecto) -->
-                <div id="menu-inventario" class="hidden pl-10 pr-2 space-y-1 mt-1">
+                <div id="menu-inventory" class="hidden pl-10 pr-2 space-y-1 mt-1">
                     <a href="{% url 'inventory:dashboard' %}"
                         class="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors">Resumen Stock</a>
                     <a href="{% url 'inventory:inventory_list' %}"
@@ -77,7 +77,7 @@
 
             <!-- SECCIÓN 2b: COMPRAS (Desplegable) -->
             <div>
-                <button onclick="toggleMenu('menu-compras', 'arrow-comp')"
+                <button onclick="toggleMenu('menu-purchasing', 'arrow-comp')"
                     class="w-full flex items-center justify-between px-3 py-2 text-sm font-bold text-slate-400 hover:text-white hover:bg-[#2d333b] rounded transition-colors group">
                     <div class="flex items-center">
                         <svg class="w-5 h-5 mr-3 text-yellow-500 group-hover:text-yellow-400" fill="none"
@@ -86,7 +86,7 @@
                                 d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z">
                             </path>
                         </svg>
-                        Compras
+                        Purchasing
                     </div>
                     <svg id="arrow-comp" class="w-4 h-4 transition-transform transform -rotate-90" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
@@ -94,7 +94,7 @@
                     </svg>
                 </button>
 
-                <div id="menu-compras" class="hidden pl-10 pr-2 space-y-1 mt-1">
+                <div id="menu-purchasing" class="hidden pl-10 pr-2 space-y-1 mt-1">
                     <a href="{% url 'purchasing:oc_list' %}"
                         class="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors">Órdenes de
                         Compra</a>
@@ -110,7 +110,7 @@
 
             <!-- SECCIÓN 3: VENTAS (Desplegable) -->
             <div>
-                <button onclick="toggleMenu('menu-ventas', 'arrow-ven')"
+                <button onclick="toggleMenu('menu-sales', 'arrow-ven')"
                     class="w-full flex items-center justify-between px-3 py-2 text-sm font-bold text-slate-400 hover:text-white hover:bg-[#2d333b] rounded transition-colors group">
                     <div class="flex items-center">
                         <svg class="w-5 h-5 mr-3 text-orange-500 group-hover:text-orange-400" fill="none"
@@ -119,7 +119,7 @@
                                 d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
                             </path>
                         </svg>
-                        Ventas
+                        Sales
                     </div>
                     <svg id="arrow-ven" class="w-4 h-4 transition-transform transform -rotate-90" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
@@ -127,7 +127,7 @@
                     </svg>
                 </button>
 
-                <div id="menu-ventas" class="hidden pl-10 pr-2 space-y-1 mt-1">
+                <div id="menu-sales" class="hidden pl-10 pr-2 space-y-1 mt-1">
                     <a href="{% url 'customers:list' %}"
                         class="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors">Maestro
                         Clientes</a>
@@ -143,7 +143,7 @@
 
             <!-- SECCIÓN 4: ÓRDENES DE TRABAJO (Desplegable) -->
             <div>
-                <button onclick="toggleMenu('menu-ordenes', 'arrow-ord')"
+                <button onclick="toggleMenu('menu-orders', 'arrow-ord')"
                     class="w-full flex items-center justify-between px-3 py-2 text-sm font-bold text-slate-400 hover:text-white hover:bg-[#2d333b] rounded transition-colors group">
                     <div class="flex items-center">
                         <svg class="w-5 h-5 mr-3 text-blue-500 group-hover:text-blue-400" fill="none"
@@ -152,7 +152,7 @@
                                 d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
                             </path>
                         </svg>
-                        Producción
+                        Production
                     </div>
                     <svg id="arrow-ord" class="w-4 h-4 transition-transform transform -rotate-90" fill="none"
                         stroke="currentColor" viewBox="0 0 24 24">
@@ -160,7 +160,7 @@
                     </svg>
                 </button>
 
-                <div id="menu-ordenes" class="hidden pl-10 pr-2 space-y-1 mt-1">
+                <div id="menu-orders" class="hidden pl-10 pr-2 space-y-1 mt-1">
                     <a href="#" class="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors">Tablero
                         de Órdenes</a>
                     <div class="h-px bg-[#2d333b] my-2"></div>
@@ -272,14 +272,14 @@
     // Opcional: Auto-abrir el menú según la URL actual para no perder contexto al recargar
     document.addEventListener("DOMContentLoaded", function () {
         const path = window.location.pathname;
-        if (path.includes('/inventario/')) {
-            toggleMenu('menu-inventario', 'arrow-inv');
-        } else if (path.includes('/clientes/')) {
-            toggleMenu('menu-ventas', 'arrow-ven');
-        } else if (path.includes('/compras/')) {
-            toggleMenu('menu-compras', 'arrow-comp');
-        } else if (path.includes('/ordenes/') || path.includes('/productos/')) {
-            toggleMenu('menu-ordenes', 'arrow-ord');
+        if (path.includes('/inventory/')) {
+            toggleMenu('menu-inventory', 'arrow-inv');
+        } else if (path.includes('/customers/') || path.includes('/sales/')) {
+            toggleMenu('menu-sales', 'arrow-ven');
+        } else if (path.includes('/purchasing/')) {
+            toggleMenu('menu-purchasing', 'arrow-comp');
+        } else if (path.includes('/orders/') || path.includes('/products/')) {
+            toggleMenu('menu-orders', 'arrow-ord');
         }
     });
 </script>

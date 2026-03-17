@@ -31,6 +31,11 @@ python manage.py makemigrations
 echo "🚀  Aplicando migraciones shared (schema public)..."
 python manage.py migrate_schemas --shared
 
+# 4b. Aplicar RLS policies
+echo "🔒  Aplicando Row Level Security (RLS)..."
+sudo -u postgres psql -d printflow_db -f scripts/rls_setup.sql
+echo "✅  RLS aplicado."
+
 # 5. Crear tenant público (obligatorio para django-tenants)
 echo "🏢  Creando tenant público (PrintFlow)..."
 python manage.py shell -c "
@@ -41,13 +46,18 @@ Domain.objects.create(domain='localhost', tenant=t, is_primary=True)
 print('✅ Tenant público creado.')
 "
 
-# 6. Crear superusuario
-echo "👑  Creando Superusuario..."
+# 6. Crear superusuario global (tenant=None = acceso a todo)
+echo "👑  Creando Superusuario global..."
 python manage.py shell -c "
-from django.contrib.auth import get_user_model
-User = get_user_model()
-User.objects.create_superuser('anciappi', 'anciappi@printflow.com', 'anc31763534...')
-print('✅ Superusuario creado.')
+from users.models import User
+User.objects.create_superuser(
+    username='anciappi',
+    email='anciappi@printflow.com',
+    password='anc31763534...',
+    tenant=None,
+    is_staff=True,
+)
+print('✅ Superusuario global creado (tenant=None).')
 "
 
 # 7. Crear tenant Grupo Velton con sus branches
@@ -59,7 +69,30 @@ velton.save()
 Domain.objects.create(domain='velton.localhost', tenant=velton, is_primary=True)
 Branch.objects.create(tenant=velton, name='Velton')
 Branch.objects.create(tenant=velton, name='Magtik')
-print('✅ Tenant Grupo Velton creado con branches Velton y Magtik.')
+print('✅ Tenant Grupo Velton creado.')
+"
+
+# 8. Crear usuario operativo para Velton
+echo "👤  Creando usuario operativo en Grupo Velton..."
+python manage.py shell -c "
+from django.db import connection
+from users.models import User
+from tenants.models import PrintShop
+
+velton = PrintShop.objects.get(schema_name='velton')
+
+# Set RLS context before creating user
+with connection.cursor() as cursor:
+    cursor.execute(\"SELECT set_config('app.current_tenant_id', %s, false)\", [str(velton.id)])
+
+User.objects.create_user(
+    username='velton_admin',
+    email='admin@velton.com',
+    password='velton1234',
+    role='ADMIN',
+    tenant=velton,
+)
+print('✅ Usuario velton_admin creado para Grupo Velton.')
 "
 
 echo ""

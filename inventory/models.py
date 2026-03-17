@@ -54,7 +54,14 @@ class InventoryUnit(models.Model):
 
     material = models.ForeignKey(Material, on_delete=models.CASCADE, related_name='units')
     # String reference to purchasing to avoid circular import
-    purchase_order = models.ForeignKey('purchasing.PurchaseOrder', on_delete=models.CASCADE, related_name='inventory_units')
+    # null=True/blank=True to support imported historical stock with no purchase order
+    purchase_order = models.ForeignKey(
+        'purchasing.PurchaseOrder',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='inventory_units'
+    )
     unit_number = models.CharField(max_length=20)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE)
     initial_quantity = models.DecimalField(max_digits=12, decimal_places=2)
@@ -69,7 +76,8 @@ class InventoryUnit(models.Model):
         ordering = ['unit_number']
 
     def __str__(self):
-        return f"{self.material.name} ({self.get_width()}cm) - R:{self.purchase_order.remito_number}-U:{self.unit_number}"
+        remito = self.purchase_order.remito_number if self.purchase_order else 'IMPORT'
+        return f"{self.material.name} ({self.get_width()}cm) - R:{remito}-U:{self.unit_number}"
 
     def get_width(self):
         return self.width_override if self.width_override else self.material.width

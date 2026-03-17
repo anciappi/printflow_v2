@@ -6,29 +6,49 @@ from users.models import User
 class PortalMiddleware:
     """
     Middleware to enforce strict routing for PORTAL users vs internal users.
+    Runs AFTER TenantMainMiddleware — request.tenant is always available.
 
     Rules:
-    1. Unauthenticated users are handled by standard @login_required decorators.
-       This middleware only acts on authenticated users.
-
-    2. If user.role == PORTAL:
-       - They can ONLY access URLs starting with /portal/ or /logout/.
+    1. Public schema (PrintFlow superadmin): bypass all rules.
+    2. Unauthenticated users: handled by @login_required decorators.
+    3. PORTAL users:
+       - Can ONLY access URLs starting with /portal/ or /logout/.
        - Any other URL redirects to /portal/.
+    4. Internal staff:
+       - Can access management portal URLs (list, approve, card-jobs).
+       - Cannot access external client portal URLs (/portal/, /portal/new/).
+       - Any attempt redirects to inventory dashboard.
 
-    3. If user.role != PORTAL (internal staff):
-       - They can access /portal/list/ and /portal/approve/ (management views).
-       - They cannot access /portal/ or /portal/new/ (external client views).
-       - Any attempt to access those redirects to the internal dashboard.
+    Building analogy:
+       - request.tenant = the floor (PrintShop / Grupo Velton)
+       - request.user.role = the key that opens certain rooms
     """
 
     # Internal staff can access these portal URLs
-    INTERNAL_PORTAL_URLS = ['/portal/list', '/portal/approve', '/portal/card-jobs', '/portal/card-job/']
+    INTERNAL_PORTAL_URLS = [
+        '/portal/list',
+        '/portal/approve',
+        '/portal/card-jobs',
+        '/portal/card-job/',
+    ]
 
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
+        # Bypass: public schema is the PrintFlow superadmin — no portal rules apply
+        if hasattr(request, 'tenant') and request.tenant.schema_name == 'public':
+            return self.get_response(request)
+
         user = request.user
+
+        # Tenant scoping — prevent users from accessing wrong tenant
+        if user.is_authenticated and hasattr(request, 'tenant'):
+            if not user.is_superadmin and user.tenant != request.tenant:
+                from django.contrib.auth import logout
+                logout(request)
+                return redirect('login')
+
         path = request.path_info
 
         # Skip unauthenticated users, static and media files
@@ -50,8 +70,8 @@ class PortalMiddleware:
             if not is_portal_url and not is_logout_url:
                 return redirect('quotes:portal_home')
 
-        # Internal users → can access /portal/list/ and /portal/approve/
-        # but NOT /portal/ or /portal/new/ (external client views only)
+        # Internal staff → can access management portal URLs
+        # but NOT external client portal views
         else:
             if is_portal_url and not is_internal_portal_url:
                 return redirect('inventory:dashboard')

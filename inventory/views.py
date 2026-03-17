@@ -284,7 +284,8 @@ class InventoryListView(LoginRequiredMixin, ListView):
                      for text in re.split('([0-9]+)', unidad.unit_number)]
             
             # Devolvemos una tupla: Primero agrupa por remito, después ordena por número natural
-            return (unidad.purchase_order.remito_number, parts)
+            remito = unidad.purchase_order.remito_number if unidad.purchase_order else 'IMPORT'
+            return (remito, parts)
 
         # Recorremos cada material y ordenamos su lista interna
         for mat in context['materiales']:

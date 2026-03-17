@@ -30,14 +30,12 @@ PUBLIC_SCHEMA_URLCONF = 'core.urls_public'
 SHARED_APPS = [
     'django_tenants',
     'tenants',
-    # Django core — always shared
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Users live in public schema — superadmin access
     'users',
 ]
 
@@ -61,6 +59,7 @@ DATABASE_ROUTERS = ('django_tenants.routers.TenantSyncRouter',)
 
 MIDDLEWARE = [
     'django_tenants.middleware.main.TenantMainMiddleware',
+    'core.tenant_context.TenantContextMiddleware',  # Sets app.current_tenant_id for RLS
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
