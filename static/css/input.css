@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@source "../../templates/**/*.html";
+@source "../../**/*.py";
+
+@theme {
+  --color-surface: #1a1d23;
+  --color-surface-dark: #0f1115;
+  --color-surface-mid: #252932;
+  --color-surface-hover: #2d333b;
+
+  --color-border-default: #2d333b;
+  --color-border-subtle: #1e2530;
+
+  --color-text-muted: #94a3b8;
+  --color-text-faint: #64748b;
+
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+  --color-info: #3b82f6;
+  --color-special: #a855f7;
+
+  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+
+  --radius-sm: 2px;
+}
+
+@plugin "@tailwindcss/forms";
