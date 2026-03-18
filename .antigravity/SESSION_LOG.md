@@ -237,3 +237,95 @@ pytest users/tests/test_rls.py
 - Onboarding UI
 - Super Admin Dashboard (Phase 5)
 - Tailwind CLI compilation for production (replace CDN)
+
+
+Session: 2026-03-18
+Tasks Completed:
+
+Tailwind CLI Migration (CDN → CLI v4):
+
+Upgraded Node.js from v18 to v20 LTS via nvm (required by Tailwind v4)
+Installed tailwindcss, @tailwindcss/cli, and @tailwindcss/forms via npm
+Created static/css/input.css with Tailwind v4 syntax: @import "tailwindcss", @theme block with all 13 custom color tokens, mono font family, sm border radius, and @plugin "@tailwindcss/forms"
+Migrated all tokens from tailwind.config.js (v3 syntax) to input.css (v4 @theme syntax)
+Compiled static/css/output.css — verified all custom tokens present (--color-surface, --color-surface-dark, etc.)
+Updated templates/base.html — removed CDN script and inline tailwind.config block, replaced with <link> to output.css
+Added npm run build and npm run watch scripts to package.json
+Added node_modules/ and static/css/output.css to .gitignore
+
+
+Standalone Templates — CDN Removed:
+
+Replaced Tailwind CDN with {% static 'css/output.css' %} link in all standalone templates:
+registration/login.html, quotes/portal_login.html, quotes/portal.html,
+quotes/quote_form.html, quotes/card_job_form.html, public/landing.html
+Fixed CSS regression in card_job_form.html introduced by agent (items-center → align-items: center in <style> block)
+Verified zero CDN references remaining: grep -r "cdn.tailwindcss.com" templates/ returns empty
+
+
+Inline JS Extraction — Static Files:
+
+Created static/js/ directory
+Extracted inline JavaScript from 11 templates into 7 modular static files:
+
+toggle-row.js — shared row toggle (used by product_list, consumption_list, inventory_list)
+formset.js — shared Django formset handler (used by purchasing/oc_create, inventory/oc_edit) — DRY fix, was duplicated
+inventory-modals.js — fraccionar and consumption modals
+reception-modal.js — purchase order reception modal
+dashboard-toggle.js — inventory dashboard toggle
+quote-form.js — delivery toggle and input styling
+card-job-form.js — color sync and input styling
+
+
+All affected templates updated with <script src="{% static 'js/...' %}"> references
+Verified: only base.html and product_form.html still contain <script> tags
+
+
+
+Architecture Decision — HTMX:
+
+Identified that product_form.html (180 lines of inline JS) and future upload-heavy forms require a scalable solution
+Decision: Adopt HTMX to replace custom JS for dynamic interactions project-wide
+Rationale: HTMX integrates natively with Django, eliminates JS for 80% of use cases, and enables DRY scalable interactivity
+Current JS files are an intermediate state — will be progressively replaced with HTMX
+product_form.html JS extraction deferred pending HTMX architecture plan
+
+Files Created/Modified:
+
+package.json, package-lock.json: Node project initialized, Tailwind CLI installed
+static/css/input.css: Tailwind v4 entry point with all tokens
+static/css/output.css: compiled (gitignored)
+templates/base.html: CDN removed, output.css linked
+templates/registration/login.html: CDN → output.css
+templates/quotes/portal_login.html: CDN → output.css
+templates/quotes/portal.html: CDN → output.css
+templates/quotes/quote_form.html: CDN → output.css
+templates/quotes/card_job_form.html: CDN → output.css, CSS regression fixed
+templates/public/landing.html: CDN → output.css
+static/js/: 7 new JS files created
+11 templates: inline <script> blocks removed, replaced with static file references
+.gitignore: added node_modules/ and static/css/output.css
+
+Commits:
+
+feat(frontend): migrate Tailwind CSS from CDN to CLI v4
+feat(frontend): replace Tailwind CDN with compiled CSS in standalone templates
+refactor(frontend): extract inline JS to static files
+chore: add node_modules and output.css to .gitignore
+
+Next Session — HTMX Architecture:
+
+Plan and implement HTMX as the project-wide JS replacement strategy
+Define core/ JS library structure for what HTMX cannot cover
+Refactor product_form.html (180 lines JS) using HTMX patterns
+Unify modal pattern across all apps
+Create reusable file-handler.js for upload previews (used in products, card jobs, and future modules)
+Create new git branch: feature/htmx-integration
+
+Pending (carried over):
+
+Expand test suite to customers, orders, inventory
+CardJobOrder approval flow (UUID token, public URL /aprobar/<uuid>/)
+Velton stock import (file pending from client)
+Onboarding UI flow
+Super Admin Dashboard (Phase 5)
