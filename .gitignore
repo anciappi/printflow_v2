@@ -24,3 +24,5 @@ env/
 # OS generated files
 .DS_Store
 Thumbs.db
+node_modules/
+static/css/output.css
