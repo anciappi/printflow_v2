@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block breadcrumbs %} Purchasing / {% if is_edit %}Edit Order{% else %}New Order{% endif %} {% endblock %}
 
@@ -137,34 +138,5 @@
     </div>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const container = document.getElementById('items-container');
-        const addBtn = document.getElementById('add-item');
-        const totalForms = document.getElementById('id_items-TOTAL_FORMS');
-        const emptyTemplate = document.getElementById('empty-form-template').innerHTML;
-
-        addBtn.addEventListener('click', function () {
-            let idx = parseInt(totalForms.value);
-            let newHtml = emptyTemplate.replace(/__prefix__/g, idx);
-            let tmpDiv = document.createElement('div');
-            tmpDiv.innerHTML = newHtml;
-            container.appendChild(tmpDiv.firstElementChild);
-            totalForms.value = idx + 1;
-        });
-
-        container.addEventListener('click', function (e) {
-            const btn = e.target.closest('.delete-row');
-            if (!btn) return;
-            const row = btn.closest('.item-row');
-            const deleteCheck = row.querySelector('input[type="checkbox"][name$="-DELETE"]');
-            if (deleteCheck) {
-                deleteCheck.checked = true;
-                row.style.display = 'none';
-            } else {
-                row.remove();
-            }
-        });
-    });
-</script>
+<script src="{% static 'js/formset.js' %}"></script>
 {% endblock %}

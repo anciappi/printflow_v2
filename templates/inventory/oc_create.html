@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block breadcrumbs %} Inventory / Nueva Orden de Compra {% endblock %}
 
@@ -125,50 +126,5 @@
     </div>
 </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const itemsContainer = document.getElementById('items-container');
-        const addButton = document.getElementById('add-item');
-        const totalFormsInput = document.getElementById('id_items-TOTAL_FORMS'); // Django genera este ID por defecto
-        const emptyTemplate = document.getElementById('empty-form-template').innerHTML;
-
-        // Agregar fila
-        addButton.addEventListener('click', function() {
-            let formIdx = parseInt(totalFormsInput.value);
-            // Reemplazar __prefix__ con el número actual
-            let newRowHtml = emptyTemplate.replace(/__prefix__/g, formIdx);
-            
-            // Crear un div temporal para insertar HTML
-            let tempDiv = document.createElement('div');
-            tempDiv.innerHTML = newRowHtml;
-            itemsContainer.appendChild(tempDiv.firstElementChild);
-            
-            // Actualizar contador
-            totalFormsInput.value = formIdx + 1;
-        });
-
-        // Borrar fila
-        itemsContainer.addEventListener('click', function(e) {
-            // Buscamos si el click fue dentro de un botón .delete-row
-            const btn = e.target.closest('.delete-row');
-            if (!btn) return;
-
-            const row = btn.closest('.item-row');
-            
-            // Django requiere que marquemos el checkbox DELETE si el form ya existía
-            // Si es un form nuevo (agregado con JS), podemos removerlo del DOM
-            const deleteCheckbox = row.querySelector('input[type="checkbox"][name$="-DELETE"]');
-            
-            if (deleteCheckbox) {
-                // Es un ítem existente o guardado previamente
-                deleteCheckbox.checked = true;
-                row.style.display = 'none'; // Lo ocultamos visualmente
-            } else {
-                // Es un ítem nuevo generado por JS que aún no se guardó
-                row.remove();
-                // Nota: No bajamos el TOTAL_FORMS para no romper índices, Django lo maneja.
-            }
-        });
-    });
-</script>
+<script src="{% static 'js/formset.js' %}"></script>
 {% endblock %}

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block breadcrumbs %} Inventory / Dashboard {% endblock %}
 
@@ -214,21 +215,5 @@
 </div>
 
 <!-- SCRIPT PARA EL TOGGLE -->
-<script>
-    function toggleAgotados() {
-        const wrapper = document.getElementById('agotados-wrapper');
-        const icon = document.getElementById('agotados-icon');
-        
-        if (wrapper.classList.contains('hidden')) {
-            // ABRIR
-            wrapper.classList.remove('hidden');
-            wrapper.classList.add('animate-fade-in-down'); // Opcional si tienes animaciones
-            icon.style.transform = 'rotate(180deg)';
-        } else {
-            // CERRAR
-            wrapper.classList.add('hidden');
-            icon.style.transform = 'rotate(0deg)';
-        }
-    }
-</script>
+<script src="{% static 'js/dashboard-toggle.js' %}"></script>
 {% endblock %}

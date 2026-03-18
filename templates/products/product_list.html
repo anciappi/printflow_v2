@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block breadcrumbs %} Producción / Maestro Productos {% endblock %}
 
@@ -188,19 +189,5 @@
     </div>
 </div>
 
-<script>
-    function toggleRow(rowId, iconId) {
-        const row = document.getElementById(rowId);
-        const icon = document.getElementById(iconId);
-
-        if (row.classList.contains('hidden')) {
-            row.classList.remove('hidden');
-            icon.innerText = '-';
-            // Animación sutil si quisieras
-        } else {
-            row.classList.add('hidden');
-            icon.innerText = '+';
-        }
-    }
-</script>
+<script src="{% static 'js/toggle-row.js' %}"></script>
 {% endblock %}

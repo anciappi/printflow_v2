@@ -233,30 +233,7 @@
         </form>
     </main>
 
-    <script>
-        const sameAsBillingCheckbox = document.getElementById('{{ form.same_as_billing.id_for_label }}');
-        const deliveryFields = document.getElementById('delivery-fields');
-
-        function toggleDelivery() {
-            if (sameAsBillingCheckbox.checked) {
-                deliveryFields.style.opacity = '0.3';
-                deliveryFields.style.pointerEvents = 'none';
-                deliveryFields.style.filter = 'grayscale(1)';
-            } else {
-                deliveryFields.style.opacity = '1';
-                deliveryFields.style.pointerEvents = 'auto';
-                deliveryFields.style.filter = 'none';
-            }
-        }
-
-        sameAsBillingCheckbox.addEventListener('change', toggleDelivery);
-        window.addEventListener('load', toggleDelivery);
-
-        // Styling inputs
-        document.querySelectorAll('input:not([type="checkbox"]):not([type="file"]), select, textarea').forEach(el => {
-            el.classList.add('w-full');
-        });
-    </script>
+    <script src="{% static 'js/quote-form.js' %}"></script>
 </body>
 
 </html>
