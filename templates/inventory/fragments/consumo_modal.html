@@ -1,0 +1,46 @@
+<div class="fixed inset-0 z-50">
+    <div class="fixed inset-0 bg-black/70 backdrop-blur-sm"></div>
+    <div class="fixed inset-0 z-10 flex items-center justify-center p-4">
+        <div class="bg-surface border border-border-default w-full max-w-lg p-6 shadow-2xl">
+            <form hx-post="{% url 'inventory:registrar_consumo' unit.id %}"
+                  hx-target="#modal-container"
+                  hx-swap="innerHTML">
+                {% csrf_token %}
+                <h3 class="text-lg font-bold text-white mb-2">📉 Registrar Consumo</h3>
+                <p class="text-sm text-slate-400 mb-4">Material: <span class="text-blue-400 font-mono">{{ unit.unit_number }}</span></p>
+                
+                {% if error %}
+                <div class="bg-red-900/20 border border-red-500/30 text-red-400 text-xs px-4 py-2 mb-4 rounded-sm">
+                    {{ error }}
+                </div>
+                {% endif %}
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Cantidad a usar</label>
+                        <input type="number" step="0.01" name="cantidad" required class="w-full bg-surface-dark border border-border-default text-white text-lg px-4 py-2 focus:border-red-500 outline-none">
+                        <p class="text-[10px] text-slate-500 mt-1 text-right">Disponible: <span class="font-bold text-emerald-500">{{ unit.current_quantity }}</span></p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 pt-2 border-t border-border-default">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Fecha</label>
+                            <input type="date" name="fecha_consumo" class="w-full bg-surface-dark border border-border-default text-slate-300 text-xs px-3 py-2">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">OT Vinculada</label>
+                            <input type="text" name="ref_ot" placeholder="Ej: 11700" class="w-full bg-surface-dark border border-border-default text-slate-300 text-xs px-3 py-2">
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 flex justify-end gap-3">
+                    <button type="button" 
+                            hx-get="{% url 'inventory:close_modal' %}"
+                            hx-target="#modal-container"
+                            hx-swap="innerHTML"
+                            class="text-xs font-bold text-slate-500 uppercase px-4 py-2">Cancelar</button>
+                    <button type="submit" class="bg-red-600 text-white text-xs font-bold uppercase px-4 py-2 rounded-sm">Confirmar Descuento</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

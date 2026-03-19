@@ -28,4 +28,10 @@ urlpatterns = [
     path('materiales/<int:pk>/', views.MaterialDetailView.as_view(), name='material_detail'),
     path('materiales/editar/<int:pk>/', views.MaterialUpdateView.as_view(), name='material_edit'),
     path('materiales/borrar/<int:pk>/', views.MaterialDeleteView.as_view(), name='material_delete'),
+    
+    # HTMX Modal Fragments
+    path('consumo/<int:unit_id>/modal/', views.ConsumoModalView.as_view(), name='consumo_modal'),
+    path('fraccionar/<int:unit_id>/modal/', views.FraccionarModalView.as_view(), name='fraccionar_modal'),
+    path('remitos/<int:pk>/modal/', views.RecepcionModalView.as_view(), name='recepcion_modal'),
+    path('modal/close/', views.close_modal, name='close_modal'),
 ]

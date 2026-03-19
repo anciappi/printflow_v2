@@ -95,7 +95,9 @@
             <!-- Footer Card (Acción con Modal) -->
             <div class="p-4 bg-surface-dark/50 border-t border-border-default">
                 <button type="button"
-                    onclick="openReceptionModal('{{ orden.pk }}', '{{ orden.remito_number }}', '{{ orden.supplier.name }}')"
+                    hx-get="{% url 'inventory:recepcion_modal' orden.pk %}"
+                    hx-target="#modal-container"
+                    hx-swap="innerHTML"
                     class="w-full flex items-center justify-center gap-2 bg-surface-hover hover:bg-emerald-600 text-slate-300 hover:text-white text-xs font-bold uppercase tracking-wider py-2.5 transition-all duration-300 rounded-sm">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor">
@@ -124,66 +126,5 @@
     {% include 'components/pagination.html' %}
 </div>
 
-<!-- MODAL DE RECEPCIÓN -->
-<div id="receptionModal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog"
-    aria-modal="true">
-    <!-- Backdrop -->
-    <div class="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity"></div>
-
-    <div class="fixed inset-0 z-10 overflow-y-auto">
-        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
-            <div
-                class="relative transform overflow-hidden bg-surface border border-border-default text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-md">
-
-                <form id="receptionForm" method="POST" action="">
-                    {% csrf_token %}
-                    <div class="px-6 py-6">
-                        <h3 class="text-lg font-bold text-white mb-1">📥 Recepción de Materiales</h3>
-                        <p class="text-xs text-slate-400 mb-6">Vas a ingresar el pedido de <span id="modalSupplierName"
-                                class="text-blue-400 font-bold"></span>.</p>
-
-                        <div class="space-y-4">
-
-                            <!-- CAMPO 1: REMITO (Existente) -->
-                            <div>
-                                <label for="nuevo_remito_real"
-                                    class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">
-                                    Nº Remito Físico (Proveedor)
-                                </label>
-                                <input type="text" name="nuevo_remito_real" id="modalRemitoInput" required
-                                    class="w-full bg-surface-dark border border-blue-500/50 text-white font-mono text-lg px-4 py-3 focus:outline-none focus:border-blue-400 transition-colors placeholder-slate-600">
-                            </div>
-
-                            <!-- CAMPO 2: FECHA DE INGRESO (Nuevo) -->
-                            <div>
-                                <label for="fecha_ingreso"
-                                    class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">
-                                    Fecha de Recepción Real
-                                </label>
-                                <input type="date" name="fecha_ingreso"
-                                    class="w-full bg-surface-dark border border-border-default text-slate-300 text-sm px-4 py-2.5 focus:outline-none focus:border-blue-400 transition-colors">
-                                <p class="text-[10px] text-slate-500 mt-2">
-                                    * Si lo dejas vacío, se usará la fecha de hoy.
-                                </p>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <div class="bg-surface-dark/50 px-6 py-4 flex justify-end gap-3 border-t border-border-default">
-                        <button type="button" onclick="closeReceptionModal()"
-                            class="text-xs font-bold text-slate-500 hover:text-white uppercase tracking-wider px-4 py-2 transition-colors">Cancelar</button>
-                        <button type="submit"
-                            class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase tracking-wider px-6 py-2 rounded-sm transition-colors shadow-lg shadow-emerald-900/20">
-                            Confirmar Ingreso
-                        </button>
-                    </div>
-                </form>
-
-            </div>
-        </div>
-    </div>
-</div>
-
-<script src="{% static 'js/reception-modal.js' %}"></script>
+<div id="modal-container"></div>
 {% endblock %}

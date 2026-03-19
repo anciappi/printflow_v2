@@ -329,3 +329,114 @@ CardJobOrder approval flow (UUID token, public URL /aprobar/<uuid>/)
 Velton stock import (file pending from client)
 Onboarding UI flow
 Super Admin Dashboard (Phase 5)
+
+
+Session: 2026-03-18 (continuación noche)
+Tasks Completed:
+
+HTMX — Instalación y configuración base:
+
+Instalado django-htmx — agregado a SHARED_APPS y MIDDLEWARE
+Descargado htmx.min.js v2.0.4 a static/js/
+Cargado en base.html antes de </body>
+hx-boost="true" agregado y luego removido del <body> — demasiado agresivo mientras no todos los templates estén adaptados
+
+
+HTMX — Módulo Inventory (primer módulo migrado):
+
+Creadas 3 views de fragment en inventory/views.py:
+
+ConsumoModalView — GET devuelve modal de consumo
+FraccionarModalView — GET devuelve modal de fraccionar
+RecepcionModalView — GET devuelve modal de recepción OC
+
+
+Creada close_modal view — devuelve HttpResponse("") para cerrar modales
+Registradas 4 nuevas URLs en inventory/urls.py:
+
+consumo/<int:unit_id>/modal/
+fraccionar/<int:unit_id>/modal/
+remitos/<int:pk>/modal/
+modal/close/
+
+
+Creada carpeta templates/inventory/fragments/ con 4 fragments:
+
+consumo_modal.html — modal HTMX con datos del servidor, sin JS
+fraccionar_modal.html — modal HTMX con datos del servidor, sin JS
+recepcion_modal.html — modal HTMX con datos del servidor, sin JS
+inventory_table.html — tabla de inventario para refresh parcial
+
+
+Actualizadas views registrar_consumo, fraccionar_unidad, recibir_oc:
+
+Si request.htmx → devuelve HttpResponse("") + HX-Trigger header
+Si error → devuelve fragment con mensaje de error inline
+Flujo normal (redirect) preservado intacto
+
+
+InventoryListView actualizado con get_template_names() — devuelve fragment si HTMX, página completa si browser
+inventory_list.html refactorizado — wrapper con hx-trigger="inventoryUpdated from:body" + {% include %} del fragment
+Eliminados modales estáticos de inventory_list.html y purchaseorder_list.html
+Eliminados inventory-modals.js y reception-modal.js del proyecto (reemplazados por HTMX)
+
+
+
+Resultado:
+
+✅ Modal de consumo funciona — abre con datos reales, procesa, cierra y actualiza lista sin recargar
+✅ Modal de fraccionar funciona
+✅ Navegación desde sidebar funciona correctamente
+✅ Descuento refleja cantidad correcta inmediatamente
+
+Architecture Decision — hx-boost:
+
+hx-boost="true" removido del <body> — se reactivará cuando todos los módulos estén migrados a HTMX
+Estrategia: migrar módulo por módulo, reactivar boost al final
+
+Files Created/Modified:
+
+inventory/views.py: 4 nuevas views, 3 views actualizadas con request.htmx
+inventory/urls.py: 4 nuevas URLs
+templates/inventory/fragments/: 4 nuevos fragments
+templates/inventory/inventory_list.html: refactorizado para HTMX
+templates/inventory/purchaseorder_list.html: modales estáticos removidos
+static/js/htmx.min.js: descargado
+templates/base.html: htmx.min.js cargado, hx-boost removido
+core/settings.py: django-htmx en SHARED_APPS y MIDDLEWARE
+requirements.txt: django-htmx agregado
+
+Commits:
+
+feat(htmx): install and configure HTMX v2.0.4
+(pending commit de inventory HTMX migration)
+
+
+Pendientes — Próxima Sesión
+🔴 Bugs críticos
+
+Bug deshacer_fraccionamiento — cuando se deshace un corte, la unidad padre se resetea a cantidad original ignorando consumos realizados sobre las unidades hijas. Afecta integridad de datos. Investigar deshacer_fraccionamiento() en el modelo InventoryUnit.
+
+🟠 HTMX — Continuar migración
+
+Cerrar modal no resetea el desplegable — al refrescar #inventory-list después de un consumo, el estado del toggle (filas expandidas) se pierde. Solución: guardar estado del toggle en JS antes del refresh y restaurarlo después con htmx:afterSwap event.
+Migrar módulo purchasing — mismo patrón que inventory
+Migrar módulo orders — mismo patrón
+Migrar módulo products — mismo patrón
+Migrar módulo quotes — mismo patrón
+product_form.html — 180 líneas JS, separar en product-colors.js y file-handler.js (core/)
+Reactivar hx-boost — una vez que todos los módulos estén migrados
+
+🟡 Deuda técnica frontend
+
+CSS inline en templates — extraer bloques <style> restantes a Tailwind o static/css/
+Sidebar state — al navegar, el menú activo se colapsa (efecto secundario de HTMX navigation)
+base.html script inline — JS de sidebar está inline, extraer a static/js/sidebar.js
+
+🟢 Features pendientes
+
+Super Admin Dashboard (Fase 5) — gestionar tenants, branches y usuarios desde UI
+CardJobOrder approval flow — UUID token, URL pública /aprobar/<uuid>/
+Velton stock import — archivo pendiente del cliente
+Onboarding UI flow — para nuevos tenants
+Expandir suite de tests — customers, orders, inventory

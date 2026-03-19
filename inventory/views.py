@@ -2,6 +2,8 @@ import uuid
 import re
 from django.utils import timezone
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views import View
+from django.http import HttpResponse
 from django.views.generic import ListView, TemplateView, DetailView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.messages.views import SuccessMessageMixin
@@ -43,8 +45,18 @@ def recibir_oc(request, pk):
                 oc.delivery_date = fecha_ingreso
                 oc.save()
                 
+            if request.htmx:
+                response = HttpResponse("")
+                response['HX-Trigger'] = 'ocUpdated'
+                return response
+
             messages.success(request, f"Ingreso confirmado con fecha {oc.delivery_date}. Remito: {oc.vendor_remito}")
         else:
+            if request.htmx:
+                return render(request, 'inventory/fragments/recepcion_modal.html', {
+                    'oc': oc,
+                    'error': 'Este remito ya fue procesado.'
+                })
             messages.error(request, "Este remito ya fue procesado.")
             
     return redirect('inventory:oc_list')
@@ -105,10 +117,24 @@ def fraccionar_unidad(request, unit_id):
         try:
             ancho_a = Decimal(request.POST.get('ancho_hija_a'))
             hija_a, hija_b = parent.fraccionar(ancho_a)
+            if request.htmx:
+                response = HttpResponse("")
+                response['HX-Trigger'] = 'inventoryUpdated'
+                return response
             messages.success(request, f"Bobina fraccionada en: {hija_a.width_override}cm y {hija_b.width_override}cm")
         except ValueError as e:
+            if request.htmx:
+                return render(request, 'inventory/fragments/fraccionar_modal.html', {
+                    'unit': parent,
+                    'error': str(e)
+                })
             messages.error(request, str(e))
         except Exception as e:
+            if request.htmx:
+                return render(request, 'inventory/fragments/fraccionar_modal.html', {
+                    'unit': parent,
+                    'error': str(e)
+                })
             messages.error(request, f"Error inesperado al fraccionar: {e}")
             
     return redirect('inventory:inventory_list')
@@ -127,6 +153,11 @@ def registrar_consumo(request, unit_id):
             cantidad_decimal = Decimal(cantidad_texto)
 
             if cantidad_decimal > unidad.current_quantity:
+                if request.htmx:
+                    return render(request, 'inventory/fragments/consumo_modal.html', {
+                        'unit': unidad,
+                        'error': f'Error: solo hay {unidad.current_quantity} disponible.'
+                    })
                 messages.error(request, f"Error: Intentaste consumir {cantidad_decimal} pero solo hay {unidad.current_quantity}.")
                 return redirect('inventory:inventory_list')
             
@@ -141,9 +172,20 @@ def registrar_consumo(request, unit_id):
                 date=fecha_final,          # <--- Aquí va la fecha
                 reference_ot=ref_ot        # <--- Aquí va la OT
             )
+            
+            if request.htmx:
+                response = HttpResponse("")
+                response['HX-Trigger'] = 'inventoryUpdated'
+                return response
+
             messages.success(request, f"Descontado con éxito para OT {ref_ot if ref_ot else 'General'}.")
             
         except Exception as e:
+            if request.htmx:
+                return render(request, 'inventory/fragments/consumo_modal.html', {
+                    'unit': unidad,
+                    'error': str(e)
+                })
             messages.error(request, f"Error: {e}")
             
     return redirect('inventory:inventory_list')
@@ -253,6 +295,11 @@ class InventoryListView(LoginRequiredMixin, ListView):
     template_name = 'inventory/inventory_list.html'
     context_object_name = 'materiales'
     paginate_by = 20
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return ['inventory/fragments/inventory_table.html']
+        return ['inventory/inventory_list.html']
 
     def get_queryset(self):
         # 2. Limpiamos el QuerySet. 
@@ -409,3 +456,29 @@ class MaterialDetailView(LoginRequiredMixin, DetailView):
         ).select_related('inventory_unit', 'responsible').order_by('-date')
         
         return context
+
+# -----------------------------------------------------------------------------
+# HTMX FRAGMENT VIEWS (Modals)
+# -----------------------------------------------------------------------------
+
+class ConsumoModalView(LoginRequiredMixin, View):
+    """Returns modal HTML fragment for HTMX consumption request."""
+    def get(self, request, unit_id):
+        unit = get_object_or_404(InventoryUnit, pk=unit_id)
+        return render(request, 'inventory/fragments/consumo_modal.html', {'unit': unit})
+
+class FraccionarModalView(LoginRequiredMixin, View):
+    """Returns modal HTML fragment for HTMX fraccionar request."""
+    def get(self, request, unit_id):
+        unit = get_object_or_404(InventoryUnit, pk=unit_id)
+        return render(request, 'inventory/fragments/fraccionar_modal.html', {'unit': unit})
+
+class RecepcionModalView(LoginRequiredMixin, View):
+    """Returns modal HTML fragment for HTMX reception request."""
+    def get(self, request, pk):
+        oc = get_object_or_404(PurchaseOrder, pk=pk)
+        return render(request, 'inventory/fragments/recepcion_modal.html', {'oc': oc})
+
+def close_modal(request):
+    """Returns empty response to clear modal container."""
+    return HttpResponse("")

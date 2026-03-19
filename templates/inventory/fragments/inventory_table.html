@@ -1,0 +1,119 @@
+{% load static %}
+<div class="flex justify-between items-end mb-4">
+    <div>
+        <h2 class="text-xl font-bold text-white tracking-tight">Stock por Material</h2>
+        <p class="text-xs text-slate-500 mt-1">Haz clic en <span class="text-xs text-blue-400 font-bold">+</span> para ver las bobinas individuales.</p>
+    </div>
+</div>
+
+<div class="bg-surface border border-border-default overflow-hidden shadow-2xl rounded-sm">
+    <table class="w-full text-left border-collapse">
+        <thead>
+            <tr class="border-b border-border-default bg-surface-dark/50 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                <th class="px-4 py-2 w-10"></th>
+                <th class="px-4 py-2">Material</th>
+                <th class="px-4 py-2">Especificaciones</th>
+                <th class="px-4 py-2 text-center">Cantidad Bobinas</th>
+                <th class="px-4 py-2 text-right">Stock Total Mts.</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-[#2d333b]">
+            {% for mat in materiales %}
+            <tr class="hover:bg-surface-hover/30 transition-colors cursor-pointer group" onclick="toggleRow('row-{{ mat.id }}', 'icon-{{ mat.id }}')">
+                <td class="px-4 py-2 text-center">
+                    <span id="icon-{{ mat.id }}" class="text-blue-500 font-bold text-lg transition-transform inline-block">+</span>
+                </td>
+                <td class="px-4 py-2">
+                    <div class="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">{{ mat.name }}</div>
+                </td>
+                <td class="px-4 py-2">
+                    <div class="text-sm">
+                        {{ mat.width|default:"-" }} x {{ mat.length|default:"-" }} | {{ mat.grammage|default:"-" }}g
+                        {% if mat.technology %}| <span class="text-purple-400">{{ mat.technology }}</span>{% endif %}
+                    </div>
+                </td>
+                <td class="px-4 py-2 text-center">
+                    <span class="bg-surface-hover text-slate-300 text-[12px] px-2 py-0.5 rounded-full border border-slate-600">
+                        {{ mat.cant_bobinas }}
+                    </span>
+                </td>
+                <td class="px-4 py-2 text-right text-sl font-bold text-emerald-400">
+                    {{ mat.total_stock }} mts.
+                </td>
+            </tr>
+
+            <tr id="row-{{ mat.id }}" class="hidden bg-surface-dark">
+                <td colspan="5" class="p-0">
+                    <div class="border-y border-border-default bg-black/20 p-4 shadow-inner">
+                        <p class="text-[10px] text-slate-500 uppercase tracking-widest mb-2 ml-1">Detalle de Unidades para {{ mat.name }}</p>
+
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="text-[9px] text-slate-600 uppercase border-b border-slate-800">
+                                    <th class="pb-1">Remito</th>
+                                    <th class="pb-1 pl-2">Fecha de entrada</th>
+                                    <th class="pb-1 pl-2">Nº Bobina</th>
+                                    <th class="pb-1 pl-2">Ancho Bobina</th>
+                                    <th class="pb-1 text-center">Estado</th>
+                                    <th class="pb-1 text-right">Cantidad</th>
+                                    <th class="pb-1 text-right pr-2">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-xs text-slate-400">
+                                {% for unidad in mat.active_units %}
+                                <tr class="border-b border-slate-800/50 hover:bg-white/5 transition-colors">
+                                    <td class="py-1.5">{{ unidad.purchase_order.remito_number }}</td>
+                                    <td class="py-1.5 pl-2 font-mono text-blue-300">{{ unidad.purchase_order.delivery_date }}</td>
+                                    <td class="py-1.5 pl-2 font-mono text-blue-300">{{ unidad.unit_number }}</td>
+                                    <td class="py-1.5 pl-2 font-mono text-blue-300">{{ unidad.width_override|default:mat.width }}</td>
+                                    <td class="py-1.5 text-center">
+                                        {% if unidad.status == 'AVAILABLE' %}
+                                        <span class="text-[9px] text-emerald-500">✔ Disp.</span>
+                                        {% else %}
+                                        <span class="text-[9px] text-amber-500">⚠ En Uso</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="py-1.5 text-right font-mono text-white">{{ unidad.current_quantity }}</td>
+                                    <td class="py-1.5 text-right pr-2 flex justify-end gap-2">
+                                        {% if unidad.parent_unit %}
+                                        <form action="{% url 'inventory:deshacer_fraccionamiento' unidad.id %}" method="POST" class="inline">
+                                            {% csrf_token %}
+                                            <button type="submit" onclick="event.stopPropagation(); return confirm('¿Deshacer el corte?');" class="text-purple-400 hover:text-purple-300 bg-surface-hover px-2 py-0.5 rounded text-[10px] flex items-center gap-1 mr-2">
+                                                Deshacer
+                                            </button>
+                                        </form>
+                                        {% endif %}
+                                        <button hx-get="{% url 'inventory:fraccionar_modal' unidad.id %}"
+                                                hx-target="#modal-container"
+                                                hx-swap="innerHTML"
+                                                class="text-amber-500 hover:text-amber-300 bg-surface-hover px-2 py-0.5 rounded text-[10px]">
+                                            ✂ Fraccionar
+                                        </button>
+                                        <button hx-get="{% url 'inventory:consumo_modal' unidad.id %}"
+                                                hx-target="#modal-container"
+                                                hx-swap="innerHTML"
+                                                class="text-slate-500 hover:text-red-400 bg-surface-hover px-2 py-0.5 rounded text-[10px]">
+                                            Consumir
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="px-6 py-10 text-center text-slate-500 italic">No hay stock disponible.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% include 'components/pagination.html' %}
+
+<div id="modal-container"></div>
+
+<script src="{% static 'js/toggle-row.js' %}"></script>
