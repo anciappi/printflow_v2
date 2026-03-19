@@ -250,38 +250,7 @@
     </main>
 
     <script src="{% static 'js/htmx.min.js' %}"></script>   
+    <script src="{% static 'js/sidebar.js' %}"></script>
 </body>
 
 </html>
-
-<!-- SCRIPT SIMPLE PARA EL MENÚ -->
-<script>
-    function toggleMenu(menuId, arrowId) {
-        const menu = document.getElementById(menuId);
-        const arrow = document.getElementById(arrowId);
-
-        if (menu.classList.contains('hidden')) {
-            // ABRIR
-            menu.classList.remove('hidden');
-            arrow.classList.remove('-rotate-90'); // Flecha abajo
-        } else {
-            // CERRAR
-            menu.classList.add('hidden');
-            arrow.classList.add('-rotate-90'); // Flecha derecha
-        }
-    }
-
-    // Opcional: Auto-abrir el menú según la URL actual para no perder contexto al recargar
-    document.addEventListener("DOMContentLoaded", function () {
-        const path = window.location.pathname;
-        if (path.includes('/inventory/')) {
-            toggleMenu('menu-inventory', 'arrow-inv');
-        } else if (path.includes('/customers/') || path.includes('/sales/')) {
-            toggleMenu('menu-sales', 'arrow-ven');
-        } else if (path.includes('/purchasing/')) {
-            toggleMenu('menu-purchasing', 'arrow-comp');
-        } else if (path.includes('/orders/') || path.includes('/products/')) {
-            toggleMenu('menu-orders', 'arrow-ord');
-        }
-    });
-</script>
