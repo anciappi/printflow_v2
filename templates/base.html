@@ -10,7 +10,8 @@
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
 </head>
 
-<body class="h-full text-slate-300 font-sans antialiased overflow-hidden flex">
+
+<body class="h-full text-slate-300 font-sans antialiased overflow-hidden flex" hx-boost="true">
 
     <!-- SIDEBAR (Como el panel de carpetas de VS Code) -->
     <aside class="w-64 bg-surface border-r border-border-default flex flex-col ">
@@ -248,6 +249,7 @@
         </section>
     </main>
 
+    <script src="{% static 'js/htmx.min.js' %}"></script>   
 </body>
 
 </html>
