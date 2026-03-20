@@ -440,3 +440,116 @@ CardJobOrder approval flow — UUID token, URL pública /aprobar/<uuid>/
 Velton stock import — archivo pendiente del cliente
 Onboarding UI flow — para nuevos tenants
 Expandir suite de tests — customers, orders, inventory
+
+
+Session: 2026-03-19
+Tasks Completed:
+
+HTMX Migration — Completada al 100%:
+Inventory (completado sesión anterior, verificado hoy):
+
+Fragment views: ConsumoModalView, FraccionarModalView, RecepcionModalView, close_modal
+Views actualizadas con request.htmx: registrar_consumo, fraccionar_unidad, recibir_oc, delete_purchase_order, eliminar_consumo
+Fragments: consumo_modal.html, fraccionar_modal.html, recepcion_modal.html, inventory_table.html
+InventoryListView con get_template_names() para respuesta parcial HTMX
+Confirms de eliminación migrados a hx-confirm nativo
+
+Purchasing:
+
+Fragment views: RecepcionModalView, close_modal
+Views actualizadas: recibir_oc, delete_purchase_order
+Fragments: recepcion_modal.html, oc_table.html
+PurchaseOrderListView con get_template_names()
+Modal estático y JS confirms eliminados de purchaseorder_list.html
+
+Orders: ✅ Limpio desde el inicio — nació con arquitectura correcta
+Products: ✅ product_list.html usa toggle-row.js — correcto. product_form.html tiene JS legítimo (FileReader API, DOM manipulation) — deuda técnica frontend, no HTMX
+Quotes: ✅ Limpio — sin JS inline
+Sidebar JS extraído:
+
+Creado static/js/sidebar.js con toggleMenu, activateSidebarByPath
+Agregados htmx:beforeSwap y htmx:afterSwap listeners para preservar estado de filas expandidas
+Eliminado script inline de base.html
+
+
+hx-boost — Decisión arquitectónica:
+
+Evaluado y descartado deliberadamente
+Razones: templates standalone incompatibles, ganancia marginal para SaaS interno, HTMX quirúrgico ya implementado donde agrega valor real
+Decisión final: no se implementa hx-boost en este proyecto
+
+
+
+Architecture Decisions Logged:
+
+DRY es innegociable — cualquier lógica que se repite 2+ veces se extrae. Sin excepciones.
+HTMX pattern estándar del proyecto:
+
+View con get_template_names() — página completa vs fragment
+Fragment en templates/<app>/fragments/
+hx-trigger="<event> from:body" en el wrapper de la lista
+HX-Trigger header en el response para disparar refresh
+close_modal view reutilizable por módulo
+
+
+JS legítimo vs JS a eliminar:
+
+JS legítimo: FileReader API, manipulación de DOM compleja, estado de UI puro
+JS a eliminar: confirms, modales, form actions, fetch/ajax
+
+
+hx-boost descartado — no agrega valor suficiente vs complejidad que introduce
+
+Files Created/Modified:
+
+inventory/views.py: 4 nuevas views, 5 views actualizadas
+inventory/urls.py: 4 nuevas URLs
+purchasing/views.py: 2 nuevas views, 2 views actualizadas
+purchasing/urls.py: 2 nuevas URLs
+templates/inventory/fragments/: consumo_modal.html, fraccionar_modal.html, recepcion_modal.html, inventory_table.html
+templates/purchasing/fragments/: recepcion_modal.html, oc_table.html
+templates/inventory/inventory_list.html: refactorizado para HTMX
+templates/inventory/purchaseorder_list.html: modales y JS eliminados
+templates/purchasing/purchaseorder_list.html: modales y JS eliminados
+static/js/sidebar.js: creado con toggle, auto-activate y HTMX state preservation
+templates/base.html: script inline eliminado, sidebar.js cargado
+
+Commits:
+
+feat(htmx): complete inventory module HTMX migration
+feat(htmx): migrate purchasing module to HTMX
+feat(htmx): complete HTMX migration across all modules
+refactor(frontend): extract sidebar JS and add HTMX toggle state preservation
+
+
+Próximo Sprint — Deuda Técnica Frontend
+🔴 Prioridad Alta
+
+product_form.html — Separar JS en archivos modulares:
+
+static/js/product-colors.js — lógica de colores (addColorRow, removeColorRow, syncColors)
+static/js/core/file-handler.js — previews y marcado de archivos (reutilizable en todo el proyecto)
+Crear carpeta static/js/core/ para utilidades compartidas
+
+
+CSS inline restante — Auditar y extraer:
+
+Identificar templates con bloques <style> hardcodeados
+Migrar a clases Tailwind o static/css/
+
+
+base.html — Verificar limpieza completa
+
+🟠 Prioridad Media
+
+Sidebar state — menú activo se colapsa al navegar entre secciones (efecto secundario menor)
+Toggle state después de consumo — filas expandidas se cierran al refrescar lista (sidebar.js ya tiene el listener, verificar funcionamiento)
+
+🟢 Features — Post limpieza
+
+Super Admin Dashboard (Fase 5) — gestionar tenants, branches y usuarios desde UI
+CardJobOrder approval flow — UUID token, URL pública /aprobar/<uuid>/
+Bug deshacer_fraccionamiento — unidad padre se resetea ignorando consumos de hijas
+Velton stock import — archivo pendiente del cliente
+Onboarding UI flow — para nuevos tenants
+Expandir suite de tests — customers, orders, inventory
