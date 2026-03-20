@@ -73,6 +73,8 @@ def delete_purchase_order(request, pk):
     if request.method == 'POST':
         numero = oc.remito_number
         oc.delete()
+        if request.htmx:
+            return HttpResponse("")
         messages.success(request, f"La Orden de Compra {numero} fue eliminada.")
         
     return redirect('inventory:oc_list')
@@ -237,6 +239,8 @@ def eliminar_consumo(request, log_id):
     if request.method == 'POST':
         try:
             log.deshacer_consumo()
+            if request.htmx:
+                return HttpResponse("")
             messages.success(request, "Consumo eliminado. El stock ha sido restaurado.")
         except Exception as e:
             messages.error(request, f"Error al deshacer: {e}")
