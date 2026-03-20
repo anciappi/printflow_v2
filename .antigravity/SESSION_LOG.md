@@ -553,3 +553,98 @@ Bug deshacer_fraccionamiento — unidad padre se resetea ignorando consumos de h
 Velton stock import — archivo pendiente del cliente
 Onboarding UI flow — para nuevos tenants
 Expandir suite de tests — customers, orders, inventory
+
+
+
+## Session: 2026-03-19 (continuación — cierre Sprint 2)
+
+**Sprint 2 — Deuda Técnica Frontend: CERRADO ✅**
+
+**Tasks Completed:**
+
+- **Portal CSS Unificado:**
+  - Creado `static/css/portal.css` — estilos compartidos para todos los templates standalone del portal
+  - Eliminados bloques `<style>` inline de 4 templates: `portal_login.html`, `portal.html`, `quote_form.html`, `card_job_form.html`
+  - `.custom-scrollbar` migrado a `portal.css` con CSS variables (`var(--color-surface-dark)`, `var(--color-border-default)`)
+  - `card_job_detail.html` limpiado — bloque `<style>` con `@apply` inválido eliminado
+
+- **`card_job_detail.html` — Decisión arquitectónica:**
+  - Template marcado para **reconstrucción completa** — nuevo diseño aprobado por cliente
+  - Nuevo diseño incluye: gestión de tintas Pantone, preview de imágenes con zoom, upload drag & drop, firma digital, especificaciones técnicas, flujo de aprobación completo
+  - No se invierte más tiempo en el template actual
+
+- **`product_form.html` — Deuda técnica diferida:**
+  - 180 líneas de JS legítimo (FileReader API, DOM manipulation)
+  - Se extrae en próximo sprint dedicado: `static/js/product-colors.js` + `static/js/core/file-handler.js`
+  - `core/` será la librería JS interna reutilizable del proyecto
+
+**Architecture Decisions Logged:**
+- **DRY es innegociable** — cualquier lógica que se repite 2+ veces se extrae sin excepciones
+- **CSS inline = deuda técnica** — todo CSS va a archivos estáticos con tokens semánticos
+- **`@apply` solo en archivos compilados** — nunca en `<style>` tags inline
+- **No reconstruir lo que va a ser reemplazado** — decisión pragmática sobre `card_job_detail.html`
+
+**Files Created/Modified:**
+- `static/css/portal.css`: creado con estilos unificados del portal
+- `templates/quotes/portal_login.html`: `<style>` eliminado, `portal.css` vinculado
+- `templates/quotes/portal.html`: `<style>` eliminado, `portal.css` vinculado
+- `templates/quotes/quote_form.html`: `<style>` eliminado, `portal.css` vinculado
+- `templates/quotes/card_job_form.html`: `<style>` eliminado, `portal.css` vinculado
+- `templates/quotes/card_job_detail.html`: `<style>` con `@apply` eliminado
+
+**Commits:**
+- `refactor(frontend): complete Sprint 2 - frontend technical debt`
+
+---
+
+## Estado del Proyecto — Post Sprint 1 y 2
+
+**Infraestructura:**
+- ✅ Multi-tenant con django-tenants (schemas PostgreSQL)
+- ✅ RLS PostgreSQL — aislamiento de usuarios a nivel DB
+- ✅ 9/9 tests RLS pasando
+- ✅ Tailwind CLI v4 — CSS compilado, sin CDN
+- ✅ HTMX v2.0.4 — interacciones parciales sin JS custom
+- ✅ JS modularizado en `static/js/`
+- ✅ CSS unificado en `static/css/`
+- ✅ SESSION_LOG completo
+
+**Módulos operativos:**
+- ✅ Inventory — HTMX completo
+- ✅ Purchasing — HTMX completo
+- ✅ Orders — limpio desde el inicio
+- ✅ Products — funcional (product_form.html pendiente JS extraction)
+- ✅ Quotes — portal funcional (card_job_detail.html pendiente reconstrucción)
+- ✅ Customers — funcional
+- ✅ Users + Auth — RLS activo
+- ✅ Tenants — multi-tenant operativo (Grupo Velton: Velton + Magtik)
+
+---
+
+## Próximo Sprint — MVP para presentación
+
+### 🔴 Crítico para MVP
+1. **`card_job_detail.html` — Reconstrucción completa** desde nuevo diseño aprobado
+   - Gestión de tintas Pantone (agregar/eliminar)
+   - Preview de imágenes anverso/reverso con zoom
+   - Upload drag & drop para archivos originales
+   - Firma digital integrada
+   - Especificaciones técnicas en tabla
+   - Flujo de aprobación completo
+   - URL pública `/aprobar/<uuid>/` para cliente externo
+
+2. **Super Admin Dashboard (Fase 5)** — gestionar tenants, branches y usuarios desde UI
+
+3. **CardJobOrder approval flow** — UUID token, notificación, standalone template
+
+### 🟠 Post-MVP inmediato
+4. **`product_form.html`** — extraer JS en `product-colors.js` y `core/file-handler.js`
+5. **Bug `deshacer_fraccionamiento`** — unidad padre se resetea ignorando consumos de hijas
+6. **Velton stock import** — archivo pendiente del cliente
+7. **Sidebar state** — menú activo se colapsa al navegar
+
+### 🟢 Backlog
+8. **Expandir suite de tests** — customers, orders, inventory
+9. **Onboarding UI flow** — para nuevos tenants
+10. **Load/stress test** — múltiples tenants simultáneos
+11. **Tailwind CLI para producción** — configurar build en deploy

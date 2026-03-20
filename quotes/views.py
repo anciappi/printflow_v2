@@ -5,7 +5,9 @@ from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy, reverse
 from django.contrib import messages
 from django.db import transaction
+from django.db.models import Q
 
+from tenants.models import Branch
 from users.models import User
 from customers.models import Customer
 from .models import QuoteRequest, CardJobOrder
@@ -201,3 +203,50 @@ class CardJobOrderListView(LoginRequiredMixin, InternalStaffMixin, ListView):
     template_name = 'quotes/card_job_list.html'
     context_object_name = 'jobs'
     paginate_by = 20
+
+    def get_queryset(self):
+        qs = CardJobOrder.objects.select_related(
+            'assigned_to', 'branch'
+        ).order_by('-created_at')
+
+        # Search
+        q = self.request.GET.get('q', '').strip()
+        if q:
+            qs = qs.filter(
+                Q(requester_name__icontains=q) |
+                Q(order_number__icontains=q) |
+                Q(job_description__icontains=q)
+            )
+
+        # Filter by status
+        status = self.request.GET.get('status', '').strip()
+        if status:
+            qs = qs.filter(status=status)
+
+        # Filter by branch
+        branch = self.request.GET.get('branch', '').strip()
+        if branch:
+            qs = qs.filter(branch_id=branch)
+
+        # Filter by date
+        date_from = self.request.GET.get('date_from', '').strip()
+        date_to = self.request.GET.get('date_to', '').strip()
+        if date_from:
+            qs = qs.filter(created_at__date__gte=date_from)
+        if date_to:
+            qs = qs.filter(created_at__date__lte=date_to)
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['status_choices'] = CardJobOrder.STATUS_CHOICES
+        context['branches'] = Branch.objects.all()
+        context['current_filters'] = {
+            'q': self.request.GET.get('q', ''),
+            'status': self.request.GET.get('status', ''),
+            'branch': self.request.GET.get('branch', ''),
+            'date_from': self.request.GET.get('date_from', ''),
+            'date_to': self.request.GET.get('date_to', ''),
+        }
+        return context

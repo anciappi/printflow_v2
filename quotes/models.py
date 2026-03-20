@@ -1,4 +1,5 @@
 from django.db import models
+import uuid
 from customers.models import Customer
 from products.models import Product
 from users.models import User
@@ -75,13 +76,83 @@ class QuoteProduct(models.Model):
         return f"{self.quantity}x {self.product.name} (Cotización #{self.quote_id})"
 
 
+class PantoneColor(models.Model):
+    CATEGORY_CHOICES = [
+        ('PROCESS', 'Process (CMYK)'),
+        ('COATED', 'Coated (C)'),
+        ('UNCOATED', 'Uncoated (U)'),
+        ('METALLIC', 'Metallic'),
+        ('NEON', 'Neon'),
+    ]
+    code = models.CharField(max_length=100, unique=True)
+    hex_value = models.CharField(max_length=7)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES)
+
+    class Meta:
+        ordering = ['category', 'code']
+        verbose_name = 'Pantone Color'
+        verbose_name_plural = 'Pantone Colors'
+
+    def __str__(self):
+        return self.code
+
+
+class CardJobColor(models.Model):
+    SIDE_CHOICES = [
+        ('FRONT', 'Anverso'),
+        ('BACK', 'Reverso'),
+    ]
+    card_job = models.ForeignKey('CardJobOrder', on_delete=models.CASCADE, related_name='colors')
+    pantone = models.ForeignKey(PantoneColor, on_delete=models.PROTECT, related_name='card_job_colors')
+    side = models.CharField(max_length=10, choices=SIDE_CHOICES)
+    order = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        ordering = ['side', 'order']
+        verbose_name = 'Card Job Color'
+        verbose_name_plural = 'Card Job Colors'
+
+    def __str__(self):
+        return f"{self.card_job} - {self.side} - {self.pantone.code}"
+
+
+class CardJobFile(models.Model):
+    FILE_TYPE_CHOICES = [
+        ('FRONT', 'Anverso'),
+        ('BACK', 'Reverso'),
+        ('DIECUT', 'Troquel'),
+        ('TECH', 'Técnico'),
+    ]
+    card_job = models.ForeignKey('CardJobOrder', on_delete=models.CASCADE, related_name='files')
+    file_type = models.CharField(max_length=10, choices=FILE_TYPE_CHOICES)
+    file = models.FileField(upload_to='card_jobs/files/')
+    original_name = models.CharField(max_length=255)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    uploaded_by = models.ForeignKey(
+        'users.User', null=True, blank=True,
+        on_delete=models.SET_NULL,
+        related_name='uploaded_card_files'
+    )
+
+    class Meta:
+        ordering = ['file_type', 'uploaded_at']
+        verbose_name = 'Card Job File'
+        verbose_name_plural = 'Card Job Files'
+
+    def __str__(self):
+        return f"{self.card_job} - {self.file_type} - {self.original_name}"
+
+
 class CardJobOrder(models.Model):
     STATUS_CHOICES = [
         ('DRAFT', 'Borrador'),
-        ('PENDING', 'Pendiente'),
-        ('IN_REVIEW', 'En Revisión'),
+        ('SUBMITTED', 'Enviado'),
+        ('STAFF_REVIEW', 'En Revisión Staff'),
+        ('PENDING_CLIENT', 'Pendiente Aprobación Cliente'),
         ('APPROVED', 'Aprobado'),
+        ('APPROVED_WITH_CHANGES', 'Aprobado con Cambios'),
         ('REJECTED', 'Rechazado'),
+        ('IN_PRODUCTION', 'En Producción'),
     ]
 
     REVIEW_CHOICES = [
@@ -141,7 +212,7 @@ class CardJobOrder(models.Model):
     approval_date = models.DateField(null=True, blank=True)
 
     # STATUS
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='DRAFT')
+    status = models.CharField(max_length=30, choices=STATUS_CHOICES, default='DRAFT')
 
     # Internal reference
     order_number = models.CharField(max_length=50, blank=True)
@@ -161,6 +232,18 @@ class CardJobOrder(models.Model):
     )
     attached_file = models.FileField(upload_to='card_jobs/', blank=True, null=True)
     general_notes = models.TextField(blank=True)
+
+    # Approval flow
+    approval_token = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+
+    # Quantity and pricing
+    quantity = models.PositiveIntegerField(null=True, blank=True)
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+
+    # Delivery
+    delivery_address = models.CharField(max_length=200, blank=True)
+    estimated_delivery = models.DateField(null=True, blank=True)
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
