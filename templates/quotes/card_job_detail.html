@@ -489,30 +489,5 @@ CLIENT PORTAL / ORDERS / {{ job.job_description|truncatechars:30 }}
     </footer>
 </form>
 
-<style>
-    /* Estilos para que los inputs de Django se vean como los del mockup */
-    input[type="text"],
-    input[type="date"],
-    select,
-    textarea {
-        @apply w-full bg-surface-dark border border-border-default text-white px-4 py-2 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm;
-    }
 
-    input[type="checkbox"] {
-        @apply rounded border-border-default bg-surface-dark text-blue-500 focus:ring-blue-500/20 w-4 h-4;
-    }
-
-    .custom-scrollbar::-webkit-scrollbar {
-        width: 4px;
-    }
-
-    .custom-scrollbar::-webkit-scrollbar-track {
-        background: #0f1115;
-    }
-
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: #2d333b;
-        border-radius: 2px;
-    }
-</style>
 {% endblock %}

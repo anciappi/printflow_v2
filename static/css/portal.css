@@ -1,0 +1,64 @@
+/*
+ * portal.css
+ * Shared styles for all public-facing portal templates.
+ * Standalone templates that don't extend base.html load this file.
+ */
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #0f1115;
+    color: #94a3b8;
+}
+
+.card {
+    background-color: #1a1d23;
+    border: 1px solid #2d333b;
+    border-radius: 0.125rem;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="tel"],
+textarea,
+select {
+    background-color: #0f1115;
+    border: 1px solid #2d333b;
+    color: white;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    outline: none;
+    transition: border-color 0.2s;
+    border-radius: 0.125rem;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    border-color: #60a5fa;
+}
+
+.checkbox-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #64748b;
+}
+
+.checkbox-group input {
+    width: 1rem;
+    height: 1rem;
+    border-radius: 0.125rem;
+    border-color: #2d333b;
+    background-color: #0f1115;
+}
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar { width: 4px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: var(--color-surface-dark); }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: var(--color-border-default); border-radius: 2px; }
