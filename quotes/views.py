@@ -214,6 +214,11 @@ class CardJobOrderListView(LoginRequiredMixin, StaffMixin, ListView):
     context_object_name = 'jobs'
     paginate_by = 20
 
+    def get_template_names(self):
+        if self.request.htmx:
+            return ['quotes/fragments/job_table.html']
+        return [self.template_name]
+
     def get_queryset(self):
         qs = CardJobOrder.objects.select_related(
             'assigned_to', 'branch'
