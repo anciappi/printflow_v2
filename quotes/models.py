@@ -163,6 +163,15 @@ class CardJobOrder(models.Model):
 
     # CLIENT SECTION
     client = models.ForeignKey(QuoteRequest, null=True, blank=True, on_delete=models.SET_NULL, related_name='card_jobs')
+    portal_user = models.ForeignKey(
+        'users.User',
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name='card_job_orders',
+        limit_choices_to={'role': 'PORTAL'},
+        help_text='Portal client who owns this order'
+    )
     requester_name = models.CharField(max_length=150)
     requester_email = models.EmailField()
     requester_phone = models.CharField(max_length=50)

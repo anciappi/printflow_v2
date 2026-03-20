@@ -12,6 +12,7 @@ urlpatterns = [
     path('login/', PortalLoginView.as_view(), name='portal_login'),
     path('', PortalView.as_view(), name='portal_home'),
     path('new/', QuoteCreateView.as_view(), name='quote_create'),
+    path('users/new/', views.PortalCreateUserView.as_view(), name='portal_create_user'),
     path('card-job/new/', CardJobOrderCreateView.as_view(), name='card_job_create'),
     
     # Internal staff views

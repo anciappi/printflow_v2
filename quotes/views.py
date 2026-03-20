@@ -26,18 +26,17 @@ class PortalClientMixin(UserPassesTestMixin):
         return self.request.user.role == User.Roles.PORTAL
 
 class StaffMixin(UserPassesTestMixin):
-    """Allows access to internal staff: ADMIN, MANAGEMENT, SALES."""
+    """Allows access to any internal staff — any role except PORTAL."""
     raise_exception = False
-    ALLOWED_ROLES = [User.Roles.ADMIN, User.Roles.MANAGEMENT, User.Roles.SALES]
     def test_func(self):
-        return self.request.user.role in self.ALLOWED_ROLES
+        return (self.request.user.is_authenticated and
+                self.request.user.role != User.Roles.PORTAL)
 
 class PortalOrStaffMixin(UserPassesTestMixin):
-    """Allows access to both PORTAL users and internal staff."""
+    """Allows access to any authenticated user."""
     raise_exception = False
     def test_func(self):
-        allowed = [User.Roles.PORTAL, User.Roles.ADMIN, User.Roles.MANAGEMENT, User.Roles.SALES]
-        return self.request.user.role in allowed
+        return self.request.user.is_authenticated
 
 
 class PortalView(LoginRequiredMixin, PortalClientMixin, TemplateView):
@@ -45,7 +44,9 @@ class PortalView(LoginRequiredMixin, PortalClientMixin, TemplateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Mostrar historia de cotizaciones si quisieramos
+        context['card_jobs'] = CardJobOrder.objects.filter(
+            portal_user=self.request.user
+        ).order_by('-created_at')
         return context
 
 
@@ -155,12 +156,11 @@ class CardJobOrderCreateView(LoginRequiredMixin, PortalClientMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        # Auto-fill requester info from user session/profile if available
-        # In this system, Portal users might have their info pre-filled in the form
-        # but we ensure it's saved correctly.
-        self.object.status = 'PENDING'
+        self.object.status = 'SUBMITTED'
+        if self.request.user.role == User.Roles.PORTAL:
+            self.object.portal_user = self.request.user
         self.object.save()
-        messages.success(self.request, "Solicitud de trabajo de tarjetas enviada para revisión.")
+        messages.success(self.request, "Solicitud enviada para revisión.")
         return super().form_valid(form)
 
     def form_invalid(self, form):
@@ -176,9 +176,9 @@ class CardJobOrderDetailView(LoginRequiredMixin, View):
         job = get_object_or_404(CardJobOrder, pk=pk)
         
         # Security check for PORTAL users
-        if request.user.role == User.Roles.PORTAL and job.requester_email != request.user.email:
-             # Basic ownership check via email for now, or link to User if refined
-             return redirect('quotes:portal_home')
+        if request.user.role == User.Roles.PORTAL:
+            if job.portal_user != request.user:
+                return redirect('quotes:portal_home')
 
         staff_form = None
         if request.user.role in [User.Roles.ADMIN, User.Roles.MANAGEMENT, User.Roles.SALES]:
@@ -418,3 +418,52 @@ class CardJobToProductionView(LoginRequiredMixin, StaffMixin, View):
             response['HX-Trigger'] = 'jobUpdated'
             return response
         return redirect('quotes:card_job_detail', pk=pk)
+
+
+class PortalCreateUserView(LoginRequiredMixin, StaffMixin, View):
+    """
+    Staff creates a portal user for a client.
+    Only requires email and full name.
+    Password is auto-generated and shown once to staff.
+    """
+    template_name = 'quotes/portal_create_user.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        import secrets
+        import string
+
+        email = request.POST.get('email', '').strip().lower()
+        full_name = request.POST.get('full_name', '').strip()
+
+        if not email or not full_name:
+            return render(request, self.template_name, {
+                'error': 'Email y nombre completo son requeridos.'
+            })
+
+        if User.objects.filter(email=email).exists():
+            return render(request, self.template_name, {
+                'error': f'Ya existe un usuario con el email {email}.'
+            })
+
+        alphabet = string.ascii_letters + string.digits
+        password = ''.join(secrets.choice(alphabet) for _ in range(12))
+
+        names = full_name.split(' ', 1)
+        user = User.objects.create_user(
+            username=email,
+            email=email,
+            password=password,
+            first_name=names[0],
+            last_name=names[1] if len(names) > 1 else '',
+            role=User.Roles.PORTAL,
+            tenant=request.tenant,
+        )
+
+        return render(request, self.template_name, {
+            'success': True,
+            'created_user': user,
+            'password': password,
+        })
