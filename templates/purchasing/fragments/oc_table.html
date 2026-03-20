@@ -1,0 +1,137 @@
+    <!-- PENDIENTES -->
+    <div class="mb-8">
+        <h3 class="text-xs font-bold text-yellow-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+            <span class="inline-block w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
+            Pendientes de Ingreso ({{ pendientes.count }})
+        </h3>
+
+        {% if pendientes %}
+        <div class="bg-surface border border-border-default shadow-lg overflow-hidden">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b border-border-default">
+                        <th class="text-left px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                            Cód. OC</th>
+                        <th class="text-left px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                            Proveedor</th>
+                        <th class="text-left px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                            Sucursal</th>
+                        <th class="text-left px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                            Cliente Ref.</th>
+                        <th class="text-left px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                            Fecha</th>
+                        <th class="text-left px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                            Ítems</th>
+                        <th class="text-right px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                            Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for oc in pendientes %}
+                    <tr class="border-b border-border-default/50 hover:bg-surface-hover/30 transition-colors">
+                        <td class="px-4 py-3 font-mono text-xs text-blue-400">{{ oc.remito_number }}</td>
+                        <td class="px-4 py-3 text-slate-300">{{ oc.supplier.name }}</td>
+                        <td class="px-4 py-3 text-slate-400 text-xs">{{ oc.branch.name }}</td>
+                        <td class="px-4 py-3 text-slate-500 text-xs">{{ oc.customer_name|default:"—" }}</td>
+                        <td class="px-4 py-3 text-slate-400 text-xs">{{ oc.order_date|date:"d/m/Y" }}</td>
+                        <td class="px-4 py-3">
+                            <div class="space-y-0.5">
+                                {% for item in oc.items.all %}
+                                <div class="text-xs text-slate-400">
+                                    {{ item.quantity_ordered }} × {{ item.material.name }}
+                                    <span class="text-slate-600">({{ item.quantity_per_unit }} mts/u)</span>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </td>
+                        <td class="px-4 py-3">
+                            <div class="flex justify-end gap-2">
+                                <!-- Recibir -->
+                                <button hx-get="{% url 'purchasing:recepcion_modal' oc.pk %}"
+                                        hx-target="#modal-container"
+                                        hx-swap="innerHTML"
+                                        class="text-xs bg-emerald-700/40 hover:bg-emerald-600 text-emerald-400 hover:text-white px-3 py-1 rounded transition-colors font-medium">
+                                    ✓ Recibir
+                                </button>
+                                <!-- Editar -->
+                                <a href="{% url 'purchasing:oc_edit' oc.pk %}"
+                                    class="text-xs bg-surface-hover hover:bg-blue-600 text-slate-400 hover:text-white px-3 py-1 rounded transition-colors">
+                                    Editar
+                                </a>
+                                <!-- Borrar -->
+                                <button type="button"
+                                        hx-post="{% url 'purchasing:oc_delete' oc.pk %}"
+                                        hx-confirm="¿Eliminar la orden {{ oc.remito_number }}? Esta acción no se puede deshacer."
+                                        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                                        hx-target="closest tr"
+                                        hx-swap="outerHTML swap:0.3s"
+                                        class="text-xs bg-surface-hover hover:bg-red-700 text-slate-400 hover:text-white px-3 py-1 rounded transition-colors">
+                                    Borrar
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="bg-surface border border-border-default p-8 text-center text-slate-600 text-sm">
+            No hay órdenes pendientes de ingreso.
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- RECIBIDAS RECIENTES -->
+    <div>
+        <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">
+            Últimas Recibidas ({{ recibidas.count }})
+        </h3>
+
+        {% if recibidas %}
+        <div class="bg-surface border border-border-default shadow-lg overflow-hidden">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="border-b border-border-default">
+                        <th class="text-left px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                            Cód. OC</th>
+                        <th class="text-left px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                            Proveedor</th>
+                        <th class="text-left px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                            Remito Prov.</th>
+                        <th class="text-left px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                            F. Ingreso</th>
+                        <th class="text-left px-4 py-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                            Ítems</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for oc in recibidas %}
+                    <tr class="border-b border-border-default/30 hover:bg-surface-hover/20 transition-colors opacity-70">
+                        <td class="px-4 py-3 font-mono text-xs text-slate-500">{{ oc.remito_number }}</td>
+                        <td class="px-4 py-3 text-slate-400 text-xs">{{ oc.supplier.name }}</td>
+                        <td class="px-4 py-3 text-slate-500 text-xs">{{ oc.vendor_remito|default:"—" }}</td>
+                        <td class="px-4 py-3 text-slate-500 text-xs">{{ oc.delivery_date|date:"d/m/Y" }}</td>
+                        <td class="px-4 py-3">
+                            <div class="space-y-0.5">
+                                {% for item in oc.items.all %}
+                                <div class="text-xs text-slate-500">
+                                    {{ item.quantity_ordered }} × {{ item.material.name }}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="bg-surface border border-border-default p-6 text-center text-slate-600 text-xs">
+            No hay órdenes recibidas registradas aún.
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Paginación -->
+    {% include 'components/pagination.html' %}

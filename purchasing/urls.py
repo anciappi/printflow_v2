@@ -11,6 +11,9 @@ urlpatterns = [
     path('eliminar/<int:pk>/',         views.delete_purchase_order,           name='oc_delete'),
     path('recibir/<int:pk>/',          views.recibir_oc,                      name='oc_receive'),
 
+    path('recibir/<int:pk>/modal/',    views.RecepcionModalView.as_view(),    name='recepcion_modal'),
+    path('modal/close/',               views.close_modal,                     name='close_modal'),
+
     # Proveedores
     path('proveedores/',               views.SupplierListView.as_view(),      name='supplier_list'),
     path('proveedores/nuevo/',         views.SupplierCreateView.as_view(),    name='supplier_create'),

@@ -1,5 +1,7 @@
 import uuid
 from django.shortcuts import render, get_object_or_404, redirect
+from django.views import View
+from django.http import HttpResponse
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.messages.views import SuccessMessageMixin
@@ -25,6 +27,11 @@ class PurchaseOrderListView(LoginRequiredMixin, ListView):
     template_name = 'purchasing/purchaseorder_list.html'
     context_object_name = 'ordenes'
     paginate_by = 20
+
+    def get_template_names(self):
+        if self.request.htmx:
+            return ['purchasing/fragments/oc_table.html']
+        return ['purchasing/purchaseorder_list.html']
 
     def get_queryset(self):
         return (
@@ -119,6 +126,8 @@ def delete_purchase_order(request, pk):
     if request.method == 'POST':
         numero = oc.remito_number
         oc.delete()
+        if request.htmx:
+            return HttpResponse("")
         messages.success(request, f"Orden {numero} eliminada.")
 
     return redirect('purchasing:oc_list')
@@ -140,14 +149,37 @@ def recibir_oc(request, pk):
             if fecha_ingreso:
                 oc.delivery_date = fecha_ingreso
                 oc.save()
+            if request.htmx:
+                response = HttpResponse("")
+                response['HX-Trigger'] = 'ocUpdated'
+                return response
             messages.success(
                 request,
                 f"Ingreso confirmado. Fecha: {oc.delivery_date}. Remito: {oc.vendor_remito or '—'}"
             )
         else:
+            if request.htmx:
+                return render(request, 'purchasing/fragments/recepcion_modal.html', {
+                    'oc': oc,
+                    'error': 'Esta orden ya fue procesada previamente.'
+                })
             messages.error(request, "Esta orden ya fue procesada previamente.")
 
     return redirect('purchasing:oc_list')
+
+# ---------------------------------------------------------------------------
+# HTMX FRAGMENT VIEWS (Modals)
+# ---------------------------------------------------------------------------
+
+class RecepcionModalView(LoginRequiredMixin, View):
+    """Returns modal HTML fragment for HTMX reception request."""
+    def get(self, request, pk):
+        oc = get_object_or_404(PurchaseOrder, pk=pk)
+        return render(request, 'purchasing/fragments/recepcion_modal.html', {'oc': oc})
+
+def close_modal(request):
+    """Returns empty response to clear modal container."""
+    return HttpResponse("")
 
 
 # ---------------------------------------------------------------------------
