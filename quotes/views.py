@@ -1,4 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse
+from django.utils import timezone
 from django.views.generic import TemplateView, CreateView, ListView, View
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.views import LoginView
@@ -18,16 +20,24 @@ from .forms import (
 
 
 class PortalClientMixin(UserPassesTestMixin):
-    """Permite el acceso solo a usuarios con rol PORTAL."""
+    """Allows access to PORTAL role users only."""
+    raise_exception = False
     def test_func(self):
         return self.request.user.role == User.Roles.PORTAL
 
-
-class InternalStaffMixin(UserPassesTestMixin):
-    """Permite el acceso a staff interno (Admin, Gerencia, Ventas)."""
+class StaffMixin(UserPassesTestMixin):
+    """Allows access to internal staff: ADMIN, MANAGEMENT, SALES."""
+    raise_exception = False
+    ALLOWED_ROLES = [User.Roles.ADMIN, User.Roles.MANAGEMENT, User.Roles.SALES]
     def test_func(self):
-        allowed_roles = [User.Roles.ADMIN, User.Roles.MANAGEMENT, User.Roles.SALES]
-        return self.request.user.role in allowed_roles
+        return self.request.user.role in self.ALLOWED_ROLES
+
+class PortalOrStaffMixin(UserPassesTestMixin):
+    """Allows access to both PORTAL users and internal staff."""
+    raise_exception = False
+    def test_func(self):
+        allowed = [User.Roles.PORTAL, User.Roles.ADMIN, User.Roles.MANAGEMENT, User.Roles.SALES]
+        return self.request.user.role in allowed
 
 
 class PortalView(LoginRequiredMixin, PortalClientMixin, TemplateView):
@@ -72,7 +82,7 @@ class QuoteCreateView(LoginRequiredMixin, PortalClientMixin, CreateView):
         return super().form_valid(form)
 
 
-class QuoteListView(LoginRequiredMixin, InternalStaffMixin, ListView):
+class QuoteListView(LoginRequiredMixin, StaffMixin, ListView):
     model = QuoteRequest
     template_name = 'quotes/quote_list.html'
     context_object_name = 'quotes'
@@ -85,7 +95,7 @@ class QuoteListView(LoginRequiredMixin, InternalStaffMixin, ListView):
         return QuoteRequest.objects.all().prefetch_related('products__product')
 
 
-class QuoteApproveView(LoginRequiredMixin, InternalStaffMixin, View):
+class QuoteApproveView(LoginRequiredMixin, StaffMixin, View):
     def post(self, request, pk, *args, **kwargs):
         quote = get_object_or_404(QuoteRequest, pk=pk)
         
@@ -198,7 +208,7 @@ class CardJobOrderDetailView(LoginRequiredMixin, View):
         })
 
 
-class CardJobOrderListView(LoginRequiredMixin, InternalStaffMixin, ListView):
+class CardJobOrderListView(LoginRequiredMixin, StaffMixin, ListView):
     model = CardJobOrder
     template_name = 'quotes/card_job_list.html'
     context_object_name = 'jobs'
@@ -250,3 +260,156 @@ class CardJobOrderListView(LoginRequiredMixin, InternalStaffMixin, ListView):
             'date_to': self.request.GET.get('date_to', ''),
         }
         return context
+
+
+class CardJobSubmitView(LoginRequiredMixin, PortalOrStaffMixin, View):
+    """
+    Transitions CardJobOrder from DRAFT to SUBMITTED.
+    Accessible by PORTAL users (their own orders) and internal staff.
+    """
+    def post(self, request, pk):
+        job = get_object_or_404(CardJobOrder, pk=pk)
+
+        # Portal users can only submit their own orders
+        if request.user.role == User.Roles.PORTAL:
+            if job.requester_email != request.user.email:
+                messages.error(request, "No tenés permiso para realizar esta acción.")
+                return redirect('quotes:portal_home')
+
+        if job.status != 'DRAFT':
+            messages.warning(request, "Esta orden ya fue enviada.")
+            if getattr(request, 'htmx', False):
+                response = HttpResponse("")
+                response['HX-Trigger'] = 'jobUpdated'
+                return response
+            return redirect('quotes:card_job_detail', pk=pk)
+
+        job.status = 'SUBMITTED'
+        job.save()
+        messages.success(request, "Orden enviada para revisión del equipo.")
+
+        if getattr(request, 'htmx', False):
+            response = HttpResponse("")
+            response['HX-Trigger'] = 'jobUpdated'
+            return response
+        return redirect('quotes:card_job_detail', pk=pk)
+
+
+class CardJobStaffReviewView(LoginRequiredMixin, StaffMixin, View):
+    """
+    Transitions CardJobOrder from SUBMITTED to STAFF_REVIEW.
+    Staff confirms they are reviewing the order.
+    """
+    def post(self, request, pk):
+        job = get_object_or_404(CardJobOrder, pk=pk)
+
+        if job.status != 'SUBMITTED':
+            messages.warning(request, "Esta orden no está en estado Enviado.")
+            if getattr(request, 'htmx', False):
+                response = HttpResponse("")
+                response['HX-Trigger'] = 'jobUpdated'
+                return response
+            return redirect('quotes:card_job_detail', pk=pk)
+
+        job.status = 'STAFF_REVIEW'
+        job.assigned_to = request.user
+        job.save()
+        messages.success(request, "Orden tomada para revisión.")
+
+        if getattr(request, 'htmx', False):
+            response = HttpResponse("")
+            response['HX-Trigger'] = 'jobUpdated'
+            return response
+        return redirect('quotes:card_job_detail', pk=pk)
+
+
+class CardJobSendToClientView(LoginRequiredMixin, StaffMixin, View):
+    """
+    Transitions CardJobOrder from STAFF_REVIEW to PENDING_CLIENT.
+    Sends approval request to client via UUID token URL.
+    """
+    def post(self, request, pk):
+        job = get_object_or_404(CardJobOrder, pk=pk)
+
+        if job.status != 'STAFF_REVIEW':
+            messages.warning(request, "La orden debe estar en revisión antes de enviar al cliente.")
+            if getattr(request, 'htmx', False):
+                response = HttpResponse("")
+                response['HX-Trigger'] = 'jobUpdated'
+                return response
+            return redirect('quotes:card_job_detail', pk=pk)
+
+        job.status = 'PENDING_CLIENT'
+        job.save()
+        messages.success(request, f"Orden enviada al cliente. Token: {job.approval_token}")
+
+        if getattr(request, 'htmx', False):
+            response = HttpResponse("")
+            response['HX-Trigger'] = 'jobUpdated'
+            return response
+        return redirect('quotes:card_job_detail', pk=pk)
+
+
+class CardJobClientApprovalView(View):
+    """
+    Public view — no login required.
+    Client approves or rejects via UUID token URL.
+    Also accessible by staff to assist clients.
+    """
+    def get(self, request, token):
+        job = get_object_or_404(CardJobOrder, approval_token=token)
+        return render(request, 'quotes/card_job_approval.html', {'job': job})
+
+    def post(self, request, token):
+        job = get_object_or_404(CardJobOrder, approval_token=token)
+
+        if job.status not in ['PENDING_CLIENT', 'STAFF_REVIEW']:
+            messages.error(request, "Esta orden ya fue procesada.")
+            return render(request, 'quotes/card_job_approval.html', {
+                'job': job,
+                'error': 'Esta orden ya fue procesada.'
+            })
+
+        decision = request.POST.get('decision')
+        approved_by = request.POST.get('approved_by', '').strip()
+
+        VALID_DECISIONS = ['APPROVED', 'APPROVED_WITH_CHANGES', 'REJECTED']
+        if decision not in VALID_DECISIONS:
+            return render(request, 'quotes/card_job_approval.html', {
+                'job': job,
+                'error': 'Decisión inválida.'
+            })
+
+        job.status = decision
+        job.review_result = decision
+        job.approved_by = approved_by
+        job.approval_date = timezone.now().date()
+        job.save()
+
+        return render(request, 'quotes/card_job_approval_success.html', {'job': job})
+
+
+class CardJobToProductionView(LoginRequiredMixin, StaffMixin, View):
+    """
+    Transitions CardJobOrder from APPROVED/APPROVED_WITH_CHANGES to IN_PRODUCTION.
+    """
+    def post(self, request, pk):
+        job = get_object_or_404(CardJobOrder, pk=pk)
+
+        if job.status not in ['APPROVED', 'APPROVED_WITH_CHANGES']:
+            messages.warning(request, "La orden debe estar aprobada para pasar a producción.")
+            if getattr(request, 'htmx', False):
+                response = HttpResponse("")
+                response['HX-Trigger'] = 'jobUpdated'
+                return response
+            return redirect('quotes:card_job_detail', pk=pk)
+
+        job.status = 'IN_PRODUCTION'
+        job.save()
+        messages.success(request, "Orden enviada a producción.")
+
+        if getattr(request, 'htmx', False):
+            response = HttpResponse("")
+            response['HX-Trigger'] = 'jobUpdated'
+            return response
+        return redirect('quotes:card_job_detail', pk=pk)
