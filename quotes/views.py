@@ -12,7 +12,7 @@ from django.db.models import Q
 from tenants.models import Branch
 from users.models import User
 from customers.models import Customer
-from .models import QuoteRequest, CardJobOrder
+from .models import QuoteRequest, CardJobOrder, CardJobColor, PantoneColor
 from .forms import (
     QuoteRequestForm, QuoteProductFormSet,
     CardJobOrderClientForm, CardJobOrderStaffForm
@@ -148,20 +148,27 @@ class PortalLoginView(LoginView):
         return super().get(request, *args, **kwargs)
 
 
-class CardJobOrderCreateView(LoginRequiredMixin, PortalClientMixin, CreateView):
+class CardJobOrderCreateView(LoginRequiredMixin, PortalOrStaffMixin, CreateView):
     model = CardJobOrder
     form_class = CardJobOrderClientForm
     template_name = 'quotes/card_job_form.html'
-    success_url = reverse_lazy('quotes:portal_home')
+
+    def get_success_url(self):
+        return reverse('quotes:card_job_detail', kwargs={'pk': self.object.pk})
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
-        self.object.status = 'SUBMITTED'
+        self.object.status = 'DRAFT'
         if self.request.user.role == User.Roles.PORTAL:
             self.object.portal_user = self.request.user
+            # Pre-fill requester info from user
+            if not self.object.requester_name:
+                self.object.requester_name = self.request.user.get_full_name() or self.request.user.username
+            if not self.object.requester_email:
+                self.object.requester_email = self.request.user.email
         self.object.save()
-        messages.success(self.request, "Solicitud enviada para revisión.")
-        return super().form_valid(form)
+        messages.success(self.request, "Orden creada. Ahora podés agregar las tintas.")
+        return redirect(self.get_success_url())
 
     def form_invalid(self, form):
         import logging
@@ -466,4 +473,86 @@ class PortalCreateUserView(LoginRequiredMixin, StaffMixin, View):
             'success': True,
             'created_user': user,
             'password': password,
+        })
+
+
+class PantoneSearchView(LoginRequiredMixin, PortalOrStaffMixin, View):
+    """
+    Returns filtered PantoneColor list as HTML fragment for HTMX search.
+    Used in color picker dropdown.
+    """
+    def get(self, request):
+        q = request.GET.get('q', '').strip()
+        side = request.GET.get('side', 'FRONT')
+        job_pk = request.GET.get('job_pk', '')
+
+        colors = PantoneColor.objects.all()
+        if q:
+            colors = colors.filter(code__icontains=q)
+        colors = colors[:20]  # limit results
+
+        return render(request, 'quotes/fragments/pantone_search_results.html', {
+            'colors': colors,
+            'side': side,
+            'job_pk': job_pk,
+        })
+
+
+class CardJobColorAddView(LoginRequiredMixin, PortalOrStaffMixin, View):
+    """
+    Adds a CardJobColor to a CardJobOrder.
+    Returns updated color list fragment for HTMX swap.
+    """
+    def post(self, request, pk):
+        job = get_object_or_404(CardJobOrder, pk=pk)
+
+        # Ownership check for portal users
+        if request.user.role == User.Roles.PORTAL:
+            if job.portal_user != request.user:
+                return HttpResponse(status=403)
+
+        pantone_id = request.POST.get('pantone_id')
+        side = request.POST.get('side', 'FRONT')
+
+        if not pantone_id:
+            return HttpResponse(status=400)
+
+        pantone = get_object_or_404(PantoneColor, pk=pantone_id)
+
+        # Avoid duplicates
+        if not CardJobColor.objects.filter(card_job=job, pantone=pantone, side=side).exists():
+            last_order = CardJobColor.objects.filter(card_job=job, side=side).count()
+            CardJobColor.objects.create(
+                card_job=job,
+                pantone=pantone,
+                side=side,
+                order=last_order
+            )
+
+        return render(request, 'quotes/fragments/color_list.html', {
+            'job': job,
+            'side': side,
+        })
+
+
+class CardJobColorRemoveView(LoginRequiredMixin, PortalOrStaffMixin, View):
+    """
+    Removes a CardJobColor from a CardJobOrder.
+    Returns updated color list fragment for HTMX swap.
+    """
+    def post(self, request, pk, color_pk):
+        job = get_object_or_404(CardJobOrder, pk=pk)
+        color = get_object_or_404(CardJobColor, pk=color_pk, card_job=job)
+        side = color.side
+
+        # Ownership check for portal users
+        if request.user.role == User.Roles.PORTAL:
+            if job.portal_user != request.user:
+                return HttpResponse(status=403)
+
+        color.delete()
+
+        return render(request, 'quotes/fragments/color_list.html', {
+            'job': job,
+            'side': side,
         })

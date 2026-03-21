@@ -29,4 +29,9 @@ urlpatterns = [
 
     # Public approval URL — no login required
     path('aprobar/<uuid:token>/', views.CardJobClientApprovalView.as_view(), name='card_job_approval'),
+
+    # Color management — HTMX endpoints
+    path('pantone/search/', views.PantoneSearchView.as_view(), name='pantone_search'),
+    path('card-job/<int:pk>/color/add/', views.CardJobColorAddView.as_view(), name='card_job_color_add'),
+    path('card-job/<int:pk>/color/<int:color_pk>/remove/', views.CardJobColorRemoveView.as_view(), name='card_job_color_remove'),
 ]

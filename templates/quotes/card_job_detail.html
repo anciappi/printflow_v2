@@ -1,8 +1,445 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
-<div class="max-w-7xl mx-auto">
-    <h2 class="text-xl font-bold text-white">{{ job.job_description }}</h2>
-    <p class="text-slate-400">Cliente: {{ job.requester_name }}</p>
-    <p class="text-slate-400">Estado: {{ job.get_status_display }}</p>
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- HEADER -->
+    <div class="flex flex-col md:flex-row md:justify-between md:items-start mb-6 space-y-4 md:space-y-0">
+      <div>
+        <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Orden de Trabajo — Tarjetas Plásticas</h2>
+        <p class="text-sm font-medium text-slate-400">{{ job.requester_name }} · {{ job.created_at|date:"d/m/Y" }}</p>
+      </div>
+      <div class="flex flex-wrap items-center gap-3">
+        <!-- Status badge -->
+        {% if job.status == 'DRAFT' %}
+            <span class="bg-slate-800 text-slate-300 text-[12px] px-2 py-0.5 rounded-full border border-slate-600">Borrador</span>
+        {% elif job.status == 'SUBMITTED' %}
+            <span class="bg-cyan-900 text-cyan-300 text-[12px] px-2 py-0.5 rounded-full border border-cyan-800">Enviado</span>
+        {% elif job.status == 'STAFF_REVIEW' %}
+            <span class="bg-blue-900 text-blue-300 text-[12px] px-2 py-0.5 rounded-full border border-blue-800">En Revisión</span>
+        {% elif job.status == 'PENDING_CLIENT' %}
+            <span class="bg-amber-900 text-amber-300 text-[12px] px-2 py-0.5 rounded-full border border-amber-800">Pend. Cliente</span>
+        {% elif job.status == 'APPROVED' %}
+            <span class="bg-emerald-900 text-emerald-300 text-[12px] px-2 py-0.5 rounded-full border border-emerald-800">Aprobado</span>
+        {% elif job.status == 'APPROVED_WITH_CHANGES' %}
+            <span class="bg-emerald-800 text-emerald-200 text-[12px] px-2 py-0.5 rounded-full border border-emerald-700">Aprobado c/Cambios</span>
+        {% elif job.status == 'REJECTED' %}
+            <span class="bg-red-900 text-red-300 text-[12px] px-2 py-0.5 rounded-full border border-red-800">Rechazado</span>
+        {% elif job.status == 'IN_PRODUCTION' %}
+            <span class="bg-purple-900 text-purple-300 text-[12px] px-2 py-0.5 rounded-full border border-purple-800">En Producción</span>
+        {% endif %}
+        
+        <!-- Action buttons based on status — STAFF only -->
+        {% if request.user.role != 'PORTAL' %}
+          {% if job.status == 'SUBMITTED' %}
+          <form method="POST" action="{% url 'quotes:card_job_staff_review' job.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold uppercase px-4 py-2 rounded-sm transition-all focus:ring-2 focus:ring-blue-500 focus:outline-none">
+              Tomar para Revisión
+            </button>
+          </form>
+          {% elif job.status == 'STAFF_REVIEW' %}
+          <form method="POST" action="{% url 'quotes:card_job_send_to_client' job.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold uppercase px-4 py-2 rounded-sm transition-all focus:ring-2 focus:ring-amber-500 focus:outline-none">
+              Enviar al Cliente
+            </button>
+          </form>
+          {% elif job.status == 'APPROVED' or job.status == 'APPROVED_WITH_CHANGES' %}
+          <form method="POST" action="{% url 'quotes:card_job_to_production' job.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold uppercase px-4 py-2 rounded-sm transition-all focus:ring-2 focus:ring-purple-500 focus:outline-none">
+              Pasar a Producción
+            </button>
+          </form>
+          {% endif %}
+          
+          <!-- Copy approval link if PENDING_CLIENT -->
+          {% if job.status == 'PENDING_CLIENT' %}
+          <div class="bg-surface-dark border border-border-default px-3 py-2 rounded-sm text-xs text-slate-400 font-mono">
+            /portal/aprobar/{{ job.approval_token }}/
+          </div>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- SECTION 1 — METADATA DE ORDEN -->
+    <div class="bg-surface border border-border-default p-6 mb-6 rounded-sm">
+      <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">
+        Metadata de Orden
+      </h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div>
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Cliente</label>
+          <div class="text-sm text-white bg-surface-dark border border-border-default px-3 py-2 rounded-sm">
+            {{ job.requester_name|default:"—" }}
+          </div>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">N° Orden</label>
+          <div class="text-sm text-white bg-surface-dark border border-border-default px-3 py-2 rounded-sm">
+            {{ job.order_number|default:"Pendiente" }}
+          </div>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">OP Anterior</label>
+          <div class="text-sm text-white bg-surface-dark border border-border-default px-3 py-2 rounded-sm">
+            {{ job.op_anterior|default:"—" }}
+          </div>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">N° BIN</label>
+          <div class="text-sm text-white bg-surface-dark border border-border-default px-3 py-2 rounded-sm">
+            {{ job.bin_number|default:"—" }}
+          </div>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Versión</label>
+          <div class="text-sm text-white bg-surface-dark border border-border-default px-3 py-2 rounded-sm">
+            {{ job.version|default:"—" }}
+          </div>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">PIF/RPP</label>
+          <div class="text-sm text-white bg-surface-dark border border-border-default px-3 py-2 rounded-sm">
+            {{ job.pif_rpp|default:"—" }}
+          </div>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">N° ICA</label>
+          <div class="text-sm text-white bg-surface-dark border border-border-default px-3 py-2 rounded-sm">
+            {{ job.ica_number|default:"—" }}
+          </div>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Fecha</label>
+          <div class="text-sm text-white bg-surface-dark border border-border-default px-3 py-2 rounded-sm">
+            {{ job.created_at|date:"d/m/Y" }}
+          </div>
+        </div>
+        
+        <div class="col-span-2 md:col-span-4">
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Dirección entrega</label>
+          <div class="text-sm text-white bg-surface-dark border border-border-default px-3 py-2 rounded-sm break-words">
+            {{ job.delivery_address|default:"—" }}
+          </div>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Fecha estimada</label>
+          <div class="text-sm text-white bg-surface-dark border border-border-default px-3 py-2 rounded-sm">
+            {{ job.estimated_delivery|default:"—" }}
+          </div>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">CUIT</label>
+          <div class="text-sm text-white bg-surface-dark border border-border-default px-3 py-2 rounded-sm">
+            {{ job.requester_cuit|default:"—" }}
+          </div>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Precio unitario</label>
+          <div class="text-sm text-white bg-surface-dark border border-border-default px-3 py-2 rounded-sm font-mono text-blue-300">
+            {{ job.unit_price|default:"—" }}
+          </div>
+        </div>
+        <div>
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Cantidad</label>
+          <div class="text-sm text-white bg-surface-dark border border-border-default px-3 py-2 rounded-sm font-mono text-blue-300">
+            {{ job.quantity|default:"—" }}
+          </div>
+        </div>
+        
+        <div class="col-span-2 md:col-span-4">
+          <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Descripción</label>
+          <div class="text-sm text-white bg-surface-dark border border-border-default px-3 py-3 rounded-sm min-h-[80px] whitespace-pre-wrap">
+            {{ job.job_description|default:"—" }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 2 — ANVERSO (Frente) -->
+    <div class="bg-surface border border-border-default p-6 mb-6 rounded-sm">
+      <div class="flex flex-wrap justify-between items-center mb-4 gap-2">
+        <h3 class="text-sm font-bold text-white tracking-tight">✋ ANVERSO (Frente)</h3>
+        <span class="text-[9px] font-bold text-emerald-400 border border-emerald-400/20 px-2 py-0.5 rounded-sm">
+          ISO/IEC 7810 ID-1
+        </span>
+      </div>
+
+      <!-- File upload area — STAFF only -->
+      {% if request.user.role != 'PORTAL' %}
+      <div class="border-2 border-dashed border-border-default rounded-sm p-6 text-center mb-4 hover:border-blue-500/50 transition-colors cursor-pointer">
+        <p class="text-slate-500 text-xs">Subir archivo anverso</p>
+        <p class="text-[10px] text-slate-600 mt-1 uppercase tracking-widest">PDF, AI, PSD</p>
+      </div>
+      {% endif %}
+
+      <!-- Show uploaded files -->
+      {% for file in job.files.all %}
+        {% if file.file_type == 'FRONT' %}
+        <div class="flex flex-wrap items-center justify-between bg-surface-dark border border-border-default px-4 py-2 rounded-sm mb-2 gap-2">
+          <span class="text-xs text-slate-300 font-mono break-all">{{ file.original_name }}</span>
+          <span class="text-[9px] text-slate-500 whitespace-nowrap">{{ file.uploaded_at|date:"d/m/Y H:i" }}</span>
+        </div>
+        {% endif %}
+      {% endfor %}
+
+      <!-- Color management -->
+      <div class="mt-4">
+        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+          Gestión de Tintas
+        </label>
+        {% for color in job.colors.all %}
+          {% if color.side == 'FRONT' %}
+          <div class="flex items-center gap-3 bg-surface-dark border border-border-default px-4 py-2 rounded-sm mb-2">
+            <span class="w-3 h-3 rounded-full flex-shrink-0" style="background-color: {{ color.pantone.hex_value|default:'#ccc' }}"></span>
+            <span class="text-sm text-slate-300 font-bold">{{ color.pantone.code }}</span>
+            <span class="text-[9px] text-slate-600 ml-auto uppercase">{{ color.pantone.category }}</span>
+          </div>
+          {% endif %}
+        {% empty %}
+        <p class="text-xs text-slate-600 italic">Sin tintas registradas</p>
+        {% endfor %}
+      </div>
+
+      <!-- Observations -->
+      <div class="mt-4">
+        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+          Observaciones Anverso
+        </label>
+        <div class="bg-surface-dark border border-border-default px-4 py-3 rounded-sm text-sm text-slate-300 min-h-[80px] whitespace-pre-wrap">
+          {{ job.front_observations|default:"Sin observaciones." }}
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 3 — REVERSO (Atrás) -->
+    <div class="bg-surface border border-border-default p-6 mb-6 rounded-sm">
+      <div class="flex flex-wrap justify-between items-center mb-4 gap-2">
+        <h3 class="text-sm font-bold text-white tracking-tight">✋ REVERSO (Atrás)</h3>
+        <span class="text-[9px] font-bold text-emerald-400 border border-emerald-400/20 px-2 py-0.5 rounded-sm">
+          ISO/IEC 7810 ID-1
+        </span>
+      </div>
+
+      <!-- File upload area — STAFF only -->
+      {% if request.user.role != 'PORTAL' %}
+      <div class="border-2 border-dashed border-border-default rounded-sm p-6 text-center mb-4 hover:border-blue-500/50 transition-colors cursor-pointer">
+        <p class="text-slate-500 text-xs">Subir archivo reverso</p>
+        <p class="text-[10px] text-slate-600 mt-1 uppercase tracking-widest">PDF, AI, PSD</p>
+      </div>
+      {% endif %}
+
+      <!-- Show uploaded files -->
+      {% for file in job.files.all %}
+        {% if file.file_type == 'BACK' %}
+        <div class="flex flex-wrap items-center justify-between bg-surface-dark border border-border-default px-4 py-2 rounded-sm mb-2 gap-2">
+          <span class="text-xs text-slate-300 font-mono break-all">{{ file.original_name }}</span>
+          <span class="text-[9px] text-slate-500 whitespace-nowrap">{{ file.uploaded_at|date:"d/m/Y H:i" }}</span>
+        </div>
+        {% endif %}
+      {% endfor %}
+
+      <!-- Color management -->
+      <div class="mt-4">
+        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+          Gestión de Tintas
+        </label>
+        {% for color in job.colors.all %}
+          {% if color.side == 'BACK' %}
+          <div class="flex items-center gap-3 bg-surface-dark border border-border-default px-4 py-2 rounded-sm mb-2">
+            <span class="w-3 h-3 rounded-full flex-shrink-0" style="background-color: {{ color.pantone.hex_value|default:'#ccc' }}"></span>
+            <span class="text-sm text-slate-300 font-bold">{{ color.pantone.code }}</span>
+            <span class="text-[9px] text-slate-600 ml-auto uppercase">{{ color.pantone.category }}</span>
+          </div>
+          {% endif %}
+        {% empty %}
+        <p class="text-xs text-slate-600 italic">Sin tintas registradas</p>
+        {% endfor %}
+      </div>
+
+      <!-- Observations -->
+      <div class="mt-4">
+        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">
+          Observaciones Reverso
+        </label>
+        <div class="bg-surface-dark border border-border-default px-4 py-3 rounded-sm text-sm text-slate-300 min-h-[80px] whitespace-pre-wrap">
+          {{ job.back_observations|default:"Sin observaciones." }}
+        </div>
+      </div>
+    </div>
+
+    <!-- SECTION 4 — ESPECIFICACIONES TÉCNICAS -->
+    <div class="bg-surface border border-border-default p-6 mb-6 rounded-sm">
+      <h3 class="text-sm font-bold text-white tracking-tight">Especificaciones Técnicas</h3>
+      <div class="overflow-x-auto mt-4">
+        <table class="w-full text-left border-collapse min-w-[600px]">
+          <thead>
+            <tr class="text-[10px] font-bold text-slate-500 uppercase tracking-widest border-b border-border-default">
+              <th class="pb-3 pr-6 bg-surface">Especificación</th>
+              <th class="pb-3 px-4 text-center bg-surface">SI</th>
+              <th class="pb-3 px-4 text-center bg-surface">NO</th>
+              <th class="pb-3 px-4 text-center bg-surface">Anverso</th>
+              <th class="pb-3 px-4 text-center bg-surface">Reverso</th>
+              <th class="pb-3 pl-4 bg-surface">Configuración</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-border-default text-sm">
+            <!-- Laminado -->
+            <tr class="hover:bg-slate-800/10 transition-colors">
+              <td class="py-3 pr-6 text-slate-300">Laminado</td>
+              <td class="py-3 px-4 text-center">
+                <input type="checkbox" {% if job.lamination %}checked{% endif %} disabled class="w-4 h-4 accent-blue-500 bg-surface-dark border-border-default rounded-sm opacity-50 cursor-not-allowed">
+              </td>
+              <td class="py-3 px-4 text-center">
+                <input type="checkbox" {% if not job.lamination %}checked{% endif %} disabled class="w-4 h-4 accent-blue-500 bg-surface-dark border-border-default rounded-sm opacity-50 cursor-not-allowed">
+              </td>
+              <td class="py-3 px-4 text-center">
+                <input type="checkbox" {% if job.lamination_front %}checked{% endif %} disabled class="w-4 h-4 accent-blue-500 bg-surface-dark border-border-default rounded-sm opacity-50 cursor-not-allowed">
+              </td>
+              <td class="py-3 px-4 text-center">
+                <input type="checkbox" {% if job.lamination_back %}checked{% endif %} disabled class="w-4 h-4 accent-blue-500 bg-surface-dark border-border-default rounded-sm opacity-50 cursor-not-allowed">
+              </td>
+              <td class="py-3 pl-4">
+                <span class="text-xs text-slate-500 font-mono">{{ job.lamination_type|default:"—" }}</span>
+              </td>
+            </tr>
+            <!-- Banda Magnética -->
+            <tr class="hover:bg-slate-800/10 transition-colors">
+              <td class="py-3 pr-6 text-slate-300">Banda Magnética</td>
+              <td class="py-3 px-4 text-center">
+                <input type="checkbox" {% if job.magnetic_band %}checked{% endif %} disabled class="w-4 h-4 accent-blue-500 bg-surface-dark border-border-default rounded-sm opacity-50 cursor-not-allowed">
+              </td>
+              <td class="py-3 px-4 text-center">
+                <input type="checkbox" {% if not job.magnetic_band %}checked{% endif %} disabled class="w-4 h-4 accent-blue-500 bg-surface-dark border-border-default rounded-sm opacity-50 cursor-not-allowed">
+              </td>
+              <td class="py-3 px-4 text-center"><span class="text-slate-600">-</span></td>
+              <td class="py-3 px-4 text-center">
+                <input type="checkbox" {% if job.magnetic_band_back %}checked{% endif %} disabled class="w-4 h-4 accent-blue-500 bg-surface-dark border-border-default rounded-sm opacity-50 cursor-not-allowed">
+              </td>
+              <td class="py-3 pl-4">
+                <span class="text-xs text-slate-500 font-mono">{{ job.magnetic_band_type|default:"—" }}</span>
+              </td>
+            </tr>
+            <!-- Chip -->
+            <tr class="hover:bg-slate-800/10 transition-colors">
+              <td class="py-3 pr-6 text-slate-300">Chip / UV</td>
+              <td class="py-3 px-4 text-center">
+                <input type="checkbox" {% if job.chip %}checked{% endif %} disabled class="w-4 h-4 accent-blue-500 bg-surface-dark border-border-default rounded-sm opacity-50 cursor-not-allowed">
+              </td>
+              <td class="py-3 px-4 text-center">
+                <input type="checkbox" {% if not job.chip %}checked{% endif %} disabled class="w-4 h-4 accent-blue-500 bg-surface-dark border-border-default rounded-sm opacity-50 cursor-not-allowed">
+              </td>
+              <td class="py-3 px-4 text-center">
+                <span class="text-slate-600">-</span>
+              </td>
+              <td class="py-3 px-4 text-center">
+                <span class="text-slate-600">-</span>
+              </td>
+              <td class="py-3 pl-4">
+                <span class="text-xs text-slate-500 font-mono">{{ job.uv_type|default:"—" }}</span>
+              </td>
+            </tr>
+            <!-- Hologram -->
+            <tr class="hover:bg-slate-800/10 transition-colors">
+              <td class="py-3 pr-6 text-slate-300">Holograma</td>
+              <td class="py-3 px-4 text-center">
+                <input type="checkbox" {% if job.hologram %}checked{% endif %} disabled class="w-4 h-4 accent-blue-500 bg-surface-dark border-border-default rounded-sm opacity-50 cursor-not-allowed">
+              </td>
+              <td class="py-3 px-4 text-center">
+                <input type="checkbox" {% if not job.hologram %}checked{% endif %} disabled class="w-4 h-4 accent-blue-500 bg-surface-dark border-border-default rounded-sm opacity-50 cursor-not-allowed">
+              </td>
+              <td class="py-3 px-4 text-center"><span class="text-slate-600">-</span></td>
+              <td class="py-3 px-4 text-center"><span class="text-slate-600">-</span></td>
+              <td class="py-3 pl-4"><span class="text-slate-600">-</span></td>
+            </tr>
+            <!-- Firma -->
+            <tr class="hover:bg-slate-800/10 transition-colors">
+              <td class="py-3 pr-6 text-slate-300">Panel de Firma</td>
+              <td class="py-3 px-4 text-center">
+                <input type="checkbox" {% if job.signature_panel %}checked{% endif %} disabled class="w-4 h-4 accent-blue-500 bg-surface-dark border-border-default rounded-sm opacity-50 cursor-not-allowed">
+              </td>
+              <td class="py-3 px-4 text-center">
+                <input type="checkbox" {% if not job.signature_panel %}checked{% endif %} disabled class="w-4 h-4 accent-blue-500 bg-surface-dark border-border-default rounded-sm opacity-50 cursor-not-allowed">
+              </td>
+              <td class="py-3 px-4 text-center"><span class="text-slate-600">-</span></td>
+              <td class="py-3 px-4 text-center"><span class="text-slate-600">-</span></td>
+              <td class="py-3 pl-4"><span class="text-slate-600">-</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SECTION 5 — SUBIR ORIGINALES (STAFF only) -->
+    {% if request.user.role != 'PORTAL' %}
+    <div class="bg-surface border border-border-default p-6 mb-6 rounded-sm">
+      <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-4">
+        Subir Originales
+      </h3>
+      <div class="border-2 border-dashed border-border-default rounded-sm p-8 text-center hover:border-blue-500/50 transition-colors cursor-pointer group">
+        <svg class="w-8 h-8 text-slate-600 mx-auto mb-3 group-hover:text-blue-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+        </svg>
+        <p class="text-sm text-slate-500">Arrastrá tus archivos originales aquí o hacé clic para seleccionar</p>
+        <p class="text-[10px] text-slate-600 uppercase tracking-widest mt-2">Formatos aceptados: PDF, AI, PSD</p>
+      </div>
+      <p class="text-[10px] text-slate-600 mt-3">
+        ⓘ Asegurate de que los archivos tengan las fuentes incrustadas y las imágenes en alta resolución (300 DPI).
+      </p>
+    </div>
+    {% endif %}
+
+    <!-- SECTION 6 — RESULTADO DE REVISIÓN + FIRMA -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <!-- Left: Resultado -->
+      <div class="bg-surface border border-border-default p-6 rounded-sm">
+        <h3 class="text-sm font-bold text-white tracking-tight">Resultado de Revisión</h3>
+        <!-- Show current result if exists -->
+        {% if job.review_result %}
+          <div class="mt-3 p-3 border border-border-default rounded-sm bg-surface-dark text-sm text-white">
+            {{ job.get_review_result_display }}
+          </div>
+        {% else %}
+          <p class="text-xs text-slate-600 italic mt-3">Pendiente de revisión.</p>
+        {% endif %}
+      </div>
+      <!-- Right: Firma -->
+      <div class="bg-surface border border-border-default p-6 rounded-sm">
+        <h3 class="text-sm font-bold text-white tracking-tight">Firma de Aprobación</h3>
+        {% if job.approved_by %}
+          <div class="mt-3">
+            <p class="text-sm text-white font-bold">{{ job.approved_by }}</p>
+            <p class="text-xs text-slate-500">{{ job.approval_date|date:"d/m/Y"|default:"—" }}</p>
+          </div>
+        {% else %}
+          <p class="text-xs text-slate-600 italic mt-3">Sin firma registrada.</p>
+          {% if job.status == 'PENDING_CLIENT' %}
+          <div class="mt-3 bg-surface-dark border border-amber-500/20 px-4 py-3 rounded-sm">
+            <p class="text-[10px] text-amber-500 font-bold uppercase tracking-widest">Link de aprobación activo</p>
+            <p class="text-xs text-slate-500 mt-1 font-mono break-all">
+              /portal/aprobar/{{ job.approval_token }}/
+            </p>
+          </div>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- SECTION 7 — SUBMIT button (PORTAL only — DRAFT status) -->
+    {% if request.user.role == 'PORTAL' and job.status == 'DRAFT' %}
+    <div class="flex justify-end mt-6">
+      <form method="POST" action="{% url 'quotes:card_job_submit' job.pk %}">
+        {% csrf_token %}
+        <button type="submit"
+                class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase tracking-widest px-8 py-3 rounded-sm transition-all focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+          Enviar para Revisión
+        </button>
+      </form>
+    </div>
+    {% endif %}
+
 </div>
 {% endblock %}

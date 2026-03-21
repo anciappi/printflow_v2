@@ -54,10 +54,18 @@ class CardJobOrderClientForm(forms.ModelForm):
         model = CardJobOrder
         fields = [
             'requester_name', 'requester_email', 'requester_phone', 'requester_cuit',
-            'job_description', 'op_anterior', 'version', 'front_colors',
-            'front_special_colors', 'front_observations', 'back_colors',
-            'back_special_colors', 'back_observations', 'attached_file', 'general_notes'
+            'job_description', 'op_anterior', 'version',
+            'front_observations', 'back_observations',
+            'general_notes', 'delivery_address', 'estimated_delivery',
+            'quantity', 'unit_price',
         ]
+        widgets = {
+            'estimated_delivery': forms.DateInput(attrs={'type': 'date'}),
+            'job_description': forms.Textarea(attrs={'rows': 3}),
+            'front_observations': forms.Textarea(attrs={'rows': 2}),
+            'back_observations': forms.Textarea(attrs={'rows': 2}),
+            'general_notes': forms.Textarea(attrs={'rows': 2}),
+        }
 
     def clean_attached_file(self):
         file = self.cleaned_data.get('attached_file')
