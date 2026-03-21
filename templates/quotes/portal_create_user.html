@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block breadcrumbs %}
+ADMINISTRACIÓN / CREAR ACCESO PORTAL
+{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto w-full pb-12">
+    <!-- Header -->
+    <header class="mb-8">
+        <h2 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Crear Acceso Portal para Cliente</h2>
+        <p class="text-sm font-medium text-slate-400 mt-1">Generar credenciales seguras para acceso al portal de clientes.</p>
+    </header>
+
+    {% if success %}
+    <!-- Success Card -->
+    <div class="bg-surface border border-emerald-500/30 rounded-sm p-8 text-center shadow-xl">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-emerald-500/10 mb-6 border border-emerald-500/20">
+            <svg class="w-8 h-8 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+        </div>
+        
+        <h3 class="text-lg font-bold text-white mb-2 tracking-tight">¡Usuario Creado Exitosamente!</h3>
+        
+        <div class="bg-surface-dark border border-border-default rounded-sm p-4 mt-6 text-left inline-block w-full max-w-sm">
+            <div class="mb-4">
+                <span class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Usuario / Email</span>
+                <span class="text-sm text-white font-mono bg-[#0f1115] px-2 py-1 rounded block border border-[#2d333b]">{{ created_user.email }}</span>
+            </div>
+            <div>
+                <span class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Password Temporal</span>
+                <div class="flex items-center gap-2">
+                    <span class="text-sm text-amber-400 font-mono tracking-widest bg-[#0f1115] px-3 py-1.5 rounded block border border-amber-500/30 w-full select-all selection:bg-amber-500/30">{{ password }}</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-6 p-4 bg-amber-500/10 border border-amber-500/20 rounded-sm flex gap-3 text-left">
+            <svg class="w-5 h-5 text-amber-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+            </svg>
+            <p class="text-[11px] text-amber-400 font-medium leading-relaxed uppercase tracking-wide">
+                Compartí estas credenciales de forma segura. El password no se puede recuperar, y el usuario deberá solicitar blanqueo si lo pierde antes de ingresar.
+            </p>
+        </div>
+
+        <div class="mt-8">
+            <a href="{% url 'quotes:portal_create_user' %}" class="inline-block bg-surface-hover border border-border-default text-white hover:text-blue-400 text-xs font-bold uppercase tracking-widest px-6 py-3 rounded-sm transition-colors">
+                Crear otro usuario
+            </a>
+        </div>
+    </div>
+    {% else %}
+    <!-- Form -->
+    <div class="bg-surface border border-border-default p-6 rounded-sm shadow-xl">
+        
+        {% if error %}
+        <div class="bg-red-900/20 border border-red-500/30 text-red-400 text-sm font-medium px-4 py-3 rounded-sm mb-6 flex items-start gap-3">
+            <svg class="w-5 h-5 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="POST" action="">
+            {% csrf_token %}
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Email del Cliente <span class="text-red-500">*</span></label>
+                    <input type="email" name="email" required
+                           class="w-full bg-surface-dark border border-border-default text-white px-4 py-3 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm"
+                           placeholder="cliente@empresa.com">
+                </div>
+                
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Nombre Completo <span class="text-red-500">*</span></label>
+                    <input type="text" name="full_name" required
+                           class="w-full bg-surface-dark border border-border-default text-white px-4 py-3 focus:border-blue-500 outline-none transition-colors text-sm rounded-sm"
+                           placeholder="Juan Pérez">
+                </div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-border-default flex justify-end">
+                <button type="submit"
+                        class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold uppercase tracking-widest px-8 py-3 rounded-sm transition-all shadow-lg shadow-blue-900/20 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                    </svg>
+                    Crear Acceso
+                </button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

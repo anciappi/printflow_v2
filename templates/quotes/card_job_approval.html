@@ -1,0 +1,168 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PrintFlow - Portal de Aprobación</title>
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    <link rel="stylesheet" href="{% static 'css/portal.css' %}">
+</head>
+<body class="min-h-screen bg-surface-dark antialiased">
+    <!-- Header -->
+    <header class="border-b border-border-default bg-surface px-6 py-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div class="flex items-center gap-3">
+            <svg class="h-8 w-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+            </svg>
+            <h1 class="text-xl font-bold text-white tracking-tight">Portal de Aprobación</h1>
+        </div>
+        <div class="flex flex-col items-end gap-1">
+            {% if job.status == 'PENDING_CLIENT' %}
+            <span class="text-[9px] font-bold text-amber-500 uppercase tracking-widest border border-amber-500/20 px-2 py-0.5 rounded-sm bg-amber-500/5">Pendiente Aprobación</span>
+            {% elif job.status == 'APPROVED' or job.status == 'APPROVED_WITH_CHANGES' %}
+            <span class="text-[9px] font-bold text-emerald-400 uppercase tracking-widest border border-emerald-400/20 px-2 py-0.5 rounded-sm bg-emerald-400/5">Aprobado</span>
+            {% elif job.status == 'REJECTED' %}
+            <span class="text-[9px] font-bold text-red-500 uppercase tracking-widest border border-red-500/20 px-2 py-0.5 rounded-sm bg-red-400/5">Rechazado</span>
+            {% endif %}
+            <span class="text-[10px] font-mono text-slate-500 uppercase">FECHA: {{ job.created_at|date:"d/m/Y" }}</span>
+        </div>
+    </header>
+
+    <!-- Main container -->
+    <main class="max-w-2xl mx-auto px-4 py-8">
+
+        <!-- Error block -->
+        {% if error %}
+        <div class="bg-red-900/20 border border-red-500/30 text-red-400 text-sm font-medium px-4 py-3 rounded-sm mb-6 flex items-start gap-3">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <!-- Section 1: Metadata de Orden -->
+        <div class="bg-surface border border-border-default p-6 mb-4 rounded-sm shadow-xl">
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-6 flex items-center gap-2">
+                <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Metadata de Orden
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase px-1">Cliente</label>
+                    <div class="w-full bg-surface-dark border border-border-default text-white px-4 py-2 rounded-sm text-sm">{{ job.requester_name }}</div>
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase px-1">N° Orden</label>
+                    <div class="w-full bg-surface-dark border border-border-default text-white px-4 py-2 rounded-sm text-sm">{{ job.order_number|default:"Pendiente" }}</div>
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase px-1">CUIT</label>
+                    <div class="w-full bg-surface-dark border border-border-default text-white px-4 py-2 rounded-sm text-sm">{{ job.requester_cuit }}</div>
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase px-1">Fecha</label>
+                    <div class="w-full bg-surface-dark border border-border-default text-white px-4 py-2 rounded-sm text-sm">{{ job.created_at|date:"d/m/Y" }}</div>
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase px-1">Dirección de entrega</label>
+                    <div class="w-full bg-surface-dark border border-border-default text-white px-4 py-2 rounded-sm text-sm">{{ job.delivery_address|default:"—" }}</div>
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase px-1">Fecha estimada</label>
+                    <div class="w-full bg-surface-dark border border-border-default text-white px-4 py-2 rounded-sm text-sm">{{ job.estimated_delivery|default:"—" }}</div>
+                </div>
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase px-1">Precio unitario</label>
+                    <div class="w-full bg-surface-dark border border-border-default text-white px-4 py-2 rounded-sm text-sm font-mono text-blue-300">{{ job.unit_price|default:"—" }}</div>
+                </div>
+                <div class="sm:col-span-2 space-y-1">
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase px-1">Descripción</label>
+                    <div class="w-full bg-surface-dark border border-border-default text-white px-4 py-2 rounded-sm text-sm">{{ job.job_description }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Section 2: Resultado de Revisión -->
+        <div class="bg-surface border border-border-default p-6 mb-4 rounded-sm shadow-xl">
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider mb-6 flex items-center gap-2">
+                <svg class="w-5 h-5 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                Resultado de Revisión
+            </h3>
+            <form method="POST" action="">
+                {% csrf_token %}
+                
+                <!-- 3 radio cards -->
+                <label class="flex items-start gap-3 p-4 border border-border-default bg-surface cursor-pointer
+                               hover:border-blue-500/50 transition-colors
+                               has-[:checked]:border-emerald-500 has-[:checked]:bg-emerald-500/5 rounded-sm mb-3">
+                    <input type="radio" name="decision" value="APPROVED" class="mt-1 accent-emerald-500" required>
+                    <div>
+                        <div class="text-sm font-bold text-white">Aprobado para Producción</div>
+                        <div class="text-xs text-slate-500 mt-0.5">Cumple con todos los parámetros técnicos y de diseño.</div>
+                    </div>
+                </label>
+
+                <label class="flex items-start gap-3 p-4 border border-border-default bg-surface cursor-pointer
+                               hover:border-blue-500/50 transition-colors
+                               has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/5 rounded-sm mb-3">
+                    <input type="radio" name="decision" value="APPROVED_WITH_CHANGES" class="mt-1 accent-amber-500" required>
+                    <div>
+                        <div class="text-sm font-bold text-white">Aprobado con Observaciones</div>
+                        <div class="text-xs text-slate-500 mt-0.5">Requiere ajustes menores antes de iniciar tiraje masivo.</div>
+                    </div>
+                </label>
+
+                <label class="flex items-start gap-3 p-4 border border-border-default bg-surface cursor-pointer
+                               hover:border-blue-500/50 transition-colors
+                               has-[:checked]:border-red-500 has-[:checked]:bg-red-500/5 rounded-sm mb-3">
+                    <input type="radio" name="decision" value="REJECTED" class="mt-1 accent-red-500" required>
+                    <div>
+                        <div class="text-sm font-bold text-white">Rechazado</div>
+                        <div class="text-xs text-slate-500 mt-0.5">No cumple requerimientos. Requiere nueva simulación.</div>
+                    </div>
+                </label>
+
+                <!-- Section 3: Firma -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6 pt-6 border-t border-border-default">
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Aprobado por</label>
+                        <input type="text" name="approved_by" placeholder="Nombre completo"
+                               class="w-full bg-surface-dark border border-border-default text-white px-4 py-2
+                                      focus:border-blue-500 outline-none transition-colors text-sm rounded-sm" required>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Cargo</label>
+                        <input type="text" name="cargo" placeholder="Posición"
+                               class="w-full bg-surface-dark border border-border-default text-white px-4 py-2
+                                      focus:border-blue-500 outline-none transition-colors text-sm rounded-sm">
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <p class="text-[10px] text-slate-600 mt-4 uppercase tracking-tighter leading-relaxed font-medium">
+                    La aprobación confirma que el diseño y las especificaciones son correctas.
+                    La imprenta no se responsabiliza por errores no detectados durante esta revisión.
+                </p>
+
+                <div class="flex justify-end gap-3 mt-6">
+                    <a href="javascript:history.back()"
+                       class="flex items-center text-xs font-bold text-slate-500 hover:text-white uppercase px-4 py-2 transition-colors">
+                        Cancelar
+                    </a>
+                    <button type="submit"
+                            class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase
+                                   tracking-widest px-6 py-2 rounded-sm transition-all shadow-lg shadow-emerald-900/20">
+                        Enviar Propuesta
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+</body>
+</html>
