@@ -1,0 +1,18 @@
+{% load static %}
+{% for color in colors %}
+<button type="button"
+        hx-post="{% url 'quotes:card_job_color_add' job_pk %}"
+        hx-vals='{"pantone_id": "{{ color.pk }}", "side": "{{ side }}"}'
+        hx-target="#color-list-{{ side|lower }}"
+        hx-swap="outerHTML"
+        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+        hx-on::after-request="document.getElementById('pantone-search-{{ side|lower }}').value=''; document.getElementById('pantone-results-{{ side|lower }}').innerHTML='';"
+        class="w-full flex items-center gap-3 px-4 py-2 hover:bg-slate-800/50 transition-colors text-left border-b border-border-default last:border-0">
+  <span class="w-3 h-3 rounded-full flex-shrink-0 border border-white/10"
+        style="background-color: {{ color.hex_value|default:'#ccc' }}"></span>
+  <span class="text-sm text-slate-300">{{ color.code }}</span>
+  <span class="text-[9px] text-slate-600 ml-auto uppercase">{{ color.category }}</span>
+</button>
+{% empty %}
+<p class="text-xs text-slate-500 italic px-4 py-3">Sin resultados.</p>
+{% endfor %}

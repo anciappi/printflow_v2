@@ -1,179 +1,244 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="es">
-
+<html lang="es" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nueva Orden de Trabajo | PrintFlow</title>
-    <link rel="stylesheet" href="{% static 'css/output.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/portal.css' %}">
+    <title>Nueva Orden de Trabajo Tarjetas</title>
+    
+    <!-- CSS -->
+    <link href="{% static 'css/output.css' %}" rel="stylesheet">
+    <link href="{% static 'css/portal.css' %}" rel="stylesheet">
+    
+    <!-- HTMX -->
+    <script src="{% static 'js/htmx.min.js' %}" defer></script>
 </head>
-
-<body class="min-h-screen flex flex-col antialiased">
-
-    <!-- Header -->
-    <header class="bg-surface border-b border-border-default sticky top-0 z-40">
-        <div class="max-w-4xl mx-auto px-4 flex justify-between h-14 items-center">
-            <h1 class="text-white text-xs font-bold uppercase tracking-widest">Nueva O.T. Tarjetas</h1>
-            <a href="{% url 'quotes:portal_home' %}"
-                class="text-[10px] font-bold text-slate-500 hover:text-white uppercase tracking-widest transition-colors">Volver</a>
+<body class="bg-surface-dark text-slate-300 antialiased min-h-screen">
+    
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 py-10">
+        
+        <!-- HEADER -->
+        <div class="flex items-center justify-between mb-8">
+            <h1 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Nueva O.T. Tarjetas</h1>
+            <a href="{% url 'quotes:portal_home' %}" class="text-sm font-medium text-blue-400 hover:text-blue-300 transition-colors">
+                &larr; Volver
+            </a>
         </div>
-    </header>
 
-    <main class="max-w-4xl mx-auto py-8 px-4 w-full">
-        <form method="post" enctype="multipart/form-data" id="jobForm">
+        <form method="POST" enctype="multipart/form-data" class="space-y-6">
             {% csrf_token %}
+            
+            {% if form.errors %}
+            <div class="bg-red-900/20 border border-red-500/50 text-red-400 px-4 py-3 rounded-sm mb-6">
+                <p class="text-[10px] font-bold uppercase mb-1 tracking-widest">Errores en el formulario:</p>
+                <div class="text-sm">
+                    {{ form.errors }}
+                </div>
+            </div>
+            {% endif %}
 
-            <!-- Section 1: Job Info -->
-            <div class="card p-6 mb-4 shadow-xl">
-                <h3
-                    class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-border-default pb-1">
-                    Sección 1: Datos del Trabajo</h3>
-                <div class="grid grid-cols-1 gap-6">
-                    <div class="space-y-1.5">
-                        <label for="{{ form.job_description.id_for_label }}"
-                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Descripción del
-                            Trabajo</label>
+            <!-- SECTION 1 — Datos del Trabajo -->
+            <div class="bg-surface border border-border-default p-6 rounded-sm shadow-xl">
+                <h2 class="text-sm font-bold text-white tracking-tight mb-6">1. Datos del Trabajo</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="col-span-1 md:col-span-2 space-y-1.5">
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                            Descripción del Trabajo
+                        </label>
                         {{ form.job_description }}
                     </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="space-y-1.5">
-                            <label for="{{ form.op_anterior.id_for_label }}"
-                                class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Orden
-                                Anterior (Ref)</label>
-                            {{ form.op_anterior }}
-                        </div>
-                        <div class="space-y-1.5">
-                            <label for="{{ form.version.id_for_label }}"
-                                class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Versión</label>
-                            {{ form.version }}
-                        </div>
+                    
+                    <div class="space-y-1.5">
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                            OP Anterior
+                        </label>
+                        {{ form.op_anterior }}
+                    </div>
+                    
+                    <div class="space-y-1.5">
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                            Versión
+                        </label>
+                        {{ form.version }}
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                            Cantidad
+                        </label>
+                        {{ form.quantity }}
+                    </div>
+                    
+                    <div class="space-y-1.5">
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                            Precio Unitario
+                        </label>
+                        {{ form.unit_price }}
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                            Dirección de Entrega
+                        </label>
+                        {{ form.delivery_address }}
+                    </div>
+                    
+                    <div class="space-y-1.5">
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                            Fecha Estimada
+                        </label>
+                        {{ form.estimated_delivery }}
                     </div>
                 </div>
             </div>
 
-            <!-- Section 2: Colors Front -->
-            <div class="card p-6 mb-4 shadow-xl">
-                <h3
-                    class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-border-default pb-1">
-                    Sección 2: Colores Anverso</h3>
-
-                <div class="space-y-6">
-                    <div class="flex flex-wrap gap-6 checkbox-group">
-                        <label><input type="checkbox" class="color-front" data-color="C"> CIAN</label>
-                        <label><input type="checkbox" class="color-front" data-color="M"> MAGENTA</label>
-                        <label><input type="checkbox" class="color-front" data-color="Y"> AMARILLO</label>
-                        <label><input type="checkbox" class="color-front" data-color="K"> NEGRO</label>
-                    </div>
-                    {{ form.front_colors.as_hidden }}
-
+            <!-- SECTION 2 — Información del Solicitante -->
+            <div class="bg-surface border border-border-default p-6 rounded-sm shadow-xl">
+                <h2 class="text-sm font-bold text-white tracking-tight mb-6">2. Información del Solicitante</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="space-y-1.5">
-                        <label for="{{ form.front_special_colors.id_for_label }}"
-                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Colores
-                            adicionales / Tintas especiales</label>
-                        {{ form.front_special_colors }}
-                        <p class="text-[9px] text-slate-600 mt-1">Ej: Pantone 485C, Barniz UV, Tinta Metálica Oro</p>
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                            Nombre/Razón Social
+                        </label>
+                        {{ form.requester_name }}
+                    </div>
+                    
+                    <div class="space-y-1.5">
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                            Email
+                        </label>
+                        {{ form.requester_email }}
                     </div>
 
                     <div class="space-y-1.5">
-                        <label for="{{ form.front_observations.id_for_label }}"
-                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Observaciones
-                            de Color</label>
-                        {{ form.front_observations }}
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                            Teléfono
+                        </label>
+                        {{ form.requester_phone }}
+                    </div>
+                    
+                    <div class="space-y-1.5">
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                            CUIT
+                        </label>
+                        {{ form.requester_cuit }}
                     </div>
                 </div>
             </div>
 
-            <!-- Section 3: Colors Back -->
-            <div class="card p-6 mb-4 shadow-xl">
-                <h3
-                    class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-border-default pb-1">
-                    Sección 3: Colores Reverso</h3>
+            <!-- SECTION 3 — Colores Anverso -->
+            <div class="bg-surface border border-border-default p-6 rounded-sm shadow-xl">
+                <h2 class="text-sm font-bold text-white tracking-tight mb-6">3. Colores Anverso</h2>
+                
+                {% if form.instance.pk %}
+                <!-- Color search -->
+                <div class="relative mb-4">
+                  <input type="text"
+                         id="pantone-search-front"
+                         placeholder="Buscar Pantone... ej: 485, Black, Cyan"
+                         hx-get="{% url 'quotes:pantone_search' %}?side=FRONT&job_pk={{ form.instance.pk }}"
+                         hx-trigger="keyup changed delay:300ms"
+                         hx-target="#pantone-results-front"
+                         hx-include="[name='q']"
+                         name="q"
+                         class="w-full bg-surface-dark border border-border-default text-white text-xs px-4 py-2 focus:border-blue-500 outline-none transition-colors rounded-sm placeholder-slate-600">
+                  <!-- Results dropdown -->
+                  <div id="pantone-results-front"
+                       class="absolute z-10 w-full bg-surface border border-border-default shadow-2xl rounded-sm mt-1 max-h-48 overflow-y-auto empty:hidden">
+                  </div>
+                </div>
+                
+                <div id="color-list-front" class="mb-4">
+                  <!-- We include the template fragment here if HTMX was active -->
+                  {% include 'quotes/fragments/color_list.html' with job=form.instance side='FRONT' %}
+                </div>
+                {% else %}
+                <!-- Note about colors after save -->
+                <div class="bg-blue-500/5 border border-blue-500/20 px-4 py-3 rounded-sm mb-4">
+                  <p class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">ℹ️ Tintas Pantone</p>
+                  <p class="text-xs text-slate-500 mt-1">
+                    Guardá la orden primero para agregar tintas.
+                  </p>
+                </div>
+                {% endif %}
 
-                <div class="space-y-6">
-                    <div class="flex flex-wrap gap-6 checkbox-group">
-                        <label><input type="checkbox" class="color-back" data-color="C"> CIAN</label>
-                        <label><input type="checkbox" class="color-back" data-color="M"> MAGENTA</label>
-                        <label><input type="checkbox" class="color-back" data-color="Y"> AMARILLO</label>
-                        <label><input type="checkbox" class="color-back" data-color="K"> NEGRO</label>
-                    </div>
-                    {{ form.back_colors.as_hidden }}
-
-                    <div class="space-y-1.5">
-                        <label for="{{ form.back_special_colors.id_for_label }}"
-                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Colores
-                            adicionales / Tintas especiales</label>
-                        {{ form.back_special_colors }}
-                        <p class="text-[9px] text-slate-600 mt-1">Ej: Pantone 485C, Barniz UV, Tinta Metálica Oro</p>
-                    </div>
-
-                    <div class="space-y-1.5">
-                        <label for="{{ form.back_observations.id_for_label }}"
-                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Observaciones
-                            de Color</label>
-                        {{ form.back_observations }}
-                    </div>
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                        Observaciones Anverso
+                    </label>
+                    {{ form.front_observations }}
                 </div>
             </div>
 
-            <!-- Section 4: Files -->
-            <div class="card p-6 mb-12 shadow-xl">
-                <h3
-                    class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-border-default pb-1">
-                    Sección 4: Archivos y Notas</h3>
-                <div class="space-y-6">
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Diseño
-                            / Arte Final</label>
-                        <div
-                            class="border-2 border-dashed border-border-default bg-surface-dark p-8 text-center rounded-sm hover:border-blue-500/50 transition-colors">
-                            <div class="flex flex-col items-center">
-                                <svg class="w-8 h-8 text-slate-600 mb-2" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                                </svg>
-                                <span class="text-xs text-slate-500 mb-4">Click para cargar archivo (PDF, JPG,
-                                    PNG)</span>
-                                <div
-                                    class="px-4 py-2 bg-surface border border-border-default rounded-sm text-xs text-white">
-                                    {{ form.attached_file }}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="space-y-1.5">
-                        <label for="{{ form.general_notes.id_for_label }}"
-                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Notas
-                            Adicionales</label>
-                        {{ form.general_notes }}
-                    </div>
+            <!-- SECTION 4 — Colores Reverso -->
+            <div class="bg-surface border border-border-default p-6 rounded-sm shadow-xl">
+                <h2 class="text-sm font-bold text-white tracking-tight mb-6">4. Colores Reverso</h2>
+                
+                {% if form.instance.pk %}
+                <!-- Color search -->
+                <div class="relative mb-4">
+                  <input type="text"
+                         id="pantone-search-back"
+                         placeholder="Buscar Pantone... ej: 485, Black, Cyan"
+                         hx-get="{% url 'quotes:pantone_search' %}?side=BACK&job_pk={{ form.instance.pk }}"
+                         hx-trigger="keyup changed delay:300ms"
+                         hx-target="#pantone-results-back"
+                         hx-include="[name='q']"
+                         name="q"
+                         class="w-full bg-surface-dark border border-border-default text-white text-xs px-4 py-2 focus:border-blue-500 outline-none transition-colors rounded-sm placeholder-slate-600">
+                  <!-- Results dropdown -->
+                  <div id="pantone-results-back"
+                       class="absolute z-10 w-full bg-surface border border-border-default shadow-2xl rounded-sm mt-1 max-h-48 overflow-y-auto empty:hidden">
+                  </div>
+                </div>
+                
+                <div id="color-list-back" class="mb-4">
+                  <!-- We include the template fragment here if HTMX was active -->
+                  {% include 'quotes/fragments/color_list.html' with job=form.instance side='BACK' %}
+                </div>
+                {% else %}
+                <!-- Note about colors after save -->
+                <div class="bg-blue-500/5 border border-blue-500/20 px-4 py-3 rounded-sm mb-4">
+                  <p class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">ℹ️ Tintas Pantone</p>
+                  <p class="text-xs text-slate-500 mt-1">
+                    Guardá la orden primero para agregar tintas.
+                  </p>
+                </div>
+                {% endif %}
+
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                        Observaciones Reverso
+                    </label>
+                    {{ form.back_observations }}
                 </div>
             </div>
 
-            <!-- Action Bar -->
-            <div class="flex flex-col sm:flex-row gap-4 mb-20">
-                <button type="submit"
-                    class="flex-1 py-4 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold uppercase tracking-widest rounded-sm transition-all shadow-xl shadow-blue-900/10">
-                    Enviar para Revisión
-                </button>
-                <a href="{% url 'quotes:portal_home' %}"
-                    class="px-8 py-4 bg-surface border border-border-default text-slate-500 hover:text-white text-xs font-bold uppercase tracking-widest rounded-sm text-center transition-all">
+            <!-- SECTION 5 — Notas -->
+            <div class="bg-surface border border-border-default p-6 rounded-sm shadow-xl">
+                <h2 class="text-sm font-bold text-white tracking-tight mb-6">5. Notas Generales</h2>
+                
+                <div class="space-y-1.5">
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                        Notas Generales
+                    </label>
+                    {{ form.general_notes }}
+                </div>
+            </div>
+
+            <!-- ACTION BAR -->
+            <div class="flex items-center justify-end gap-5">
+                <a href="{% url 'quotes:portal_home' %}" class="text-xs text-slate-400 hover:text-white transition-colors font-bold uppercase tracking-widest">
                     Cancelar
                 </a>
+                <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold uppercase tracking-widest px-8 py-3 rounded-sm transition-all focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-xl">
+                    Crear Orden
+                </button>
             </div>
-
-            <!-- Hidden fields integration -->
-            {{ form.requester_name.as_hidden }}
-            {{ form.requester_email.as_hidden }}
-            {{ form.requester_phone.as_hidden }}
-            {{ form.requester_cuit.as_hidden }}
+            
         </form>
-    </main>
-
-    <script src="{% static 'js/card-job-form.js' %}"></script>
+    </div>
 </body>
-
 </html>
