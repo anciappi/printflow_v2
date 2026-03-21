@@ -94,6 +94,7 @@ User.objects.create_user(
 )
 print('✅ Usuario velton_admin creado para Grupo Velton.')
 "
+python manage.py tenant_command import_pantone --schema=velton
 
 echo ""
 echo "✅  ¡LISTO! Sistema reseteado y configurado para desarrollo."

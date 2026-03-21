@@ -648,3 +648,125 @@ Expandir suite de tests — customers, orders, inventory
 9. **Onboarding UI flow** — para nuevos tenants
 10. **Load/stress test** — múltiples tenants simultáneos
 11. **Tailwind CLI para producción** — configurar build en deploy
+
+
+Session: 2026-03-20
+Sprint CardJob-1 — Modelos base: CERRADO ✅
+Sprint CardJob-2 — Flujo de estados y vistas: CERRADO ✅
+Sprint Seguridad Portal — En progreso 🔄
+Tasks Completed:
+
+CardJob Sprint 1 — Modelos extendidos:
+
+PantoneColor model — librería de colores con CMYK + Pantone Coated/Metallic/Neon
+CardJobColor model — gestión de tintas por cara (FRONT/BACK)
+CardJobFile model — archivos por tipo (FRONT/BACK/DIECUT/TECH)
+Campos nuevos en CardJobOrder: approval_token, quantity, unit_price, delivery_address, estimated_delivery
+STATUS_CHOICES expandido a 8 estados: DRAFT → SUBMITTED → STAFF_REVIEW → PENDING_CLIENT → APPROVED/APPROVED_WITH_CHANGES/REJECTED → IN_PRODUCTION
+max_length corregido en status field (20→30) para cubrir APPROVED_WITH_CHANGES
+Management command import_pantone — 373 colores importados en schema velton
+Filtros y búsqueda en CardJobOrderListView (q, status, branch, date_from, date_to)
+Migraciones aplicadas en todos los schemas
+
+
+CardJob Sprint 2 — Flujo de aprobación:
+
+Permission mixins refactorizados: PortalClientMixin, StaffMixin, PortalOrStaffMixin
+5 vistas de transición de estados:
+
+CardJobSubmitView: DRAFT → SUBMITTED
+CardJobStaffReviewView: SUBMITTED → STAFF_REVIEW
+CardJobSendToClientView: STAFF_REVIEW → PENDING_CLIENT
+CardJobClientApprovalView: aprobación pública via UUID token
+CardJobToProductionView: APPROVED → IN_PRODUCTION
+
+
+URL pública /aprobar/<uuid>/ sin login requerido
+Todas las vistas con soporte HTMX (HX-Trigger: jobUpdated)
+card_job_list.html actualizado con filtros HTMX y 8 badges de estado
+templates/quotes/fragments/job_table.html creado
+
+
+Sprint Seguridad Portal:
+
+Arquitectura de roles definida: PORTAL (clientes) vs STAFF (todos los demás roles)
+PortalMiddleware simplificado — PORTAL solo a /portal/, STAFF sin restricciones
+portal_user FK agregado a CardJobOrder — ownership robusto vs chequeo por email frágil
+CardJobOrderDetailView actualizado — chequeo via portal_user FK
+CardJobOrderCreateView — auto-vincula orden al portal_user en creación
+PortalView — muestra solo órdenes del usuario autenticado
+PortalCreateUserView — staff crea acceso portal con password auto-generado
+factory-boy instalado
+Suite de tests creada: quotes/tests/ con 15 tests de seguridad
+Tests fallan por falta de configuración de tenant context — fix pendiente
+
+
+
+Architecture Decisions Logged:
+
+PORTAL vs STAFF — dos mundos completamente separados, mismo tenant
+Un usuario por cliente — no credenciales genéricas compartidas
+Permisos granulares de staff — definidos post-MVP por cada imprenta
+UUID token — solo para aprobación pública, no para carga de solicitudes
+Credenciales portal — staff crea el usuario, password generado automáticamente
+Catálogos base del sistema — PantoneColor es el primero, se expande a materiales e insumos post-MVP
+
+Files Created/Modified:
+
+quotes/models.py: PantoneColor, CardJobColor, CardJobFile, CardJobOrder extendido
+quotes/views.py: mixins, 5 vistas de transición, PortalCreateUserView, PortalView
+quotes/urls.py: URLs de transición + aprobación pública + portal_create_user
+quotes/management/commands/import_pantone.py: comando de importación
+core/middleware.py: PortalMiddleware simplificado
+quotes/tests/: init.py, factories.py, test_portal_security.py
+templates/quotes/card_job_list.html: filtros HTMX + badges actualizados
+templates/quotes/fragments/job_table.html: fragment para HTMX
+requirements.txt: factory-boy agregado
+Migraciones: quotes.0003 (modelos nuevos), quotes.0004 (portal_user FK)
+
+Commits:
+
+feat(quotes): CardJob Sprint 1 - extended models and Pantone library
+feat(quotes): CardJob Sprint 2 - approval workflow views and URLs
+feat(quotes): card_job_list with HTMX filters and updated status badges
+security(portal): role isolation and portal user architecture
+test(quotes): add portal security test suite - setup pending
+
+
+Próxima Sesión — Pendientes
+🔴 Inmediato
+
+Fix tests de seguridad — configurar tenant context en quotes/tests/conftest.py
+
+Los 15 tests están escritos y correctos
+Solo falta el setup del entorno de tenant para que corran
+Objetivo: 15/15 tests passing
+
+
+portal_create_user.html — template para que staff cree usuarios portal
+
+Vista ya existe, falta el template
+
+
+
+🟠 Sprint CardJob-3 — UI completa
+
+Reconstrucción completa card_job_detail.html — nuevo diseño aprobado
+
+Gestión de tintas Pantone con HTMX
+Upload de archivos por cara
+Especificaciones técnicas
+Sección de aprobación
+
+
+card_job_approval.html — template público standalone para cliente
+card_job_approval_success.html — confirmación post-aprobación
+
+🟢 Post-MVP
+
+Catálogos base del sistema — materiales, insumos (mismo patrón que PantoneColor)
+Permisos granulares por rol de staff — definidos con cada cliente
+Mail automático — envío de credenciales portal al cliente
+Documentación técnica — para developers
+Tutoriales para usuarios — para clientes finales
+Dark/Light theme — post-MVP
