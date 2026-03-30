@@ -61,6 +61,19 @@ class WorkOrder(models.Model):
     def __str__(self):
         return f"OT #{self.ot_number} | {self.product.name}"
 
+    def get_next_status_display(self):
+        """Returns the display label of the next status, or None if at end of flow."""
+        transitions = {
+            'PENDING':         ('PREPRESS', 'Enviar a Pre-Prensa'),
+            'PREPRESS':        ('PRODUCTION', 'Iniciar Producción'),
+            'PRODUCTION':      ('FINISHING', 'Pasar a Terminaciones'),
+            'FINISHING':       ('QUALITY_CONTROL', 'Control de Calidad'),
+            'QUALITY_CONTROL': ('READY', 'Marcar como Listo'),
+            'READY':           ('DELIVERED', 'Confirmar Entrega'),
+        }
+        result = transitions.get(self.current_status)
+        return result[1] if result else None
+
     def save(self, *args, **kwargs):
         # Generar número de OT atómicamente para prevenir condiciones de carrera
         if not self.ot_number:

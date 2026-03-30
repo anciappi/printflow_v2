@@ -23,16 +23,43 @@
                 object.sales_rep.get_full_name|default:object.sales_rep.username }}</p>
         </div>
 
-        <div class="flex items-center gap-3 w-full md:w-auto">
-            <div class="px-4 py-2 bg-surface-dark border border-border-default rounded text-center min-w-[140px]">
-                <p class="text-[9px] text-slate-500 uppercase font-bold tracking-widest leading-none mb-1">Estado Actual
-                </p>
-                <p class="text-xs font-bold text-orange-500">{{ object.get_current_status_display|upper }}</p>
-            </div>
+        <div class="flex items-center gap-3 w-full md:w-auto flex-wrap">
+            {% include 'orders/fragments/status_badge.html' with order=object %}
             <a href="{% url 'orders:update' object.pk %}"
                 class="bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-bold py-3 px-6 transition-all uppercase tracking-widest rounded-sm">
                 Editar OT
             </a>
+        </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="bg-surface border border-border-default rounded-lg p-4">
+        <div class="flex items-center justify-between mb-2">
+            <span class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Progreso de Producción</span>
+            <span class="text-[10px] text-slate-400">
+                {% if object.current_status == 'PENDING' %}1/7
+                {% elif object.current_status == 'PREPRESS' %}2/7
+                {% elif object.current_status == 'PRODUCTION' %}3/7
+                {% elif object.current_status == 'FINISHING' %}4/7
+                {% elif object.current_status == 'QUALITY_CONTROL' %}5/7
+                {% elif object.current_status == 'READY' %}6/7
+                {% elif object.current_status == 'DELIVERED' %}7/7
+                {% endif %}
+            </span>
+        </div>
+        <div class="w-full bg-surface-dark rounded-full h-1.5">
+            <div class="bg-orange-500 h-1.5 rounded-full transition-all duration-500"
+                style="width: {% if object.current_status == 'PENDING' %}14%{% elif object.current_status == 'PREPRESS' %}28%{% elif object.current_status == 'PRODUCTION' %}42%{% elif object.current_status == 'FINISHING' %}57%{% elif object.current_status == 'QUALITY_CONTROL' %}71%{% elif object.current_status == 'READY' %}85%{% elif object.current_status == 'DELIVERED' %}100%{% endif %}">
+            </div>
+        </div>
+        <div class="flex justify-between mt-2">
+            <span class="text-[8px] text-slate-600">Pendiente</span>
+            <span class="text-[8px] text-slate-600">Pre-Prensa</span>
+            <span class="text-[8px] text-slate-600">Producción</span>
+            <span class="text-[8px] text-slate-600">Terminaciones</span>
+            <span class="text-[8px] text-slate-600">QC</span>
+            <span class="text-[8px] text-slate-600">Listo</span>
+            <span class="text-[8px] text-slate-600">Entregado</span>
         </div>
     </div>
 

@@ -26,7 +26,7 @@
             <p class="text-slate-500 text-sm">Registra o actualiza la información fiscal y de contacto del cliente.</p>
         </div>
         <a href="{% url 'customers:list' %}" class="text-xs text-slate-500 hover:text-white transition-colors mb-1">
-            &larr; Volver al listado
+            Volver al listado
         </a>
     </div>
 
@@ -35,9 +35,7 @@
 
         <!-- SECCIÓN 1: IDENTIFICACIÓN -->
         <div class="bg-surface border border-border-default rounded-lg p-6">
-            <h3 class="text-lg font-medium text-orange-500 mb-4 border-b border-border-default pb-2">Datos de Identificación
-            </h3>
-
+            <h3 class="text-lg font-medium text-orange-500 mb-4 border-b border-border-default pb-2">Datos de Identificación</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Nombre / Razón Social -->
                 <div class="md:col-span-2">
@@ -92,25 +90,19 @@
 
         <!-- SECCIÓN 3: CONFIGURACIÓN Y NOTAS -->
         <div class="bg-surface border border-border-default rounded-lg p-6">
-            <h3 class="text-lg font-medium text-slate-400 mb-4 border-b border-border-default pb-2">Información Adicional
-            </h3>
-
+            <h3 class="text-lg font-medium text-slate-400 mb-4 border-b border-border-default pb-2">Información Adicional</h3>
             <div class="space-y-6">
                 <!-- Estado Activo -->
                 <div class="flex items-center gap-3 bg-surface-dark/50 p-4 border border-border-default rounded-sm">
                     {{ form.is_active }}
-                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider cursor-pointer"
-                        for="{{ form.is_active.id_for_label }}">
-                        Cliente Activo (Habilitado para Órdenes)
-                    </label>
+                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider cursor-pointer" for="{{ form.is_active.id_for_label }}">Cliente Activo (Habilitado para Órdenes)</label>
                 </div>
 
                 <!-- Notas -->
                 <div>
                     <label class="block mb-2 text-sm font-medium text-slate-400">Notas Internas / Preferencias</label>
                     {{ form.notes }}
-                    <p class="text-[10px] text-slate-600 mt-2 italic">Ej: "Prefiere factura A", "Horario de entrega
-                        08-12hs".</p>
+                    <p class="text-[10px] text-slate-600 mt-2 italic">Ej: "Prefiere factura A", "Horario de entrega 08-12hs".</p>
                 </div>
             </div>
         </div>
