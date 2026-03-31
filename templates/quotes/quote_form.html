@@ -17,8 +17,7 @@
     <header class="bg-surface border-b border-border-default sticky top-0 z-40">
         <div class="max-w-4xl mx-auto px-4 flex justify-between h-14 items-center">
             <h1 class="text-white text-xs font-bold uppercase tracking-widest">Solicitud de Cotización</h1>
-            <a href="{% url 'quotes:portal_home' %}"
-                class="text-[10px] font-bold text-slate-500 hover:text-white uppercase tracking-widest transition-colors">Volver</a>
+            <a href="{% url 'quotes:portal_home' %}" class="text-[10px] font-bold text-slate-500 hover:text-white uppercase tracking-widest transition-colors">Volver</a>
         </div>
     </header>
 
@@ -28,29 +27,24 @@
 
             <!-- Section 1: Contact -->
             <div class="card p-6 mb-4 shadow-xl">
-                <h3
-                    class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-border-default pb-1">
+                <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-border-default pb-1">
                     Sección 1: Contacto</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div class="space-y-1.5">
-                        <label for="{{ form.requester_name.id_for_label }}"
-                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Razón
+                        <label for="{{ form.requester_name.id_for_label }}" class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Razón
                             Social</label>
                         {{ form.requester_name }}
                     </div>
                     <div class="space-y-1.5">
-                        <label for="{{ form.requester_cuit.id_for_label }}"
-                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">CUIT</label>
+                        <label for="{{ form.requester_cuit.id_for_label }}" class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">CUIT</label>
                         {{ form.requester_cuit }}
                     </div>
                     <div class="space-y-1.5">
-                        <label for="{{ form.requester_email.id_for_label }}"
-                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Email</label>
+                        <label for="{{ form.requester_email.id_for_label }}" class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Email</label>
                         {{ form.requester_email }}
                     </div>
                     <div class="space-y-1.5">
-                        <label for="{{ form.requester_phone.id_for_label }}"
-                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Teléfono</label>
+                        <label for="{{ form.requester_phone.id_for_label }}" class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Teléfono</label>
                         {{ form.requester_phone }}
                     </div>
                 </div>
@@ -58,20 +52,17 @@
 
             <!-- Section 2: Billing & Delivery -->
             <div class="card p-6 mb-4 shadow-xl">
-                <h3
-                    class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-border-default pb-1">
+                <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-border-default pb-1">
                     Sección 2: Logística</h3>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
                     <div class="space-y-1.5 sm:col-span-2">
-                        <label for="{{ form.billing_address.id_for_label }}"
-                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Facturación:
+                        <label for="{{ form.billing_address.id_for_label }}" class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Facturación:
                             Dirección</label>
                         {{ form.billing_address }}
                     </div>
                     <div class="space-y-1.5">
-                        <label for="{{ form.billing_city.id_for_label }}"
-                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Ciudad</label>
+                        <label for="{{ form.billing_city.id_for_label }}" class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Ciudad</label>
                         {{ form.billing_city }}
                     </div>
                 </div>
@@ -79,8 +70,7 @@
                 <div class="pt-6 border-t border-border-default">
                     <div class="flex items-center justify-between mb-6">
                         <h4 class="text-white text-xs font-bold uppercase tracking-widest">Entrega</h4>
-                        <label
-                            class="flex items-center gap-2 cursor-pointer text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-blue-400 transition-colors">
+                        <label class="flex items-center gap-2 cursor-pointer text-[10px] font-bold text-slate-400 uppercase tracking-widest hover:text-blue-400 transition-colors">
                             {{ form.same_as_billing }}
                             <span>Misma que facturación</span>
                         </label>
@@ -88,19 +78,16 @@
 
                     <div id="delivery-fields" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="space-y-1.5 sm:col-span-2">
-                            <label for="{{ form.delivery_address.id_for_label }}"
-                                class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Dirección
+                            <label for="{{ form.delivery_address.id_for_label }}" class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Dirección
                                 de Entrega</label>
                             {{ form.delivery_address }}
                         </div>
                         <div class="space-y-1.5">
-                            <label for="{{ form.delivery_city.id_for_label }}"
-                                class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Ciudad</label>
+                            <label for="{{ form.delivery_city.id_for_label }}" class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Ciudad</label>
                             {{ form.delivery_city }}
                         </div>
                         <div class="space-y-1.5">
-                            <label for="{{ form.delivery_contact.id_for_label }}"
-                                class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Persona de
+                            <label for="{{ form.delivery_contact.id_for_label }}" class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Persona de
                                 Contacto</label>
                             {{ form.delivery_contact }}
                         </div>
@@ -110,36 +97,30 @@
 
             <!-- Section 3: Products -->
             <div class="card p-6 mb-4 shadow-xl">
-                <h3
-                    class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-border-default pb-1">
+                <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-border-default pb-1">
                     Sección 3: Requerimientos</h3>
                 {{ products.management_form }}
                 <div id="product-list" class="space-y-4">
                     {% for pform in products %}
-                    <div
-                        class="p-4 bg-surface-dark border border-border-default focus-within:border-blue-500/50 transition-colors rounded-sm">
+                    <div class="p-4 bg-surface-dark border border-border-default focus-within:border-blue-500/50 transition-colors rounded-sm">
                         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                             <div class="sm:col-span-2 space-y-1.5">
-                                <label
-                                    class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Producto</label>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Producto</label>
                                 {{ pform.product }}
                             </div>
                             <div class="space-y-1.5">
-                                <label
-                                    class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Cantidad</label>
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Cantidad</label>
                                 {{ pform.quantity }}
                             </div>
                             <div class="sm:col-span-3 space-y-1.5">
-                                <label
-                                    class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Especificaciones
+                                <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Especificaciones
                                     (Papel, medidas, etc.)</label>
                                 {{ pform.notes }}
                             </div>
                         </div>
                         {% if pform.can_delete %}
                         <div class="mt-3 pt-3 border-t border-border-default text-right">
-                            <label
-                                class="text-[10px] text-slate-600 hover:text-red-500 transition-colors cursor-pointer uppercase tracking-widest">Eliminar:
+                            <label class="text-[10px] text-slate-600 hover:text-red-500 transition-colors cursor-pointer uppercase tracking-widest">Eliminar:
                                 {{ pform.DELETE }}</label>
                         </div>
                         {% endif %}
@@ -150,34 +131,27 @@
 
             <!-- Section 4: Design Files -->
             <div class="card p-6 mb-12 shadow-xl">
-                <h3
-                    class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-border-default pb-1">
+                <h3 class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mb-6 inline-block border-b border-border-default pb-1">
                     Sección 4: Archivos</h3>
                 <div class="space-y-6">
                     <div>
-                        <label
-                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Adjuntar
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3">Adjuntar
                             Originales / Referencias</label>
-                        <div
-                            class="border-2 border-dashed border-border-default bg-surface-dark p-8 text-center rounded-sm hover:border-blue-500/50 transition-colors">
+                        <div class="border-2 border-dashed border-border-default bg-surface-dark p-8 text-center rounded-sm hover:border-blue-500/50 transition-colors">
                             <div class="flex flex-col items-center">
-                                <svg class="w-8 h-8 text-slate-600 mb-2" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                <svg class="w-8 h-8 text-slate-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                 </svg>
                                 <span class="text-xs text-slate-500 mb-4">Click para cargar archivo (PDF, JPG,
                                     PNG)</span>
-                                <div
-                                    class="px-4 py-2 bg-surface border border-border-default rounded-sm text-xs text-white">
+                                <div class="px-4 py-2 bg-surface border border-border-default rounded-sm text-xs text-white">
                                     {{ form.attached_file }}
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="space-y-1.5">
-                        <label for="{{ form.general_notes.id_for_label }}"
-                            class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Notas
+                        <label for="{{ form.general_notes.id_for_label }}" class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest">Notas
                             Adicionales</label>
                         {{ form.general_notes }}
                     </div>
@@ -186,12 +160,10 @@
 
             <!-- Action Bar -->
             <div class="flex flex-col sm:flex-row gap-4 mb-20">
-                <button type="submit"
-                    class="flex-1 py-4 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold uppercase tracking-widest rounded-sm transition-all shadow-xl shadow-blue-900/10">
+                <button type="submit" class="flex-1 py-4 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold uppercase tracking-widest rounded-sm transition-all shadow-xl shadow-blue-900/10">
                     Enviar Solicitud
                 </button>
-                <a href="{% url 'quotes:portal_home' %}"
-                    class="px-8 py-4 bg-surface border border-border-default text-slate-500 hover:text-white text-xs font-bold uppercase tracking-widest rounded-sm text-center transition-all">
+                <a href="{% url 'quotes:portal_home' %}" class="px-8 py-4 bg-surface border border-border-default text-slate-500 hover:text-white text-xs font-bold uppercase tracking-widest rounded-sm text-center transition-all">
                     Cancelar
                 </a>
             </div>

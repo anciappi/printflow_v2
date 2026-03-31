@@ -38,8 +38,7 @@
         <div class="bg-surface border border-border-default p-6 shadow-lg">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="text-xs font-bold text-blue-400 uppercase tracking-widest">Materiales a Comprar</h3>
-                <button type="button" id="add-item"
-                    class="text-xs bg-surface-hover hover:bg-blue-600 text-slate-300 hover:text-white px-3 py-1.5 rounded transition-colors flex items-center gap-1">
+                <button type="button" id="add-item" class="text-xs bg-surface-hover hover:bg-blue-600 text-slate-300 hover:text-white px-3 py-1.5 rounded transition-colors flex items-center gap-1">
                     <span>+</span> Agregar Ítem
                 </button>
             </div>
@@ -48,8 +47,7 @@
 
             <div id="items-container" class="space-y-2">
                 {% for item_form in formset %}
-                <div
-                    class="item-row grid grid-cols-12 gap-3 items-end bg-surface-dark/50 p-3 border border-border-default rounded-sm">
+                <div class="item-row grid grid-cols-12 gap-3 items-end bg-surface-dark/50 p-3 border border-border-default rounded-sm">
                     {% for hidden in item_form.hidden_fields %}{{ hidden }}{% endfor %}
 
                     <div class="col-span-5">
@@ -71,12 +69,9 @@
                     <div class="col-span-1 flex justify-center pb-1">
                         {% if formset.can_delete %}
                         <div class="hidden">{{ item_form.DELETE }}</div>
-                        <button type="button" class="delete-row text-slate-600 hover:text-red-500 transition-colors"
-                            title="Eliminar fila">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        <button type="button" class="delete-row text-slate-600 hover:text-red-500 transition-colors" title="Eliminar fila">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>
                         </button>
                         {% endif %}
@@ -94,12 +89,10 @@
 
         <!-- ACCIONES -->
         <div class="mt-8 flex justify-end gap-4">
-            <a href="{% url 'purchasing:oc_list' %}"
-                class="px-6 py-2.5 text-sm font-bold text-slate-500 hover:text-white transition-colors uppercase tracking-wider">
+            <a href="{% url 'purchasing:oc_list' %}" class="px-6 py-2.5 text-sm font-bold text-slate-500 hover:text-white transition-colors uppercase tracking-wider">
                 Cancelar
             </a>
-            <button type="submit"
-                class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold py-2.5 px-8 shadow-lg shadow-blue-900/20 transition-all uppercase tracking-wider">
+            <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold py-2.5 px-8 shadow-lg shadow-blue-900/20 transition-all uppercase tracking-wider">
                 {% if is_edit %}Actualizar Orden{% else %}Guardar Orden{% endif %}
             </button>
         </div>
@@ -128,10 +121,8 @@
         <div class="col-span-1 flex justify-center pb-1">
             <div class="hidden">{{ formset.empty_form.DELETE }}</div>
             <button type="button" class="delete-row text-slate-600 hover:text-red-500 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
             </button>
         </div>

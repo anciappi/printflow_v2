@@ -1,66 +1,35 @@
 {% extends "base.html" %}
 
 {% block breadcrumbs %}
-<span class="text-slate-500">Producción / Órdenes /</span> <span class="text-white ml-1">Detalle OT {{ object.ot_number
-    }}</span>
+<span class="text-slate-500">Producción / Órdenes /</span> <span class="text-white ml-1">Detalle OT {{ object.ot_number }}</span>
 {% endblock %}
 
 {% block content %}
 <div class="max-w-5xl mx-auto space-y-6">
 
     <!-- Header / Status Bar -->
-    <div
-        class="bg-surface border border-border-default rounded-lg p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div class="bg-surface border border-border-default rounded-lg p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
             <div class="flex items-center gap-3 mb-1">
-                <h2 class="text-2xl font-bold text-white">OT #{{ object.ot_number }}</h2>
+                <h2 class="text-2xl font-regular text-white">{{ object.ot_number }}</h2>
                 {% if object.priority == 'URGENT' %}
-                <span
-                    class="px-2 py-0.5 text-[10px] font-bold bg-red-900/30 text-red-500 border border-red-800 rounded-sm italic uppercase tracking-tighter">Urgente</span>
+                <span class="px-2 py-0.5 text-[10px] font-regular bg-red-900/30 text-red-500 border border-red-800 rounded-sm italic uppercase tracking-tighter">Urgente</span>
                 {% endif %}
             </div>
-            <p class="text-slate-500 text-sm">Creada el {{ object.created_at|date:"d M Y, H:i" }} por {{
-                object.sales_rep.get_full_name|default:object.sales_rep.username }}</p>
+            <p class="text-slate-500 text-sm">Creada el {{ object.created_at|date:"d M Y, H:i" }} por {{ object.sales_rep.get_full_name|default:object.sales_rep.username }}</p>
         </div>
 
         <div class="flex items-center gap-3 w-full md:w-auto flex-wrap">
             {% include 'orders/fragments/status_badge.html' with order=object %}
-            <a href="{% url 'orders:update' object.pk %}"
-                class="bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-bold py-3 px-6 transition-all uppercase tracking-widest rounded-sm">
+            <a href="{% url 'orders:update' object.pk %}" class="bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-bold py-3 px-6 transition-all uppercase tracking-widest rounded-sm">
                 Editar OT
             </a>
         </div>
     </div>
 
-    <!-- Progress Bar -->
-    <div class="bg-surface border border-border-default rounded-lg p-4">
-        <div class="flex items-center justify-between mb-2">
-            <span class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Progreso de Producción</span>
-            <span class="text-[10px] text-slate-400">
-                {% if object.current_status == 'PENDING' %}1/7
-                {% elif object.current_status == 'PREPRESS' %}2/7
-                {% elif object.current_status == 'PRODUCTION' %}3/7
-                {% elif object.current_status == 'FINISHING' %}4/7
-                {% elif object.current_status == 'QUALITY_CONTROL' %}5/7
-                {% elif object.current_status == 'READY' %}6/7
-                {% elif object.current_status == 'DELIVERED' %}7/7
-                {% endif %}
-            </span>
-        </div>
-        <div class="w-full bg-surface-dark rounded-full h-1.5">
-            <div class="bg-orange-500 h-1.5 rounded-full transition-all duration-500"
-                style="width: {% if object.current_status == 'PENDING' %}14%{% elif object.current_status == 'PREPRESS' %}28%{% elif object.current_status == 'PRODUCTION' %}42%{% elif object.current_status == 'FINISHING' %}57%{% elif object.current_status == 'QUALITY_CONTROL' %}71%{% elif object.current_status == 'READY' %}85%{% elif object.current_status == 'DELIVERED' %}100%{% endif %}">
-            </div>
-        </div>
-        <div class="flex justify-between mt-2">
-            <span class="text-[8px] text-slate-600">Pendiente</span>
-            <span class="text-[8px] text-slate-600">Pre-Prensa</span>
-            <span class="text-[8px] text-slate-600">Producción</span>
-            <span class="text-[8px] text-slate-600">Terminaciones</span>
-            <span class="text-[8px] text-slate-600">QC</span>
-            <span class="text-[8px] text-slate-600">Listo</span>
-            <span class="text-[8px] text-slate-600">Entregado</span>
-        </div>
+    <!-- Progress Bar (HTMX swappable) -->
+    <div id="progress-container" hx-get="{% url 'orders:progress_bar' object.pk %}" hx-trigger="statusUpdated from:body" hx-swap="innerHTML">
+        {% include 'orders/fragments/progress_bar.html' with order=object %}
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -85,8 +54,7 @@
                     </div>
                     <div>
                         <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Cantidad</p>
-                        <p class="text-xl text-white font-bold">{{ object.quantity }} <span
-                                class="text-xs font-normal text-slate-500">unidades</span></p>
+                        <p class="text-xl text-white font-bold">{{ object.quantity }} <span class="text-xs font-normal text-slate-500">unidades</span></p>
                     </div>
                     <div>
                         <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Entrega Prometida</p>
@@ -105,13 +73,33 @@
                 </div>
                 <div class="p-6">
                     {% if object.production_notes %}
-                    <p class="text-sm text-slate-300 whitespace-pre-wrap leading-relaxed">{{ object.production_notes }}
-                    </p>
+                    <p class="text-sm text-slate-300 whitespace-pre-wrap leading-relaxed">{{ object.production_notes }}</p>
                     {% else %}
                     <p class="text-sm text-slate-500 italic">No hay notas específicas para esta orden.</p>
                     {% endif %}
                 </div>
             </div>
+
+            <!-- Logística y Entrega -->
+            <div class="bg-surface border border-border-default rounded-lg overflow-hidden">
+                <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default flex items-center gap-2">
+                    <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Lugar de Entrega</h3>
+                </div>
+                <div class="p-6">
+                    {% if object.product.customer.address %}
+                    <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Dirección fiscal del cliente</p>
+                    <p class="text-sm text-white font-medium">{{ object.product.customer.address }}</p>
+                    {% else %}
+                    <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Dirección no especificada</p>
+                    <p class="text-sm text-slate-500 italic">No hay dirección registrada en la ficha del cliente.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# ── Material / Stock Panel (HTMX swappable) ── #}
+            {% include 'orders/fragments/stock_panel.html' with order=object %}
+
         </div>
 
         <!-- Columna Derecha: Sidebar con KPIs / Resumen -->
@@ -121,13 +109,11 @@
                 <div class="space-y-4">
                     <div class="flex justify-between items-center py-2 border-b border-border-default/50">
                         <span class="text-[11px] text-slate-500">Uso de Material:</span>
-                        <span class="text-sm text-white font-bold">{{ object.estimated_material_usage|default:"--" }}
-                            ml</span>
+                        <span class="text-sm text-white font-bold">{{ object.estimated_material_usage|default:"--" }} ml</span>
                     </div>
                     <div class="flex justify-between items-center py-2 border-b border-border-default/50">
                         <span class="text-[11px] text-slate-500">Prioridad:</span>
-                        <span
-                            class="text-[10px] font-bold uppercase {% if object.priority == 'URGENT' %}text-red-500{% elif object.priority == 'HIGH' %}text-orange-500{% else %}text-slate-400{% endif %}">
+                        <span class="text-[10px] font-bold uppercase {% if object.priority == 'URGENT' %}text-red-500{% elif object.priority == 'HIGH' %}text-orange-500{% else %}text-slate-400{% endif %}">
                             {{ object.get_priority_display }}
                         </span>
                     </div>
@@ -137,18 +123,14 @@
             <div class="bg-orange-600/5 border border-orange-900/20 rounded-lg p-6">
                 <h3 class="text-[10px] font-bold text-orange-500 uppercase tracking-widest mb-3">Acciones Rápidas</h3>
                 <div class="grid grid-cols-1 gap-2">
-                    <button
-                        class="w-full bg-surface hover:bg-surface-hover text-slate-300 text-[10px] font-bold py-2 rounded transition-colors uppercase">Imprimir
-                        Hoja de Ruta</button>
-                    <button
-                        class="w-full bg-surface hover:bg-surface-hover text-slate-300 text-[10px] font-bold py-2 rounded transition-colors uppercase">Generar
-                        Remito</button>
+                    <button class="w-full bg-surface hover:bg-surface-hover text-slate-300 text-[10px] font-bold py-2 rounded transition-colors uppercase">Imprimir Hoja de Ruta</button>
+                    <button class="w-full bg-surface hover:bg-surface-hover text-slate-300 text-[10px] font-bold py-2 rounded transition-colors uppercase">Generar Remito</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Paginación (si tuviera tablas internas de movimientos en el futuro) -->
+    <!-- Volver al listado -->
     <div class="flex justify-start">
         <a href="{% url 'orders:list' %}" class="text-xs text-slate-500 hover:text-white transition-colors">
             &larr; Volver al listado de órdenes

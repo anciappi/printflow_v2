@@ -433,8 +433,7 @@
     <div class="flex justify-end mt-6">
       <form method="POST" action="{% url 'quotes:card_job_submit' job.pk %}">
         {% csrf_token %}
-        <button type="submit"
-                class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase tracking-widest px-8 py-3 rounded-sm transition-all focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+        <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold uppercase tracking-widest px-8 py-3 rounded-sm transition-all focus:ring-2 focus:ring-emerald-500 focus:outline-none">
           Enviar para Revisión
         </button>
       </form>

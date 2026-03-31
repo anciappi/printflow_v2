@@ -3,9 +3,73 @@ from django.views.generic import ListView, CreateView, UpdateView, DetailView, V
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
+from django.db.models import Sum, Case, When, Value, IntegerField
+from django.template.loader import render_to_string
+from decimal import Decimal
+
 from .models import WorkOrder
 from .forms import WorkOrderForm
+from inventory.models import InventoryUnit, ConsumptionLog
 
+
+# ---------------------------------------------------------------------------
+# PRODUCTION STATUSES — states where material consumption is allowed
+# ---------------------------------------------------------------------------
+CONSUMABLE_STATUSES = {'PRODUCTION', 'FINISHING', 'QUALITY_CONTROL', 'READY', 'DELIVERED'}
+
+
+# ---------------------------------------------------------------------------
+# SHARED HELPER — builds stock panel context for a given order (DRY)
+# ---------------------------------------------------------------------------
+def _build_stock_context(order):
+    """Returns context dict for the stock_panel fragment."""
+    import re
+    material = order.product.substrate
+
+    # We fetch them without order_by then sort in Python for natural sorting
+    stock_units_qs = InventoryUnit.objects.filter(
+        material=material,
+        status__in=['AVAILABLE', 'IN_USE']
+    ).select_related('purchase_order', 'material')
+
+    stock_total = stock_units_qs.aggregate(total=Sum('current_quantity'))['total'] or Decimal('0')
+
+    # Natural sort function (same as in inventory/views.py)
+    def natural_sort_key(unidad):
+        parts = [int(text) if text.isdigit() else text.lower() 
+                 for text in re.split('([0-9]+)', unidad.unit_number)]
+        remito = unidad.purchase_order.remito_number if unidad.purchase_order else 'IMPORT'
+        return (remito, parts)
+
+    stock_units = list(stock_units_qs)
+    stock_units.sort(key=natural_sort_key)
+
+    consumos_ot = ConsumptionLog.objects.filter(
+        reference_ot=order.ot_number
+    ).select_related('inventory_unit__material', 'responsible').order_by('-date')
+
+    return {
+        'order': order,
+        'material': material,
+        'stock_units': stock_units,
+        'stock_total': stock_total,
+        'consumos_ot': consumos_ot,
+        'can_consume': order.current_status in CONSUMABLE_STATUSES,
+    }
+
+
+def _render_stock_panel(request, order, extra_ctx=None):
+    """Renders the stock_panel fragment with optional extra context (e.g. error)."""
+    ctx = _build_stock_context(order)
+    if extra_ctx:
+        ctx.update(extra_ctx)
+    html = render_to_string('orders/fragments/stock_panel.html', ctx, request=request)
+    return HttpResponse(html)
+
+
+# ---------------------------------------------------------------------------
+# VIEWS
+# ---------------------------------------------------------------------------
 
 class WorkOrderListView(LoginRequiredMixin, ListView):
     model = WorkOrder
@@ -16,7 +80,13 @@ class WorkOrderListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return WorkOrder.objects.select_related(
             'product__customer', 'sales_rep', 'branch'
-        ).order_by('-created_at')
+        ).annotate(
+            is_delivered=Case(
+                When(current_status='DELIVERED', then=Value(1)),
+                default=Value(0),
+                output_field=IntegerField(),
+            )
+        ).order_by('is_delivered', '-created_at')
 
 
 class WorkOrderCreateView(LoginRequiredMixin, CreateView):
@@ -47,16 +117,21 @@ class WorkOrderDetailView(LoginRequiredMixin, DetailView):
 
     def get_queryset(self):
         return WorkOrder.objects.select_related(
-            'product__customer', 'sales_rep', 'branch'
+            'product__customer', 'product__substrate', 'sales_rep', 'branch'
         )
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(_build_stock_context(self.object))
+        return context
 
 
 class WorkOrderStatusUpdateView(LoginRequiredMixin, View):
     """
     Handles status transitions via HTMX POST.
-    Returns updated status badge HTML fragment.
+    Returns updated status badge fragment + fires 'statusUpdated' event so
+    the stock panel can re-fetch itself automatically.
     """
-    # Valid transitions — defines the production flow
     TRANSITIONS = {
         'PENDING':         'PREPRESS',
         'PREPRESS':        'PRODUCTION',
@@ -77,11 +152,97 @@ class WorkOrderStatusUpdateView(LoginRequiredMixin, View):
                 order.finished_at = timezone.now()
             order.save()
 
-        # Return updated status fragment for HTMX swap
-        from django.template.loader import render_to_string
         html = render_to_string(
             'orders/fragments/status_badge.html',
             {'order': order},
             request=request
         )
+        response = HttpResponse(html)
+        # Notify stock panel to re-fetch — can_consume may have changed
+        response['HX-Trigger'] = 'statusUpdated'
+        return response
+
+
+class WorkOrderStockPanelView(LoginRequiredMixin, View):
+    """
+    GET endpoint for the stock panel fragment.
+    Used by HTMX to re-render the panel after a status transition
+    (triggered by HX-Trigger: statusUpdated from WorkOrderStatusUpdateView).
+    """
+    def get(self, request, pk):
+        order = get_object_or_404(
+            WorkOrder.objects.select_related('product__substrate'),
+            pk=pk
+        )
+        return _render_stock_panel(request, order)
+
+
+class WorkOrderProgressView(LoginRequiredMixin, View):
+    """
+    GET endpoint for the progress bar fragment.
+    Used by HTMX to re-render the progress bar after a status transition
+    (triggered by HX-Trigger: statusUpdated).
+    """
+    def get(self, request, pk):
+        order = get_object_or_404(WorkOrder, pk=pk)
+        html = render_to_string('orders/fragments/progress_bar.html', {'order': order}, request=request)
         return HttpResponse(html)
+
+
+class WorkOrderConsumoView(LoginRequiredMixin, View):
+    """
+    Handles manual stock deduction from the OT detail page via HTMX POST.
+    Reuses inventory.ConsumptionLog — auto-links reference_ot to the OT number.
+    Returns updated stock_panel fragment.
+    """
+    def post(self, request, pk):
+        order = get_object_or_404(
+            WorkOrder.objects.select_related('product__substrate'),
+            pk=pk
+        )
+
+        # Guard: only allowed from PRODUCTION onwards
+        if order.current_status not in CONSUMABLE_STATUSES:
+            return _render_stock_panel(
+                request, order,
+                error='El descuento de material solo está disponible a partir de "En Producción".'
+            )
+
+        unit_id = request.POST.get('unit_id')
+        cantidad_texto = request.POST.get('cantidad')
+
+        if not unit_id or not cantidad_texto:
+            return _render_stock_panel(
+                request, order,
+                error='Seleccioná una unidad e ingresá la cantidad.'
+            )
+
+        try:
+            unit = get_object_or_404(
+                InventoryUnit,
+                pk=unit_id,
+                material=order.product.substrate,
+                status__in=['AVAILABLE', 'IN_USE']
+            )
+            cantidad = Decimal(cantidad_texto)
+
+            if cantidad <= 0:
+                return _render_stock_panel(request, order, error='La cantidad debe ser mayor a cero.')
+
+            if cantidad > unit.current_quantity:
+                return _render_stock_panel(
+                    request, order,
+                    error=f'Stock insuficiente. Disponible en esta unidad: {unit.current_quantity} ml.'
+                )
+
+            ConsumptionLog.objects.create(
+                inventory_unit=unit,
+                quantity_used=cantidad,
+                responsible=request.user,
+                reference_ot=order.ot_number,
+            )
+
+        except Exception as e:
+            return _render_stock_panel(request, order, error=str(e))
+
+        return _render_stock_panel(request, order)

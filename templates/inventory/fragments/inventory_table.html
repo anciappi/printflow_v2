@@ -83,16 +83,10 @@
                                             </button>
                                         </form>
                                         {% endif %}
-                                        <button hx-get="{% url 'inventory:fraccionar_modal' unidad.id %}"
-                                                hx-target="#modal-container"
-                                                hx-swap="innerHTML"
-                                                class="text-amber-500 hover:text-amber-300 bg-surface-hover px-2 py-0.5 rounded text-[10px]">
+                                        <button hx-get="{% url 'inventory:fraccionar_modal' unidad.id %}" hx-target="#modal-container" hx-swap="innerHTML" class="text-amber-500 hover:text-amber-300 bg-surface-hover px-2 py-0.5 rounded text-[10px]">
                                             ✂ Fraccionar
                                         </button>
-                                        <button hx-get="{% url 'inventory:consumo_modal' unidad.id %}"
-                                                hx-target="#modal-container"
-                                                hx-swap="innerHTML"
-                                                class="text-slate-500 hover:text-red-400 bg-surface-hover px-2 py-0.5 rounded text-[10px]">
+                                        <button hx-get="{% url 'inventory:consumo_modal' unidad.id %}" hx-target="#modal-container" hx-swap="innerHTML" class="text-slate-500 hover:text-red-400 bg-surface-hover px-2 py-0.5 rounded text-[10px]">
                                             Consumir
                                         </button>
                                     </td>

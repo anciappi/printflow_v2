@@ -119,7 +119,6 @@ class Product(models.Model):
         verbose_name="Tipo de Empaque"
     )
     qty_per_box = models.PositiveIntegerField(verbose_name="Cantidad por Caja")
-    delivery_address = models.CharField(max_length=150, blank=True, verbose_name="Posible Lugar de Entrega")
 
     # --- Archivos y Documentación ---
     design_front = models.FileField(upload_to='products/designs/front/', blank=True, null=True, verbose_name="Diseño Anverso (Original)")

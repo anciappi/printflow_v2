@@ -13,27 +13,19 @@
     </div>
 
     <!-- Filter Bar -->
-    <div id="filter-bar"
-         class="bg-surface border border-border-default p-4 mb-4 rounded-sm">
-        <form hx-get="{% url 'quotes:card_job_list' %}"
-              hx-target="#job-table-container"
-              hx-swap="innerHTML"
-              hx-trigger="change, search, keyup changed delay:400ms"
-              class="flex flex-wrap gap-3 items-end">
+    <div id="filter-bar" class="bg-surface border border-border-default p-4 mb-4 rounded-sm">
+        <form hx-get="{% url 'quotes:card_job_list' %}" hx-target="#job-table-container" hx-swap="innerHTML" hx-trigger="change, search, keyup changed delay:400ms" class="flex flex-wrap gap-3 items-end">
     
             <!-- Search -->
             <div class="flex-1 min-w-[200px]">
                 <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Buscar</label>
-                <input type="text" name="q" value="{{ current_filters.q }}"
-                       placeholder="Cliente, N° orden, descripción..."
-                       class="w-full bg-surface-dark border border-border-default text-white text-xs px-3 py-2 focus:border-blue-500 outline-none transition-colors">
+                <input type="text" name="q" value="{{ current_filters.q }}" placeholder="Cliente, N° orden, descripción..." class="w-full bg-surface-dark border border-border-default text-white text-xs px-3 py-2 focus:border-blue-500 outline-none transition-colors">
             </div>
     
             <!-- Status filter -->
             <div class="min-w-[160px]">
                 <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Estado</label>
-                <select name="status"
-                        class="w-full bg-surface-dark border border-border-default text-slate-300 text-xs px-3 py-2 focus:border-blue-500 outline-none">
+                <select name="status" class="w-full bg-surface-dark border border-border-default text-slate-300 text-xs px-3 py-2 focus:border-blue-500 outline-none">
                     <option value="">Todos</option>
                     {% for value, label in status_choices %}
                     <option value="{{ value }}" {% if current_filters.status == value %}selected{% endif %}>
@@ -46,8 +38,7 @@
             <!-- Branch filter -->
             <div class="min-w-[140px]">
                 <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Sucursal</label>
-                <select name="branch"
-                        class="w-full bg-surface-dark border border-border-default text-slate-300 text-xs px-3 py-2 focus:border-blue-500 outline-none">
+                <select name="branch" class="w-full bg-surface-dark border border-border-default text-slate-300 text-xs px-3 py-2 focus:border-blue-500 outline-none">
                     <option value="">Todas</option>
                     {% for branch in branches %}
                     <option value="{{ branch.id }}" {% if current_filters.branch == branch.id|stringformat:"s" %}selected{% endif %}>
@@ -60,15 +51,13 @@
             <!-- Date from -->
             <div class="min-w-[130px]">
                 <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Desde</label>
-                <input type="date" name="date_from" value="{{ current_filters.date_from }}"
-                       class="w-full bg-surface-dark border border-border-default text-slate-300 text-xs px-3 py-2 focus:border-blue-500 outline-none">
+                <input type="date" name="date_from" value="{{ current_filters.date_from }}" class="w-full bg-surface-dark border border-border-default text-slate-300 text-xs px-3 py-2 focus:border-blue-500 outline-none">
             </div>
     
             <!-- Date to -->
             <div class="min-w-[130px]">
                 <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Hasta</label>
-                <input type="date" name="date_to" value="{{ current_filters.date_to }}"
-                       class="w-full bg-surface-dark border border-border-default text-slate-300 text-xs px-3 py-2 focus:border-blue-500 outline-none">
+                <input type="date" name="date_to" value="{{ current_filters.date_to }}" class="w-full bg-surface-dark border border-border-default text-slate-300 text-xs px-3 py-2 focus:border-blue-500 outline-none">
             </div>
     
         </form>

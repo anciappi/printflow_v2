@@ -1,0 +1,27 @@
+<div class="bg-surface border border-border-default rounded-lg p-4 transition-all duration-500">
+    <div class="flex items-center justify-between mb-2">
+        <span class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Progreso de Producción</span>
+        <span class="text-[10px] text-slate-400">
+            {% if order.current_status == 'PENDING' %}1/7
+            {% elif order.current_status == 'PREPRESS' %}2/7
+            {% elif order.current_status == 'PRODUCTION' %}3/7
+            {% elif order.current_status == 'FINISHING' %}4/7
+            {% elif order.current_status == 'QUALITY_CONTROL' %}5/7
+            {% elif order.current_status == 'READY' %}6/7
+            {% elif order.current_status == 'DELIVERED' %}7/7
+            {% endif %}
+        </span>
+    </div>
+    <div class="w-full bg-surface-dark rounded-full h-1.5">
+        <div class="bg-orange-500 h-1.5 rounded-full transition-all duration-1000 ease-out" style="width: {% if order.current_status == 'PENDING' %}14%{% elif order.current_status == 'PREPRESS' %}28%{% elif order.current_status == 'PRODUCTION' %}42%{% elif order.current_status == 'FINISHING' %}57%{% elif order.current_status == 'QUALITY_CONTROL' %}71%{% elif order.current_status == 'READY' %}85%{% elif order.current_status == 'DELIVERED' %}100%{% endif %}"></div>
+    </div>
+    <div class="flex justify-between mt-2">
+        <span class="text-[8px] transition-colors {% if order.current_status == 'PENDING' %}text-orange-500 font-bold{% else %}text-slate-600{% endif %}">Pendiente</span>
+        <span class="text-[8px] transition-colors {% if order.current_status == 'PREPRESS' %}text-orange-500 font-bold{% else %}text-slate-600{% endif %}">Pre-Prensa</span>
+        <span class="text-[8px] transition-colors {% if order.current_status == 'PRODUCTION' %}text-orange-500 font-bold{% else %}text-slate-600{% endif %}">Producción</span>
+        <span class="text-[8px] transition-colors {% if order.current_status == 'FINISHING' %}text-orange-500 font-bold{% else %}text-slate-600{% endif %}">Terminaciones</span>
+        <span class="text-[8px] transition-colors {% if order.current_status == 'QUALITY_CONTROL' %}text-orange-500 font-bold{% else %}text-slate-600{% endif %}">QC</span>
+        <span class="text-[8px] transition-colors {% if order.current_status == 'READY' %}text-orange-500 font-bold{% else %}text-slate-600{% endif %}">Listo</span>
+        <span class="text-[8px] transition-colors {% if order.current_status == 'DELIVERED' %}text-emerald-500 font-bold{% else %}text-slate-600{% endif %}">Entregado</span>
+    </div>
+</div>

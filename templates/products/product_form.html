@@ -27,8 +27,7 @@
                     {% if form.customer.errors %}
                     <p class="text-red-500 text-xs mt-1">{{ form.customer.errors.0 }}</p>
                     {% endif %}
-                    <p class="text-[12px] text-slate-600 mt-1">¿No existe? <a href="{% url 'customers:create' %}"
-                            class="text-blue-500 hover:underline">Crear Cliente</a></p>
+                    <p class="text-[12px] text-slate-600 mt-1">¿No existe? <a href="{% url 'customers:create' %}" class="text-blue-500 hover:underline">Crear Cliente</a></p>
                 </div>
 
                 <!-- Código SKU -->
@@ -110,8 +109,7 @@
             <div class="mb-8">
                 <div class="flex justify-between items-center mb-4">
                     <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Colores Frente</label>
-                    <button type="button" onclick="addColorRow('colors-front-container')"
-                        class="text-[10px] bg-surface-hover hover:bg-emerald-600 text-slate-300 hover:text-white px-2 py-1 rounded transition-colors flex items-center gap-1">
+                    <button type="button" onclick="addColorRow('colors-front-container')" class="text-[10px] bg-surface-hover hover:bg-emerald-600 text-slate-300 hover:text-white px-2 py-1 rounded transition-colors flex items-center gap-1">
                         <span>+</span> Agregar color
                     </button>
                 </div>
@@ -126,8 +124,7 @@
             <div class="mb-8 pt-6 border-t border-border-default/50">
                 <div class="flex justify-between items-center mb-4">
                     <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Colores Dorso</label>
-                    <button type="button" onclick="addColorRow('colors-back-container')"
-                        class="text-[10px] bg-surface-hover hover:bg-emerald-600 text-slate-300 hover:text-white px-2 py-1 rounded transition-colors flex items-center gap-1">
+                    <button type="button" onclick="addColorRow('colors-back-container')" class="text-[10px] bg-surface-hover hover:bg-emerald-600 text-slate-300 hover:text-white px-2 py-1 rounded transition-colors flex items-center gap-1">
                         <span>+</span> Agregar color
                     </button>
                 </div>
@@ -144,8 +141,7 @@
                 <div class="bg-surface-dark/50 p-4 border border-border-default rounded-sm">
                     <div class="flex items-center gap-3 mb-4">
                         {{ form.has_laminate }}
-                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider cursor-pointer"
-                            for="{{ form.has_laminate.id_for_label }}">¿Laminado?</label>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider cursor-pointer" for="{{ form.has_laminate.id_for_label }}">¿Laminado?</label>
                     </div>
                     <div>
                         {{ form.laminate_type }}
@@ -156,8 +152,7 @@
                 <div class="bg-surface-dark/50 p-4 border border-border-default rounded-sm">
                     <div class="flex items-center gap-3 mb-4">
                         {{ form.has_varnish }}
-                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider cursor-pointer"
-                            for="{{ form.has_varnish.id_for_label }}">¿Barniz?</label>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider cursor-pointer" for="{{ form.has_varnish.id_for_label }}">¿Barniz?</label>
                     </div>
                     <div>
                         {{ form.varnish_type }}
@@ -168,8 +163,7 @@
                 <div class="bg-surface-dark/50 p-4 border border-border-default rounded-sm">
                     <div class="flex items-center gap-3 mb-4">
                         {{ form.has_mag_stripe }}
-                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider cursor-pointer"
-                            for="{{ form.has_mag_stripe.id_for_label }}">¿Banda Magnética?</label>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider cursor-pointer" for="{{ form.has_mag_stripe.id_for_label }}">¿Banda Magnética?</label>
                     </div>
                     <div>
                         {{ form.mag_coercivity }}
@@ -180,8 +174,7 @@
                 <div class="bg-surface-dark/50 p-4 border border-border-default rounded-sm">
                     <div class="flex items-center gap-3 mb-4">
                         {{ form.has_chip }}
-                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider cursor-pointer"
-                            for="{{ form.has_chip.id_for_label }}">¿Chip / RFID?</label>
+                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider cursor-pointer" for="{{ form.has_chip.id_for_label }}">¿Chip / RFID?</label>
                     </div>
                     <div>
                         {{ form.chip_type }}
@@ -197,26 +190,22 @@
 
                 <div class="border border-border-default rounded-sm divide-y divide-[#2d333b]">
                     <!-- Row: Laca UV -->
-                    <div
-                        class="flex items-center justify-between p-3 bg-surface-dark/20 hover:bg-surface-dark/40 transition-colors">
+                    <div class="flex items-center justify-between p-3 bg-surface-dark/20 hover:bg-surface-dark/40 transition-colors">
                         <span class="text-xs font-medium text-slate-400">Laca UV Sectorizada</span>
                         {{ form.has_uv_sectorizado }}
                     </div>
                     <!-- Row: Hot Stamping -->
-                    <div
-                        class="flex items-center justify-between p-3 bg-surface-dark/20 hover:bg-surface-dark/40 transition-colors">
+                    <div class="flex items-center justify-between p-3 bg-surface-dark/20 hover:bg-surface-dark/40 transition-colors">
                         <span class="text-xs font-medium text-slate-400">Hot Stamping</span>
                         {{ form.has_hot_stamping }}
                     </div>
                     <!-- Row: Holograma -->
-                    <div
-                        class="flex items-center justify-between p-3 bg-surface-dark/20 hover:bg-surface-dark/40 transition-colors">
+                    <div class="flex items-center justify-between p-3 bg-surface-dark/20 hover:bg-surface-dark/40 transition-colors">
                         <span class="text-xs font-medium text-slate-400">Holograma</span>
                         {{ form.has_holograma }}
                     </div>
                     <!-- Row: Troquelado -->
-                    <div
-                        class="flex items-center justify-between p-3 bg-surface-dark/20 hover:bg-surface-dark/40 transition-colors">
+                    <div class="flex items-center justify-between p-3 bg-surface-dark/20 hover:bg-surface-dark/40 transition-colors">
                         <span class="text-xs font-medium text-slate-400">Troquelado</span>
                         {{ form.has_troquelado }}
                     </div>
@@ -229,7 +218,7 @@
             <h3 class="text-lg font-medium text-orange-400 mb-4 border-b border-border-default pb-2 uppercase tracking-wide">
                 Logística y Empaque</h3>
 
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block mb-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Tipo de
                         Empaque</label>
@@ -239,11 +228,6 @@
                     <label class="block mb-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Unidades por
                         Caja</label>
                     {{ form.qty_per_box }}
-                </div>
-                <div>
-                    <label class="block mb-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Lugar de
-                        Entrega Sugerido</label>
-                    {{ form.delivery_address }}
                 </div>
             </div>
         </div>
@@ -362,39 +346,31 @@
                         <span id="status-design_front" class="status-badge status-badge-pendiente">Pendiente</span>
                         {% endif %}
                     </div>
-                    <div id="preview-design_front"
-                        class="file-preview-container w-full border border-border-default rounded-lg overflow-hidden flex items-center justify-center bg-surface-dark transition-all group-hover:border-emerald-500/50">
+                    <div id="preview-design_front" class="file-preview-container w-full border border-border-default rounded-lg overflow-hidden flex items-center justify-center bg-surface-dark transition-all group-hover:border-emerald-500/50">
                         {% if form.instance.design_front %}
                         <img src="{{ form.instance.design_front.url }}" class="w-full h-full object-contain">
                         {% else %}
                         <div class="text-center p-4">
-                            <svg class="w-8 h-8 text-slate-800 mx-auto mb-2" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                            <svg class="w-8 h-8 text-slate-800 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
                                 </path>
                             </svg>
-                            <span
-                                class="text-[9px] text-slate-700 font-bold uppercase tracking-tight italic text-opacity-30">No
+                            <span class="text-[9px] text-slate-700 font-bold uppercase tracking-tight italic text-opacity-30">No
                                 disponible</span>
                         </div>
                         {% endif %}
                     </div>
                     <div class="flex justify-end mt-2 gap-2">
                         {% if form.instance.design_front %}
-                        <a href="{{ form.instance.design_front.url }}" download
-                            class="btn-doc-action text-emerald-500/80 hover:text-emerald-400">
+                        <a href="{{ form.instance.design_front.url }}" download class="btn-doc-action text-emerald-500/80 hover:text-emerald-400">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                             </svg>
                             Descargar
                         </a>
-                        <button type="button" onclick="markForDeletion('design_front')"
-                            class="btn-doc-action text-red-500/80 hover:text-red-400">
+                        <button type="button" onclick="markForDeletion('design_front')" class="btn-doc-action text-red-500/80 hover:text-red-400">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
                                 </path>
                             </svg>
                             Eliminar
@@ -402,8 +378,7 @@
                         {% endif %}
                         <label for="id_design_front" class="btn-doc-action cursor-pointer">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                             </svg>
                             Actualizar
                         </label>
@@ -425,39 +400,31 @@
                         <span id="status-design_back" class="status-badge status-badge-pendiente">Pendiente</span>
                         {% endif %}
                     </div>
-                    <div id="preview-design_back"
-                        class="file-preview-container w-full border border-border-default rounded-lg overflow-hidden flex items-center justify-center bg-surface-dark transition-all group-hover:border-blue-500/50">
+                    <div id="preview-design_back" class="file-preview-container w-full border border-border-default rounded-lg overflow-hidden flex items-center justify-center bg-surface-dark transition-all group-hover:border-blue-500/50">
                         {% if form.instance.design_back %}
                         <img src="{{ form.instance.design_back.url }}" class="w-full h-full object-contain">
                         {% else %}
                         <div class="text-center p-4">
-                            <svg class="w-8 h-8 text-slate-800 mx-auto mb-2" fill="none" stroke="currentColor"
-                                viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
+                            <svg class="w-8 h-8 text-slate-800 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z">
                                 </path>
                             </svg>
-                            <span
-                                class="text-[9px] text-slate-700 font-bold uppercase tracking-tight italic text-opacity-30">No
+                            <span class="text-[9px] text-slate-700 font-bold uppercase tracking-tight italic text-opacity-30">No
                                 disponible</span>
                         </div>
                         {% endif %}
                     </div>
                     <div class="flex justify-end mt-2 gap-2">
                         {% if form.instance.design_back %}
-                        <a href="{{ form.instance.design_back.url }}" download
-                            class="btn-doc-action text-blue-500/80 hover:text-blue-400">
+                        <a href="{{ form.instance.design_back.url }}" download class="btn-doc-action text-blue-500/80 hover:text-blue-400">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                             </svg>
                             Descargar
                         </a>
-                        <button type="button" onclick="markForDeletion('design_back')"
-                            class="btn-doc-action text-red-500/80 hover:text-red-400">
+                        <button type="button" onclick="markForDeletion('design_back')" class="btn-doc-action text-red-500/80 hover:text-red-400">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
                                 </path>
                             </svg>
                             Eliminar
@@ -465,8 +432,7 @@
                         {% endif %}
                         <label for="id_design_back" class="btn-doc-action cursor-pointer">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                             </svg>
                             Actualizar
                         </label>
@@ -492,40 +458,33 @@
                             {% else %}
                             <span id="status-diecut_file" class="status-badge status-badge-pendiente">Pendiente</span>
                             {% endif %}
-                            <span
-                                class="text-[8px] text-slate-600 uppercase font-medium tracking-tighter">Corte/Troquel</span>
+                            <span class="text-[8px] text-slate-600 uppercase font-medium tracking-tighter">Corte/Troquel</span>
                         </div>
                     </div>
                     <div class="doc-preview-col" id="preview-diecut_file">
                         {% if form.instance.diecut_file %}
                         <svg class="w-5 h-5 text-orange-500/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758L5 19m0-14l4.121 4.121">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 14.121L19 19m-7-7l7-7m-7 7l-2.879 2.879M12 12L9.121 9.121m0 5.758L5 19m0-14l4.121 4.121">
                             </path>
                         </svg>
                         {% else %}
                         <svg class="w-5 h-5 text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
                             </path>
                         </svg>
                         {% endif %}
                     </div>
                     <div class="flex justify-end gap-2">
                         {% if form.instance.diecut_file %}
-                        <a href="{{ form.instance.diecut_file.url }}" download
-                            class="btn-doc-action text-emerald-500/80 hover:text-emerald-400">
+                        <a href="{{ form.instance.diecut_file.url }}" download class="btn-doc-action text-emerald-500/80 hover:text-emerald-400">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                             </svg>
                             Descargar
                         </a>
-                        <button type="button" onclick="markForDeletion('diecut_file')"
-                            class="btn-doc-action text-red-500/80 hover:text-red-400">
+                        <button type="button" onclick="markForDeletion('diecut_file')" class="btn-doc-action text-red-500/80 hover:text-red-400">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
                                 </path>
                             </svg>
                             Eliminar
@@ -533,8 +492,7 @@
                         {% endif %}
                         <label for="id_diecut_file" class="btn-doc-action cursor-pointer">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                             </svg>
                             Actualizar
                         </label>
@@ -546,8 +504,7 @@
                 <!-- Fila: Otros Adjuntos -->
                 <div class="doc-crud-row mb-6">
                     <div class="flex flex-col gap-1">
-                        <label
-                            class="block text-[10px] font-bold text-slate-200 uppercase tracking-wider">Originales</label>
+                        <label class="block text-[10px] font-bold text-slate-200 uppercase tracking-wider">Originales</label>
                         <div class="flex items-center gap-2">
                             {% if form.instance.tech_file %}
                             <span id="status-tech_file" class="status-badge status-badge-cargado">
@@ -556,40 +513,33 @@
                             {% else %}
                             <span id="status-tech_file" class="status-badge status-badge-pendiente">Pendiente</span>
                             {% endif %}
-                            <span
-                                class="text-[8px] text-slate-600 uppercase font-medium tracking-tighter">Auxiliar</span>
+                            <span class="text-[8px] text-slate-600 uppercase font-medium tracking-tighter">Auxiliar</span>
                         </div>
                     </div>
                     <div class="doc-preview-col" id="preview-tech_file">
                         {% if form.instance.tech_file %}
                         <svg class="w-5 h-5 text-purple-500/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13">
                             </path>
                         </svg>
                         {% else %}
                         <svg class="w-5 h-5 text-slate-800" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
                             </path>
                         </svg>
                         {% endif %}
                     </div>
                     <div class="flex justify-end gap-2">
                         {% if form.instance.tech_file %}
-                        <a href="{{ form.instance.tech_file.url }}" download
-                            class="btn-doc-action text-purple-500/80 hover:text-purple-400">
+                        <a href="{{ form.instance.tech_file.url }}" download class="btn-doc-action text-purple-500/80 hover:text-purple-400">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                             </svg>
                             Descargar
                         </a>
-                        <button type="button" onclick="markForDeletion('tech_file')"
-                            class="btn-doc-action text-red-500/80 hover:text-red-400">
+                        <button type="button" onclick="markForDeletion('tech_file')" class="btn-doc-action text-red-500/80 hover:text-red-400">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
                                 </path>
                             </svg>
                             Eliminar
@@ -597,8 +547,7 @@
                         {% endif %}
                         <label for="id_tech_file" class="btn-doc-action cursor-pointer">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
                             </svg>
                             Actualizar
                         </label>
@@ -623,11 +572,9 @@
 <div class="flex items-center justify-between border-t border-border-default mt-8 pt-6 pb-8">
     <div>
         {% if form.instance.pk %}
-        <a href="{% url 'products:delete' form.instance.pk %}"
-            class="flex items-center text-[10px] font-bold text-red-500 hover:text-red-400 uppercase tracking-widest transition-colors px-4 py-2 bg-red-900/10 border border-red-900/30 rounded-sm">
+        <a href="{% url 'products:delete' form.instance.pk %}" class="flex items-center text-[10px] font-bold text-red-500 hover:text-red-400 uppercase tracking-widest transition-colors px-4 py-2 bg-red-900/10 border border-red-900/30 rounded-sm">
             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
                 </path>
             </svg>
             Eliminar Ficha
@@ -635,10 +582,8 @@
         {% endif %}
     </div>
     <div class="flex items-center gap-4">
-        <a href="{% url 'products:catalog' %}"
-            class="text-[10px] font-bold text-slate-500 hover:text-white uppercase tracking-widest transition-colors px-4">Cancelar</a>
-        <button type="submit"
-            class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2.5 px-8 shadow-lg shadow-emerald-900/20 transition-all uppercase tracking-widest">
+        <a href="{% url 'products:catalog' %}" class="text-[10px] font-bold text-slate-500 hover:text-white uppercase tracking-widest transition-colors px-4">Cancelar</a>
+        <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2.5 px-8 shadow-lg shadow-emerald-900/20 transition-all uppercase tracking-widest">
             {% if form.instance.pk %}
             Actualizar
             {% else %}

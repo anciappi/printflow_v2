@@ -2,9 +2,7 @@
     <div class="fixed inset-0 bg-black/80 backdrop-blur-sm"></div>
     <div class="fixed inset-0 z-10 flex items-center justify-center p-4">
         <div class="bg-surface border border-border-default w-full max-w-md p-6 shadow-2xl">
-            <form hx-post="{% url 'inventory:fraccionar_unidad' unit.id %}"
-                  hx-target="#modal-container"
-                  hx-swap="innerHTML">
+            <form hx-post="{% url 'inventory:fraccionar_unidad' unit.id %}" hx-target="#modal-container" hx-swap="innerHTML">
                 {% csrf_token %}
                 <h3 class="text-lg font-bold text-white mb-1">✂ Fraccionar Bobina</h3>
                 <p class="text-xs text-slate-400 mb-6">Unidad: <span class="text-amber-400 font-mono">{{ unit.unit_number }}</span> | Ancho: <span class="text-white">{{ unit.get_width }}</span>cm</p>
@@ -23,11 +21,7 @@
                     </div>
                 </div>
                 <div class="flex justify-end gap-3">
-                    <button type="button" 
-                            hx-get="{% url 'inventory:close_modal' %}"
-                            hx-target="#modal-container"
-                            hx-swap="innerHTML"
-                            class="text-xs font-bold text-slate-500 uppercase px-4 py-2">Cancelar</button>
+                    <button type="button"  hx-get="{% url 'inventory:close_modal' %}" hx-target="#modal-container" hx-swap="innerHTML" class="text-xs font-bold text-slate-500 uppercase px-4 py-2">Cancelar</button>
                     <button type="submit" class="bg-amber-600 text-white text-xs font-bold uppercase px-6 py-2 rounded-sm">Confirmar Corte</button>
                 </div>
             </form>

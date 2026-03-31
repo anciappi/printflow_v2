@@ -6,12 +6,7 @@
     </div>
     {% with next_statuses=order.get_next_status_display %}
     {% if next_statuses %}
-    <button
-        hx-post="{% url 'orders:status_update' order.pk %}"
-        hx-target="#status-block"
-        hx-swap="outerHTML"
-        hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-        class="bg-orange-600 hover:bg-orange-500 text-white text-[10px] font-bold py-3 px-4 transition-all uppercase tracking-widest rounded-sm">
+    <button hx-post="{% url 'orders:status_update' order.pk %}" hx-target="#status-block" hx-swap="outerHTML" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' class="bg-orange-600 hover:bg-orange-500 text-white text-[10px] font-bold py-3 px-4 transition-all uppercase tracking-widest rounded-sm">
         → {{ next_statuses }}
     </button>
     {% endif %}

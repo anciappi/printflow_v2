@@ -10,39 +10,27 @@
         </div>
         {% endif %}
 
-        <form hx-post="{% url 'purchasing:oc_receive' oc.pk %}"
-              hx-target="#modal-container"
-              hx-swap="innerHTML">
+        <form hx-post="{% url 'purchasing:oc_receive' oc.pk %}" hx-target="#modal-container" hx-swap="innerHTML">
             {% csrf_token %}
             <div class="space-y-4">
                 <div>
-                    <label
-                        class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
                         Nº Remito Físico Proveedor
                     </label>
-                    <input type="text" name="nuevo_remito_real"
-                        class="w-full bg-surface-dark border border-border-default text-slate-200 px-3 py-2 text-sm focus:outline-none focus:border-blue-500 rounded-sm"
-                        placeholder="Ej: 0001-12345678">
+                    <input type="text" name="nuevo_remito_real" class="w-full bg-surface-dark border border-border-default text-slate-200 px-3 py-2 text-sm focus:outline-none focus:border-blue-500 rounded-sm" placeholder="Ej: 0001-12345678">
                 </div>
                 <div>
-                    <label
-                        class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
                         Fecha de Ingreso
                     </label>
-                    <input type="date" name="fecha_ingreso"
-                        class="w-full bg-surface-dark border border-border-default text-slate-200 px-3 py-2 text-sm focus:outline-none focus:border-blue-500 rounded-sm">
+                    <input type="date" name="fecha_ingreso" class="w-full bg-surface-dark border border-border-default text-slate-200 px-3 py-2 text-sm focus:outline-none focus:border-blue-500 rounded-sm">
                 </div>
             </div>
             <div class="flex justify-end gap-3 mt-6">
-                <button type="button"
-                        hx-get="{% url 'purchasing:close_modal' %}"
-                        hx-target="#modal-container"
-                        hx-swap="innerHTML"
-                        class="text-sm text-slate-500 hover:text-white transition-colors px-4 py-2">
+                <button type="button" hx-get="{% url 'purchasing:close_modal' %}" hx-target="#modal-container" hx-swap="innerHTML" class="text-sm text-slate-500 hover:text-white transition-colors px-4 py-2">
                     Cancelar
                 </button>
-                <button type="submit"
-                    class="bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold py-2 px-6 rounded-sm transition-all">
+                <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-bold py-2 px-6 rounded-sm transition-all">
                     Confirmar Ingreso
                 </button>
             </div>

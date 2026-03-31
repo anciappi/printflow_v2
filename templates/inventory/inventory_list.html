@@ -4,12 +4,7 @@
 {% block breadcrumbs %} Inventory / Unidades Físicas {% endblock %}
 
 {% block content %}
-<div id="inventory-list"
-     class="max-w-7xl mx-auto"
-     hx-get="{% url 'inventory:inventory_list' %}"
-     hx-trigger="inventoryUpdated from:body"
-     hx-target="#inventory-list"
-     hx-swap="innerHTML">
+<div id="inventory-list" class="max-w-7xl mx-auto" hx-get="{% url 'inventory:inventory_list' %}" hx-trigger="inventoryUpdated from:body" hx-target="#inventory-list" hx-swap="innerHTML">
     {% include 'inventory/fragments/inventory_table.html' %}
 </div>
 {% endblock %}

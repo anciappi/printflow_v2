@@ -78,4 +78,10 @@ Para detalle completo ver log-[modulo].md correspondiente.
 - orders: HTMX status transitions, stage-display model logic, status_badge fragment.
 - orders: 7-step production progress bar in workorder_detail.
 - frontend: global dark-theme checkbox accent-color fix in main.css.
+- orders: stock integration — manual substrate deduction from OT detail (DRY: reutiliza ConsumptionLog).
+- orders: stock_panel fragment HTMX + WorkOrderConsumoView. Gated to PRODUCTION+.
+- orders: polish — scroll table, HX-Trigger statusUpdated, WorkOrderStockPanelView, DRY helpers.
 
+## 2026-03-30
+- orders: listado UI separation — Órdenes activas vs entregadas, histórico en acordeón, extracción DRY `workorder_row.html` fragment.
+- orders: panel stock — forzado inline de scrollbox tras 10 items (max-height 350px).

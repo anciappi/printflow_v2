@@ -1,0 +1,153 @@
+{% load static %}
+{# ─── Stock Panel Fragment — HTMX swappable ───────────────────────────── #}
+{# Re-fetched automatically when 'statusUpdated' event fires from status badge #}
+<section id="stock-panel" class="bg-surface border border-border-default rounded-lg overflow-hidden" hx-get="{% url 'orders:stock_panel' order.pk %}" hx-trigger="statusUpdated from:body" hx-target="#stock-panel" hx-swap="outerHTML">
+
+    {# Header #}
+    <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default flex items-center justify-between">
+        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">
+            Material / Sustrato
+        </h3>
+        <span class="text-[9px] font-bold uppercase tracking-widest
+            {% if stock_total > 0 %}text-emerald-500{% else %}text-red-500{% endif %}">
+            {% if stock_total > 0 %}
+                ▲ {{ stock_total|floatformat:2 }} ml disponibles
+            {% else %}
+                ✕ Sin stock
+            {% endif %}
+        </span>
+    </div>
+
+    <div class="p-6 space-y-5">
+
+        {# Material info #}
+        <div class="flex items-start gap-4">
+            <div>
+                <p class="text-[10px] text-slate-500 uppercase font-bold mb-0.5">Sustrato del Producto</p>
+                <p class="text-sm text-white font-semibold">{{ material.name }}</p>
+                <p class="text-[10px] text-slate-400 mt-0.5">
+                    {{ material.get_material_type_display }}
+                    {% if material.width %} · {{ material.width }} cm{% endif %}
+                    {% if material.grammage %} · {{ material.grammage }} g/m²{% endif %}
+                </p>
+            </div>
+        </div>
+
+        {# Error alert #}
+        {% if error %}
+        <div class="bg-red-900/20 border border-red-500/30 text-red-400 text-xs px-4 py-2 rounded-sm">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        {# ── No stock warning ── #}
+        {% if not stock_units %}
+        <div class="bg-orange-900/10 border border-orange-800/30 rounded-sm px-4 py-3 flex items-center gap-2">
+            <span class="text-orange-400 text-sm">⚠</span>
+            <p class="text-[11px] text-orange-400 font-bold">No hay unidades disponibles de este material en el sistema.</p>
+        </div>
+
+        {# ── Stock available ── #}
+        {% else %}
+
+        {# FIX 1: sticky thead + scrollable tbody — max ~10 rows visible #}
+        <div class="overflow-x-auto overflow-y-auto border border-border-default/50 rounded-lg" style="max-height: 350px;">
+            <table class="w-full text-left border-collapse whitespace-nowrap">
+                <thead class="sticky top-0 z-10 shadow-sm bg-surface-dark">
+                    <tr class="border-b border-border-default">
+                        <th class="py-3 px-6 text-[10px] font-bold text-slate-500 uppercase tracking-widest bg-surface-dark/95 backdrop-blur-sm">Unidad</th>
+                        <th class="py-3 px-6 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-right bg-surface-dark/95 backdrop-blur-sm">Disponible</th>
+                        <th class="py-3 px-6 text-[10px] font-bold text-slate-500 uppercase tracking-wider text-right bg-surface-dark/95 backdrop-blur-sm">Ancho</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-border-default/50">
+                    {% for unit in stock_units %}
+                    <tr class="{% if unit.current_quantity <= 0 %}opacity-40{% endif %} hover:bg-white/[0.02] transition-colors">
+                        <td class="py-3 px-6 font-mono text-blue-300 text-xs">{{ unit.unit_number }}</td>
+                        <td class="py-3 px-6 text-right font-bold text-xs
+                            {% if unit.current_quantity > 500 %}text-emerald-400
+                            {% elif unit.current_quantity > 0 %}text-amber-400
+                            {% else %}text-slate-500{% endif %}">
+                            {{ unit.current_quantity|floatformat:2 }} ml
+                        </td>
+                        <td class="py-3 px-6 text-right text-slate-400 text-xs">{{ unit.get_width }} cm</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {# ── Consumption form — only shown from PRODUCTION onwards ── #}
+        {% if can_consume %}
+        <form hx-post="{% url 'orders:consumo' order.pk %}" hx-target="#stock-panel" hx-swap="outerHTML" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' class="pt-4 border-t border-border-default space-y-3">
+
+            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Registrar Consumo</p>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {# Unit selector #}
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase">Unidad</label>
+                    <select name="unit_id" required class="w-full bg-surface-dark border border-border-default text-white text-xs px-3 py-2 outline-none focus:border-orange-500 transition-colors rounded-sm">
+                        <option value="">— Seleccioná una unidad —</option>
+                        {% for unit in stock_units %}
+                        {% if unit.current_quantity > 0 %}
+                        <option value="{{ unit.pk }}">
+                            {{ unit.unit_number }} — {{ unit.current_quantity|floatformat:2 }} ml disp.
+                        </option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                </div>
+
+                {# Quantity #}
+                <div class="space-y-1">
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase">Cantidad a descontar (ml)</label>
+                    <input type="number" name="cantidad" step="0.01" min="0.01" required placeholder="Ej: 1200.00" class="w-full bg-surface-dark border border-border-default text-white text-xs px-3 py-2 outline-none focus:border-orange-500 transition-colors rounded-sm placeholder-slate-600">
+                </div>
+            </div>
+
+            <div class="flex justify-end">
+                <button type="submit" class="bg-orange-600 hover:bg-orange-500 text-white text-[10px] font-bold py-2 px-5 uppercase tracking-widest rounded-sm transition-all">
+                    Descontar Stock
+                </button>
+            </div>
+        </form>
+        {% else %}
+        <p class="text-[10px] text-slate-600 italic pt-3 border-t border-border-default/50">
+            El descuento de material se habilita al pasar la OT a "En Producción".
+        </p>
+        {% endif %}
+
+        {% endif %}{# end stock_units #}
+
+        {# ── Consumption history for this OT ── #}
+        {% if consumos_ot %}
+        <div class="pt-4 border-t border-border-default space-y-2">
+            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Consumos de esta OT</p>
+            <div class="overflow-x-auto border border-border-default/50 rounded-lg">
+                <table class="w-full text-left border-collapse whitespace-nowrap">
+                    <thead class="bg-surface-dark/50">
+                        <tr class="border-b border-border-default">
+                            <th class="py-2 px-4 text-[9px] font-bold text-slate-500 uppercase tracking-widest">Fecha</th>
+                            <th class="py-2 px-4 text-[9px] font-bold text-slate-500 uppercase tracking-widest">Unidad</th>
+                            <th class="py-2 px-4 text-[9px] font-bold text-slate-500 uppercase tracking-widest text-right">Cantidad</th>
+                            <th class="py-2 px-4 text-[9px] font-bold text-slate-500 uppercase tracking-wider text-right">Responsable</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-border-default/30">
+                        {% for consumo in consumos_ot %}
+                        <tr class="hover:bg-white/[0.02] transition-colors">
+                            <td class="py-2 px-4 text-[10px] text-slate-400">{{ consumo.date|date:"d/m/Y H:i" }}</td>
+                            <td class="py-2 px-4 font-mono text-[10px] text-blue-300">{{ consumo.inventory_unit.unit_number }}</td>
+                            <td class="py-2 px-4 text-[10px] font-bold text-red-500 text-right">-{{ consumo.quantity_used|floatformat:2 }} ml</td>
+                            <td class="py-2 px-4 text-[10px] text-slate-500 text-right">{{ consumo.responsible.get_full_name|default:consumo.responsible.username }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>{# end p-6 #}
+</section>

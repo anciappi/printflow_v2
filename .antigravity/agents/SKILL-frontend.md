@@ -12,6 +12,10 @@ Never modify backend logic — only templates and static assets.
 
 ## Critical rules
 
+### HTML Formatting
+- **CRITICAL:** NEVER split a single HTML tag (including its attributes) or a Django template tag across multiple lines.
+- Always keep the entire tag on a single line, no matter how many Tailwind classes it has. Multiline tags break readability for the team.
+
 ### Tailwind — CLI v4, NO CDN
 ```html
 <!-- NEVER use CDN -->

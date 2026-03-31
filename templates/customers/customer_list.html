@@ -52,20 +52,16 @@
                             {% endif %}
                         </td>
                         <td class="px-6 py-4 text-right flex justify-end gap-3">
-                            <a href="{% url 'customers:update' customer.pk %}"
-                                class="inline-flex items-center text-blue-500 hover:text-blue-400 transition-colors">
+                            <a href="{% url 'customers:update' customer.pk %}" class="inline-flex items-center text-blue-500 hover:text-blue-400 transition-colors">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
                                     </path>
                                 </svg>
                                 <span class="ml-1 text-[10px] font-bold uppercase tracking-tighter">Editar</span>
                             </a>
-                            <a href="{% url 'customers:delete' customer.pk %}"
-                                class="inline-flex items-center text-red-500 hover:text-red-400 transition-colors">
+                            <a href="{% url 'customers:delete' customer.pk %}" class="inline-flex items-center text-red-500 hover:text-red-400 transition-colors">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
                                     </path>
                                 </svg>
                                 <span class="ml-1 text-[10px] font-bold uppercase tracking-tighter">Eliminar</span>
@@ -76,8 +72,7 @@
                     <tr>
                         <td colspan="5" class="px-6 py-12 text-center">
                             <div class="text-slate-500 text-sm">No hay clientes registrados en la base de datos.</div>
-                            <a href="{% url 'customers:create' %}"
-                                class="text-orange-500 hover:text-orange-400 text-xs mt-2 inline-block">Registrar el
+                            <a href="{% url 'customers:create' %}" class="text-orange-500 hover:text-orange-400 text-xs mt-2 inline-block">Registrar el
                                 primer cliente &rarr;</a>
                         </td>
                     </tr>

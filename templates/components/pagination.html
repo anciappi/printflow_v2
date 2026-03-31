@@ -6,8 +6,7 @@
     
     <nav class="inline-flex rounded-md shadow-sm order-1 sm:order-2" aria-label="Pagination">
         {% if page_obj.has_previous %}
-        <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
-           class="relative inline-flex items-center px-3 py-2 rounded-l-md border border-border-default bg-surface-dark text-xs font-medium text-slate-400 hover:bg-surface hover:text-white transition-colors">
+        <a href="?page={{ page_obj.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"  class="relative inline-flex items-center px-3 py-2 rounded-l-md border border-border-default bg-surface-dark text-xs font-medium text-slate-400 hover:bg-surface hover:text-white transition-colors">
             <span class="sr-only">Anterior</span>
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
@@ -27,16 +26,14 @@
                 {{ i }}
             </span>
             {% elif i > page_obj.number|add:'-3' and i < page_obj.number|add:'3' %}
-            <a href="?page={{ i }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
-               class="relative inline-flex items-center px-4 py-2 border border-border-default bg-surface-dark text-xs font-medium text-slate-400 hover:bg-surface hover:text-white transition-colors">
+            <a href="?page={{ i }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"  class="relative inline-flex items-center px-4 py-2 border border-border-default bg-surface-dark text-xs font-medium text-slate-400 hover:bg-surface hover:text-white transition-colors">
                 {{ i }}
             </a>
             {% endif %}
         {% endfor %}
 
         {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" 
-           class="relative inline-flex items-center px-3 py-2 rounded-r-md border border-border-default bg-surface-dark text-xs font-medium text-slate-400 hover:bg-surface hover:text-white transition-colors">
+        <a href="?page={{ page_obj.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"  class="relative inline-flex items-center px-3 py-2 rounded-r-md border border-border-default bg-surface-dark text-xs font-medium text-slate-400 hover:bg-surface hover:text-white transition-colors">
             <span class="sr-only">Siguiente</span>
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />

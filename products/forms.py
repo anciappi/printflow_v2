@@ -13,7 +13,7 @@ class ProductForm(forms.ModelForm):
             'has_mag_stripe', 'mag_coercivity',
             'has_chip', 'chip_type',
             'has_uv_sectorizado', 'has_hot_stamping', 'has_holograma', 'has_troquelado',
-            'packaging_type', 'qty_per_box', 'delivery_address',
+            'packaging_type', 'qty_per_box',
             'design_front', 'design_back', 'diecut_file', 'tech_file', 'notes'
         ]
         widgets = {

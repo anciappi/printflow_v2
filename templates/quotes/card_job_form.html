@@ -135,18 +135,9 @@
                 {% if form.instance.pk %}
                 <!-- Color search -->
                 <div class="relative mb-4">
-                  <input type="text"
-                         id="pantone-search-front"
-                         placeholder="Buscar Pantone... ej: 485, Black, Cyan"
-                         hx-get="{% url 'quotes:pantone_search' %}?side=FRONT&job_pk={{ form.instance.pk }}"
-                         hx-trigger="keyup changed delay:300ms"
-                         hx-target="#pantone-results-front"
-                         hx-include="[name='q']"
-                         name="q"
-                         class="w-full bg-surface-dark border border-border-default text-white text-xs px-4 py-2 focus:border-blue-500 outline-none transition-colors rounded-sm placeholder-slate-600">
+                  <input type="text" id="pantone-search-front" placeholder="Buscar Pantone... ej: 485, Black, Cyan" hx-get="{% url 'quotes:pantone_search' %}?side=FRONT&job_pk={{ form.instance.pk }}" hx-trigger="keyup changed delay:300ms" hx-target="#pantone-results-front" hx-include="[name='q']" name="q" class="w-full bg-surface-dark border border-border-default text-white text-xs px-4 py-2 focus:border-blue-500 outline-none transition-colors rounded-sm placeholder-slate-600">
                   <!-- Results dropdown -->
-                  <div id="pantone-results-front"
-                       class="absolute z-10 w-full bg-surface border border-border-default shadow-2xl rounded-sm mt-1 max-h-48 overflow-y-auto empty:hidden">
+                  <div id="pantone-results-front" class="absolute z-10 w-full bg-surface border border-border-default shadow-2xl rounded-sm mt-1 max-h-48 overflow-y-auto empty:hidden">
                   </div>
                 </div>
                 
@@ -179,18 +170,9 @@
                 {% if form.instance.pk %}
                 <!-- Color search -->
                 <div class="relative mb-4">
-                  <input type="text"
-                         id="pantone-search-back"
-                         placeholder="Buscar Pantone... ej: 485, Black, Cyan"
-                         hx-get="{% url 'quotes:pantone_search' %}?side=BACK&job_pk={{ form.instance.pk }}"
-                         hx-trigger="keyup changed delay:300ms"
-                         hx-target="#pantone-results-back"
-                         hx-include="[name='q']"
-                         name="q"
-                         class="w-full bg-surface-dark border border-border-default text-white text-xs px-4 py-2 focus:border-blue-500 outline-none transition-colors rounded-sm placeholder-slate-600">
+                  <input type="text" id="pantone-search-back" placeholder="Buscar Pantone... ej: 485, Black, Cyan" hx-get="{% url 'quotes:pantone_search' %}?side=BACK&job_pk={{ form.instance.pk }}" hx-trigger="keyup changed delay:300ms" hx-target="#pantone-results-back" hx-include="[name='q']" name="q" class="w-full bg-surface-dark border border-border-default text-white text-xs px-4 py-2 focus:border-blue-500 outline-none transition-colors rounded-sm placeholder-slate-600">
                   <!-- Results dropdown -->
-                  <div id="pantone-results-back"
-                       class="absolute z-10 w-full bg-surface border border-border-default shadow-2xl rounded-sm mt-1 max-h-48 overflow-y-auto empty:hidden">
+                  <div id="pantone-results-back" class="absolute z-10 w-full bg-surface border border-border-default shadow-2xl rounded-sm mt-1 max-h-48 overflow-y-auto empty:hidden">
                   </div>
                 </div>
                 

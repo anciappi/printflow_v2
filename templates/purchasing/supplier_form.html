@@ -25,12 +25,10 @@
             {% endfor %}
 
             <div class="flex justify-end gap-4 mt-6">
-                <a href="{% url 'purchasing:supplier_list' %}"
-                    class="px-6 py-2.5 text-sm font-bold text-slate-500 hover:text-white transition-colors uppercase tracking-wider">
+                <a href="{% url 'purchasing:supplier_list' %}" class="px-6 py-2.5 text-sm font-bold text-slate-500 hover:text-white transition-colors uppercase tracking-wider">
                     Cancelar
                 </a>
-                <button type="submit"
-                    class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold py-2.5 px-8 shadow-lg shadow-blue-900/20 transition-all uppercase tracking-wider">
+                <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold py-2.5 px-8 shadow-lg shadow-blue-900/20 transition-all uppercase tracking-wider">
                     {% if is_edit %}Actualizar{% else %}Crear Proveedor{% endif %}
                 </button>
             </div>
