@@ -25,6 +25,7 @@ class Product(models.Model):
         ('TARJETA', 'Tarjeta'),
         ('VOTO', 'Voto'),
         ('TICKET', 'Ticket'),
+        ('ETIQUETA', 'Etiqueta'),
     ]
     name = models.CharField(max_length=200, verbose_name="Nombre")
     product_type = models.CharField(

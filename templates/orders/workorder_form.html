@@ -38,6 +38,16 @@
                 Trabajo</h3>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Cliente -->
+                <div class="md:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Cliente</label>
+                    {{ form.customer }}
+                    {% if form.customer.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.customer.errors.0 }}</p>
+                    {% endif %}
+                    <p class="text-[10px] text-slate-600 mt-1">Selecciona un cliente para ver sus productos asociados.</p>
+                </div>
+
                 <!-- Producto -->
                 <div class="md:col-span-2">
                     <label class="block mb-2 text-sm font-medium text-slate-400">Producto / Trabajo</label>

@@ -10,6 +10,7 @@ from decimal import Decimal
 from .models import WorkOrder
 from .forms import WorkOrderForm
 from inventory.models import InventoryUnit, ConsumptionLog
+from products.models import Product
 
 
 # ---------------------------------------------------------------------------
@@ -186,6 +187,26 @@ class WorkOrderProgressView(LoginRequiredMixin, View):
     def get(self, request, pk):
         order = get_object_or_404(WorkOrder, pk=pk)
         html = render_to_string('orders/fragments/progress_bar.html', {'order': order}, request=request)
+        return HttpResponse(html)
+
+
+class LoadCustomerProductsView(LoginRequiredMixin, View):
+    """
+    HTMX endpoint that returns <option> elements of products filtered by customer
+    """
+    def get(self, request):
+        customer_id = request.GET.get('customer')
+        if customer_id:
+            # We filter by customer and only show ACTIVE products
+            products = Product.objects.filter(customer_id=customer_id, status='ACTIVE').order_by('name')
+        else:
+            products = Product.objects.none()
+            
+        html = render_to_string(
+            'orders/fragments/product_options.html', 
+            {'products': products}, 
+            request=request
+        )
         return HttpResponse(html)
 
 
