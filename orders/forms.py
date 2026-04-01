@@ -36,6 +36,13 @@ class WorkOrderForm(forms.ModelForm):
         self.fields['customer'].widget.attrs.update({
             'hx-get': reverse_lazy('orders:load_products'),
             'hx-target': '#id_product',
+            'hx-on:change': 'document.getElementById("product-details-container").innerHTML = ""'
+        })
+
+        # HTMX trigger to load dynamic product details (specs, images)
+        self.fields['product'].widget.attrs.update({
+            'hx-get': reverse_lazy('orders:load_product_details'),
+            'hx-target': '#product-details-container',
         })
 
         # Dynamic queryset logic for dependent dropdown

@@ -1,0 +1,135 @@
+{% if product %}
+<div class="space-y-6 mt-6">
+    <!-- REFERENCIAS VISUALES -->
+    <div class="bg-surface border border-border-default rounded-lg p-6">
+        <h3 class="text-lg font-medium text-emerald-500 mb-4 border-b border-border-default pb-2">Material Original Registrado</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <span class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Original Anverso</span>
+                <div class="aspect-video w-full bg-[#0f1115] border border-[#2d333b] rounded-lg overflow-hidden flex items-center justify-center">
+                    {% if product.design_front %}
+                    <img src="{{ product.design_front.url }}" alt="Anverso" class="w-full h-full object-contain">
+                    {% else %}
+                    <span class="text-xs text-slate-600">Sin archivo cargado</span>
+                    {% endif %}
+                </div>
+            </div>
+            <div>
+                <span class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Original Reverso</span>
+                <div class="aspect-video w-full bg-[#0f1115] border border-[#2d333b] rounded-lg overflow-hidden flex items-center justify-center">
+                    {% if product.design_back %}
+                    <img src="{{ product.design_back.url }}" alt="Reverso" class="w-full h-full object-contain">
+                    {% else %}
+                    <span class="text-xs text-slate-600">Sin archivo cargado</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ESPECIFICACIONES TÉCNICAS (Sólo Lectura) -->
+    <div class="bg-surface border border-border-default rounded-lg p-6">
+        <h3 class="text-lg font-medium text-emerald-500 mb-4 border-b border-border-default pb-2">Especificaciones de Fabricación</h3>
+        
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse" id="tech-specs-table-ro">
+                <thead>
+                    <tr class="border-b border-border-default bg-surface-dark/50 text-[9px] font-bold text-slate-500 uppercase tracking-widest">
+                        <th class="px-4 py-1.5 min-w-[200px]">Especificación</th>
+                        <th class="px-4 py-1.5 w-16 text-center">SI</th>
+                        <th class="px-4 py-1.5 w-20 text-center">Anverso</th>
+                        <th class="px-4 py-1.5 w-20 text-center">Reverso</th>
+                        <th class="px-4 py-1.5 min-w-[200px]">Configuración</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[#2d333b] bg-surface text-sm text-slate-300">
+                    
+                    <!-- Laminado -->
+                    <tr class="hover:bg-surface-hover/30 transition-colors {% if not product.has_laminate %}opacity-30{% endif %}">
+                        <td class="px-4 py-1.5 font-medium text-slate-200">Laminado</td>
+                        <td class="px-4 py-1.5 text-center">{% if product.has_laminate %}<span class="text-emerald-500">✔</span>{% else %}<span class="text-slate-600">-</span>{% endif %}</td>
+                        <td class="px-4 py-1.5 text-center">{% if product.laminate_front %}<span class="text-emerald-500">✔</span>{% else %}<span class="text-slate-600">-</span>{% endif %}</td>
+                        <td class="px-4 py-1.5 text-center">{% if product.laminate_back %}<span class="text-emerald-500">✔</span>{% else %}<span class="text-slate-600">-</span>{% endif %}</td>
+                        <td class="px-4 py-1.5 text-slate-400 text-xs">{{ product.laminate_type|default:"-" }}</td>
+                    </tr>
+
+                    <!-- Barniz -->
+                    <tr class="hover:bg-surface-hover/30 transition-colors {% if not product.has_varnish %}opacity-30{% endif %}">
+                        <td class="px-4 py-1.5 font-medium text-slate-200">Barniz</td>
+                        <td class="px-4 py-1.5 text-center">{% if product.has_varnish %}<span class="text-emerald-500">✔</span>{% else %}<span class="text-slate-600">-</span>{% endif %}</td>
+                        <td class="px-4 py-1.5 text-center">{% if product.varnish_front %}<span class="text-emerald-500">✔</span>{% else %}<span class="text-slate-600">-</span>{% endif %}</td>
+                        <td class="px-4 py-1.5 text-center">{% if product.varnish_back %}<span class="text-emerald-500">✔</span>{% else %}<span class="text-slate-600">-</span>{% endif %}</td>
+                        <td class="px-4 py-1.5 text-slate-400 text-xs">{{ product.varnish_type|default:"-" }}</td>
+                    </tr>
+
+                    <!-- Banda Magnética -->
+                    <tr class="hover:bg-surface-hover/30 transition-colors {% if not product.has_mag_stripe %}opacity-30{% endif %}">
+                        <td class="px-4 py-1.5 font-medium text-slate-200">Banda Magnética</td>
+                        <td class="px-4 py-1.5 text-center">{% if product.has_mag_stripe %}<span class="text-emerald-500">✔</span>{% else %}<span class="text-slate-600">-</span>{% endif %}</td>
+                        <td class="px-4 py-1.5 text-center">{% if product.mag_stripe_front %}<span class="text-emerald-500">✔</span>{% else %}<span class="text-slate-600">-</span>{% endif %}</td>
+                        <td class="px-4 py-1.5 text-center">{% if product.mag_stripe_back %}<span class="text-emerald-500">✔</span>{% else %}<span class="text-slate-600">-</span>{% endif %}</td>
+                        <td class="px-4 py-1.5 text-slate-400 text-xs">{{ product.mag_coercivity|default:"-" }}</td>
+                    </tr>
+                    <!-- Medidas de Banda -->
+                    <tr class="hover:bg-surface-hover/30 transition-colors bg-surface-dark/10 {% if not product.has_mag_stripe %}opacity-30{% endif %}">
+                        <td class="px-4 py-1.5 font-medium text-slate-400 pl-8 relative">
+                            <div class="absolute left-4 top-1/2 -translate-y-1/2 w-2 h-px bg-slate-600"></div>
+                            Medidas / Dist. Corte
+                        </td>
+                        <td class="px-4 py-1.5 text-center text-slate-600" colspan="3">-</td>
+                        <td class="px-4 py-1.5 text-slate-400 text-xs">
+                            Ancho: {{ product.mag_stripe_width|default:"-" }} | Distancia: {{ product.mag_stripe_distance_to_edge|default:"-" }}
+                        </td>
+                    </tr>
+
+                    <!-- Chip -->
+                    <tr class="hover:bg-surface-hover/30 transition-colors {% if not product.has_chip %}opacity-30{% endif %}">
+                        <td class="px-4 py-1.5 font-medium text-slate-200">Chip / RFID</td>
+                        <td class="px-4 py-1.5 text-center">{% if product.has_chip %}<span class="text-emerald-500">✔</span>{% else %}<span class="text-slate-600">-</span>{% endif %}</td>
+                        <td class="px-4 py-1.5 text-center">{% if product.chip_front %}<span class="text-emerald-500">✔</span>{% else %}<span class="text-slate-600">-</span>{% endif %}</td>
+                        <td class="px-4 py-1.5 text-center">{% if product.chip_back %}<span class="text-emerald-500">✔</span>{% else %}<span class="text-slate-600">-</span>{% endif %}</td>
+                        <td class="px-4 py-1.5 text-slate-400 text-xs">{{ product.chip_type|default:"-" }}</td>
+                    </tr>
+
+                    <!-- Laca UV -->
+                    <tr class="hover:bg-surface-hover/30 transition-colors {% if not product.has_uv_sectorizado %}opacity-30{% endif %} border-t border-[#1e232b]">
+                        <td class="px-4 py-1.5 font-medium text-slate-200">Laca UV Sectorizada</td>
+                        <td class="px-4 py-1.5 text-center">{% if product.has_uv_sectorizado %}<span class="text-emerald-500">✔</span>{% else %}<span class="text-slate-600">-</span>{% endif %}</td>
+                        <td class="px-4 py-1.5 text-center">{% if product.uv_front %}<span class="text-emerald-500">✔</span>{% else %}<span class="text-slate-600">-</span>{% endif %}</td>
+                        <td class="px-4 py-1.5 text-center">{% if product.uv_back %}<span class="text-emerald-500">✔</span>{% else %}<span class="text-slate-600">-</span>{% endif %}</td>
+                        <td class="px-4 py-1.5 text-center text-slate-600">-</td>
+                    </tr>
+
+                    <!-- Hot Stamping -->
+                    <tr class="hover:bg-surface-hover/30 transition-colors {% if not product.has_hot_stamping %}opacity-30{% endif %}">
+                        <td class="px-4 py-1.5 font-medium text-slate-200">Hot Stamping</td>
+                        <td class="px-4 py-1.5 text-center">{% if product.has_hot_stamping %}<span class="text-emerald-500">✔</span>{% else %}<span class="text-slate-600">-</span>{% endif %}</td>
+                        <td class="px-4 py-1.5 text-center">{% if product.hot_stamping_front %}<span class="text-emerald-500">✔</span>{% else %}<span class="text-slate-600">-</span>{% endif %}</td>
+                        <td class="px-4 py-1.5 text-center">{% if product.hot_stamping_back %}<span class="text-emerald-500">✔</span>{% else %}<span class="text-slate-600">-</span>{% endif %}</td>
+                        <td class="px-4 py-1.5 text-center text-slate-600">-</td>
+                    </tr>
+
+                    <!-- Holograma -->
+                    <tr class="hover:bg-surface-hover/30 transition-colors {% if not product.has_holograma %}opacity-30{% endif %}">
+                        <td class="px-4 py-1.5 font-medium text-slate-200">Holograma</td>
+                        <td class="px-4 py-1.5 text-center">{% if product.has_holograma %}<span class="text-emerald-500">✔</span>{% else %}<span class="text-slate-600">-</span>{% endif %}</td>
+                        <td class="px-4 py-1.5 text-center">{% if product.holograma_front %}<span class="text-emerald-500">✔</span>{% else %}<span class="text-slate-600">-</span>{% endif %}</td>
+                        <td class="px-4 py-1.5 text-center">{% if product.holograma_back %}<span class="text-emerald-500">✔</span>{% else %}<span class="text-slate-600">-</span>{% endif %}</td>
+                        <td class="px-4 py-1.5 text-center text-slate-600">-</td>
+                    </tr>
+
+                    <!-- Troquelado -->
+                    <tr class="hover:bg-surface-hover/30 transition-colors {% if not product.has_troquelado %}opacity-30{% endif %}">
+                        <td class="px-4 py-1.5 font-medium text-slate-200">Troquelado</td>
+                        <td class="px-4 py-1.5 text-center">{% if product.has_troquelado %}<span class="text-emerald-500">✔</span>{% else %}<span class="text-slate-600">-</span>{% endif %}</td>
+                        <td class="px-4 py-1.5 text-center">{% if product.troquelado_front %}<span class="text-emerald-500">✔</span>{% else %}<span class="text-slate-600">-</span>{% endif %}</td>
+                        <td class="px-4 py-1.5 text-center">{% if product.troquelado_back %}<span class="text-emerald-500">✔</span>{% else %}<span class="text-slate-600">-</span>{% endif %}</td>
+                        <td class="px-4 py-1.5 text-center text-slate-600">-</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endif %}

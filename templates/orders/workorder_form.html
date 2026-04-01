@@ -74,6 +74,14 @@
             </div>
         </div>
 
+        <!-- CONTENEDOR HTMX: DETALLES DINÁMICOS DEL PRODUCTO (Solo Lectura) -->
+        <div id="product-details-container">
+            {% if form.instance.product %}
+                <!-- Si estamos editando y ya hay un producto, mostramos los detalles inmediatamente -->
+                {% include "orders/fragments/product_details.html" with product=form.instance.product %}
+            {% endif %}
+        </div>
+
         <!-- SECCIÓN 2: PLANIFICACIÓN -->
         <div class="bg-surface border border-border-default rounded-lg p-6">
             <h3 class="text-lg font-medium text-blue-500 mb-4 border-b border-border-default pb-2">Cronograma y Prioridad

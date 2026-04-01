@@ -210,6 +210,29 @@ class LoadCustomerProductsView(LoginRequiredMixin, View):
         return HttpResponse(html)
 
 
+class LoadProductDetailsView(LoginRequiredMixin, View):
+    """
+    HTMX endpoint that returns a read-only fragment displaying product details 
+    (images and technical specifications).
+    """
+    def get(self, request):
+        product_id = request.GET.get('product')
+        product = None
+        if product_id:
+            try:
+                # Utilizamos select_related si hubiese foráneas importantes o prefetch si es útil
+                product = Product.objects.get(pk=product_id)
+            except Product.DoesNotExist:
+                pass
+            
+        html = render_to_string(
+            'orders/fragments/product_details.html', 
+            {'product': product}, 
+            request=request
+        )
+        return HttpResponse(html)
+
+
 class WorkOrderConsumoView(LoginRequiredMixin, View):
     """
     Handles manual stock deduction from the OT detail page via HTMX POST.
