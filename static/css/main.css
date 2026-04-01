@@ -60,8 +60,15 @@ select {
 */
 
 /* Ocultar ABSOLUTAMENTE todo lo predeterminado de Django en inputs de archivo */
-.hide-django-file-labels input[type="file"] {
-    color: transparent;
+.hide-django-file-labels input[type="file"],
+.hide-django-file-labels input[type="checkbox"] {
+    display: none !important;
+}
+
+/* El estilo global de checkbox tiene mayor especificidad que .hidden de Tailwind,
+   esta regla fuerza que las checkboxes con .hidden siempre estén ocultas */
+input[type="checkbox"].hidden {
+    display: none !important;
 }
 
 .hide-django-file-labels ul,
@@ -96,58 +103,78 @@ select {
     background-color: #0f1115;
 }
 
-/* Status Badges - Sober & Professional */
+/* Status Badges - Vibrant */
 .status-badge {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 0.375rem;
-    font-size: 8px;
-    /* Texto reducido como pidió el usuario */
-    font-weight: 700;
+    gap: 0.4rem;
+    font-size: 9px;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    padding: 0.125rem 0.5rem;
-    border-radius: 0.125rem;
-    border-width: 1px;
+    padding: 2px 8px;
+    border-radius: 9999px;
     transition: all 0.3s ease;
 }
 
 .status-badge .dot {
-    width: 4px;
-    height: 4px;
-    border-radius: 9999px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: currentColor;
+    display: inline-block;
+    flex-shrink: 0;
 }
 
 .status-badge-cargado {
-    color: #94a3b8;
-    /* Slate 400 - Más sobrio */
-    background-color: rgba(30, 41, 59, 0.4);
-    /* Slate 800 at 40px */
-    border-color: #2d333b;
-}
-
-.status-badge-cargado .dot {
-    background-color: #10b981;
-    /* Emerald 500 */
+    background-color: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.2);
 }
 
 .status-badge-pendiente {
-    color: #475569;
-    /* Slate 500 */
-    border-color: transparent;
+    background-color: rgba(100, 116, 139, 0.1);
+    color: #64748b;
+    border: 1px solid rgba(100, 116, 139, 0.2);
 }
 
 .status-badge-nuevo {
-    color: #f1f5f9;
-    /* Slate 100 */
-    background-color: #2d333b;
-    border-color: #475569;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    background-color: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+    border: 1px solid rgba(59, 130, 246, 0.2);
 }
 
-.status-badge-nuevo .dot {
-    background-color: #eab308;
-    /* Yellow 500 */
+.status-badge-eliminado {
+    color: #ef4444;
+    background-color: rgba(239, 68, 68, 0.1);
+    border-color: rgba(239, 68, 68, 0.2);
+}
+
+.status-badge-eliminado .dot {
+    background-color: #ef4444;
+}
+
+/* Document Action Buttons */
+.btn-doc-action {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    background-color: #1a1d23;
+    border: 1px solid #2d333b;
+    color: #94a3b8;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none;
+    transition: all 0.15s;
+}
+
+.btn-doc-action:hover {
+    background-color: #2d333b;
+    color: white;
+    border-color: #475569;
 }
 
 /* Checkbox fix for dark theme */

@@ -55,6 +55,8 @@ class Product(models.Model):
         ('SOFT_TOUCH', 'Soft Touch'),
     ]
     has_laminate = models.BooleanField(default=False, verbose_name="Laminado")
+    laminate_front = models.BooleanField(default=False, verbose_name="Laminado Anverso")
+    laminate_back = models.BooleanField(default=False, verbose_name="Laminado Reverso")
     laminate_type = models.CharField(
         max_length=50, 
         choices=LAMINATE_CHOICES,
@@ -70,6 +72,8 @@ class Product(models.Model):
         ('SEMI_MATE', 'Semi Mate'),
     ]
     has_varnish = models.BooleanField(default=False, verbose_name="Barniz")
+    varnish_front = models.BooleanField(default=False, verbose_name="Barniz Anverso")
+    varnish_back = models.BooleanField(default=False, verbose_name="Barniz Reverso")
     varnish_type = models.CharField(
         max_length=50,
         choices=VARNISH_CHOICES,
@@ -84,6 +88,10 @@ class Product(models.Model):
         ('HICO', 'HiCo (Alta Coercitividad)'),
     ]
     has_mag_stripe = models.BooleanField(default=False, verbose_name="Banda Magnética")
+    mag_stripe_front = models.BooleanField(default=False, verbose_name="Banda Anverso")
+    mag_stripe_back = models.BooleanField(default=False, verbose_name="Banda Reverso")
+    mag_stripe_width = models.CharField(max_length=50, blank=True, verbose_name="Medida de Banda Magnética")
+    mag_stripe_distance_to_edge = models.CharField(max_length=50, blank=True, verbose_name="Distancia de banda al corte")
     mag_coercivity = models.CharField(
         max_length=20, 
         choices=MAG_STRIPE_CHOICES, 
@@ -93,6 +101,8 @@ class Product(models.Model):
     
     # Chip / RFID
     has_chip = models.BooleanField(default=False, verbose_name="Chip / RFID")
+    chip_front = models.BooleanField(default=False, verbose_name="Chip Anverso")
+    chip_back = models.BooleanField(default=False, verbose_name="Chip Reverso")
     chip_type = models.CharField(
         max_length=50, 
         blank=True, 
@@ -102,9 +112,20 @@ class Product(models.Model):
     
     # Otros acabados (Checkboxes)
     has_uv_sectorizado = models.BooleanField(default=False, verbose_name="Laca UV Sectorizada")
+    uv_front = models.BooleanField(default=False, verbose_name="UV Anverso")
+    uv_back = models.BooleanField(default=False, verbose_name="UV Reverso")
+    
     has_hot_stamping = models.BooleanField(default=False, verbose_name="Hot Stamping")
+    hot_stamping_front = models.BooleanField(default=False, verbose_name="Hot Stamping Anverso")
+    hot_stamping_back = models.BooleanField(default=False, verbose_name="Hot Stamping Reverso")
+    
     has_holograma = models.BooleanField(default=False, verbose_name="Holograma")
+    holograma_front = models.BooleanField(default=False, verbose_name="Holograma Anverso")
+    holograma_back = models.BooleanField(default=False, verbose_name="Holograma Reverso")
+    
     has_troquelado = models.BooleanField(default=False, verbose_name="Troquelado")
+    troquelado_front = models.BooleanField(default=False, verbose_name="Troquelado Anverso")
+    troquelado_back = models.BooleanField(default=False, verbose_name="Troquelado Reverso")
 
     # --- 4. Empaque y Logística ---
     PACKAGING_CHOICES = [
@@ -127,6 +148,8 @@ class Product(models.Model):
     diecut_file = models.FileField(upload_to='products/diecuts/', blank=True, null=True, verbose_name="Sacabocados / Plano de Corte")
     tech_file = models.FileField(upload_to='products/tech_files/', blank=True, null=True, verbose_name="Otros Adjuntos (Ficha / JPG)")
     notes = models.TextField(blank=True, verbose_name="Notas Internas")
+    notes_front = models.TextField(blank=True, verbose_name="Observaciones Anverso", help_text="Instrucciones específicas de impresión frontal, historial de cambios OTs")
+    notes_back = models.TextField(blank=True, verbose_name="Observaciones Reverso", help_text="Instrucciones específicas de impresión dorso, historial de cambios OTs")
     status = models.CharField(max_length=15, choices=STATUS_CHOICES, default='ACTIVE')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
