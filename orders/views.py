@@ -7,8 +7,8 @@ from django.db.models import Sum, Case, When, Value, IntegerField, Count
 from django.template.loader import render_to_string
 from decimal import Decimal
 
-from .models import WorkOrder
-from .forms import WorkOrderForm
+from .models import WorkOrder, WorkOrderLog
+from .forms import WorkOrderForm, WorkOrderLogForm
 from inventory.models import InventoryUnit, ConsumptionLog
 from products.models import Product
 from tenants.models import Branch
@@ -181,6 +181,8 @@ class WorkOrderDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update(_build_stock_context(self.object))
+        context['log_form'] = WorkOrderLogForm()
+        context['logs'] = self.object.logs.select_related('user').all()
         return context
 
 
@@ -347,3 +349,55 @@ class WorkOrderConsumoView(LoginRequiredMixin, View):
             return _render_stock_panel(request, order, error=str(e))
 
         return _render_stock_panel(request, order)
+
+class WorkOrderLogCreateView(LoginRequiredMixin, View):
+    """
+    Handles HTMX POST creation of a WorkOrderLog (Ficha Médica).
+    Returns the updated log_feed fragment.
+    """
+    def post(self, request, pk):
+        order = get_object_or_404(WorkOrder, pk=pk)
+        form = WorkOrderLogForm(request.POST)
+
+        if form.is_valid():
+            log = form.save(commit=False)
+            log.work_order = order
+            log.user = request.user
+            log.status = order.current_status
+            log.save()
+            form = WorkOrderLogForm() # clear form
+
+        logs = order.logs.select_related('user').all()
+        html = render_to_string(
+            'orders/fragments/log_feed.html',
+            {'order': order, 'log_form': form, 'logs': logs},
+            request=request
+        )
+        return HttpResponse(html)
+
+from django.views.generic import UpdateView, DeleteView
+from django.shortcuts import render
+
+class WorkOrderLogUpdateView(LoginRequiredMixin, UpdateView):
+    model = WorkOrderLog
+    form_class = WorkOrderLogForm
+    template_name = 'orders/fragments/log_edit_modal.html'
+
+    def form_valid(self, form):
+        self.object = form.save()
+        order = self.object.work_order
+        context = {
+            'order': order,
+            'logs': order.logs.select_related('user').all(),
+            'log_form': WorkOrderLogForm(),
+        }
+        return render(self.request, 'orders/fragments/log_feed.html', context)
+
+class WorkOrderLogDeleteView(LoginRequiredMixin, DeleteView):
+    model = WorkOrderLog
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.delete()
+        return HttpResponse('')
+

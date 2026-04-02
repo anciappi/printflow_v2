@@ -45,6 +45,15 @@ Módulo responsable de gestión de órdenes de trabajo (OT), seguimiento de prod
 - **`workorder_list.html`**: Barra de pills dinámica generada con `{% for value, label in status_choices %}` — pill activo en naranja (`bg-orange-600`), inactivos en `bg-surface-dark`. Pill "Todos" limpia el filtro. Indicador de filtro activo con link "Limpiar filtro" cuando hay selección.
 - **Sin JS**: Filtro puramente via GET params — sin romper paginación ni el acordeón de entregadas.
 - **Archivos modificados**: `orders/views.py`, `templates/orders/workorder_list.html`.
+## Sprint: Orders Sprint 5 - Dashboard Premium UI & Ficha Médica (HTMX) | 2026-04-01 | CERRADO ✅
+- **Filtro Avanzado**: Rediseño integral de estilo industrial ("Filter Bar"). Inclusión de rangos de fecha y sucursales conectadas a la vista con contadores en tiempo real.
+- **Ficha Médica (Trazabilidad)**: Creación de un subsistema incrustado para hacer un track log por cada avance u observación operativa.
+  - Modelo `WorkOrderLog` incrustado.
+  - CRUD con `WorkOrderLogCreateView`, `WorkOrderLogUpdateView` y `WorkOrderLogDeleteView`.
+  - Despliegue asíncrono con modalidad de recargas puntuales vía fragmentos HTMX (`log_feed.html`).
+- **UI Full Width Re-structure**: Se demolió el formato particionado del detalle de la OT pasando a capas apiladas y horizontales que exprimen el ancho total, al igual que nuestro módulo inventario de OC.
+- **Micro-modal CRUD**: Botones explícitos nativos de Editar/Borrar en la grilla que activan modales en-pantalla en la zona designada (`modal-container`) de forma aislada.
+
 
 ## Archivos del módulo
 ```

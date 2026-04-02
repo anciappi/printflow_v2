@@ -82,3 +82,19 @@ class WorkOrder(models.Model):
                 new_id = (last_order.id + 1) if last_order else 1
                 self.ot_number = f"OT-{timezone.now().year}-{new_id:04d}"
         super().save(*args, **kwargs)
+
+class WorkOrderLog(models.Model):
+    work_order = models.ForeignKey(WorkOrder, on_delete=models.CASCADE, related_name='logs', verbose_name="Orden de Trabajo")
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='work_order_logs', verbose_name="Usuario")
+    status = models.CharField(max_length=20, choices=WorkOrder.STATUS_CHOICES, verbose_name="Etapa")
+    quantity_produced = models.PositiveIntegerField(null=True, blank=True, verbose_name="Cantidad Parcial Producción")
+    comment = models.TextField(verbose_name="Observaciones / Novedad")
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Registro de Producción"
+        verbose_name_plural = "Registros de Producción"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Log OT {self.work_order.ot_number} - {self.get_status_display()}"

@@ -1,6 +1,6 @@
 from django import forms
 from django.urls import reverse_lazy
-from .models import WorkOrder
+from .models import WorkOrder, WorkOrderLog
 from tenants.models import Branch
 from customers.models import Customer
 from products.models import Product
@@ -66,3 +66,21 @@ class WorkOrderForm(forms.ModelForm):
         else:
             # New form loading for the first time
             self.fields['product'].queryset = Product.objects.none()
+
+class WorkOrderLogForm(forms.ModelForm):
+    class Meta:
+        model = WorkOrderLog
+        fields = ['quantity_produced', 'comment']
+        widgets = {
+            'quantity_produced': forms.NumberInput(attrs={
+                'class': 'w-full bg-surface-dark border border-border-default text-white text-xs px-3 py-2.5 focus:border-orange-500 outline-none transition-colors rounded-sm',
+                'placeholder': 'Ej. 150',
+                'min': '1'
+            }),
+            'comment': forms.Textarea(attrs={
+                'class': 'w-full bg-surface-dark border border-border-default text-white text-xs px-3 py-2 focus:border-orange-500 outline-none transition-colors rounded-sm resize-none',
+                'placeholder': 'Escribí aquí observaciones, novedades o desvíos...',
+                'rows': 1,
+                'required': True
+            }),
+        }

@@ -1,0 +1,36 @@
+<div class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center animate-fade-in-down p-4">
+    <div class="bg-surface border border-border-default rounded-lg shadow-2xl w-full max-w-lg overflow-hidden">
+        <div class="bg-surface-dark/50 px-6 py-4 border-b border-border-default flex justify-between items-center">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Editar Registro de Avance</h3>
+            <button onclick="document.getElementById('modal-container').innerHTML = ''" class="text-slate-500 hover:text-white transition-colors font-bold text-lg">✕</button>
+        </div>
+        <div class="p-6">
+            <form hx-post="{% url 'orders:edit_log' form.instance.pk %}" 
+                  hx-target="#ficha-medica-container" 
+                  hx-swap="outerHTML"
+                  hx-on::after-request="if(event.detail.successful){ document.getElementById('modal-container').innerHTML=''; }"
+                  class="space-y-4">
+                {% csrf_token %}
+                
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1 tracking-widest">Cant. Parcial</label>
+                    {{ form.quantity_produced }}
+                </div>
+                
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1 tracking-widest">Observaciones / Novedades</label>
+                    {{ form.comment }}
+                </div>
+                
+                <div class="flex justify-end gap-3 pt-6 font-bold border-t border-border-default mt-6">
+                    <button type="button" onclick="document.getElementById('modal-container').innerHTML = ''" class="bg-surface-hover hover:bg-slate-700 text-slate-300 text-[10px] font-bold py-2 px-6 transition-colors shadow-lg shadow-black/20 uppercase tracking-widest rounded-sm">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="bg-orange-600 hover:bg-orange-500 text-white text-[10px] font-bold py-2 px-6 transition-all shadow-lg shadow-orange-900/20 uppercase tracking-widest rounded-sm">
+                        Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
