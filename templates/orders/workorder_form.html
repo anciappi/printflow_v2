@@ -71,6 +71,15 @@
                     <label class="block mb-2 text-sm font-medium text-slate-400">Vendedor Responsable</label>
                     {{ form.sales_rep }}
                 </div>
+
+                <!-- Sucursal -->
+                <div class="md:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Sucursal de Producción</label>
+                    {{ form.branch }}
+                    {% if form.branch.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.branch.errors.0 }}</p>
+                    {% endif %}
+                </div>
             </div>
         </div>
 

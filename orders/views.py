@@ -3,7 +3,7 @@ from django.views.generic import ListView, CreateView, UpdateView, DetailView, V
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-from django.db.models import Sum, Case, When, Value, IntegerField
+from django.db.models import Sum, Case, When, Value, IntegerField, Count
 from django.template.loader import render_to_string
 from decimal import Decimal
 
@@ -11,6 +11,7 @@ from .models import WorkOrder
 from .forms import WorkOrderForm
 from inventory.models import InventoryUnit, ConsumptionLog
 from products.models import Product
+from tenants.models import Branch
 
 
 # ---------------------------------------------------------------------------
@@ -79,7 +80,7 @@ class WorkOrderListView(LoginRequiredMixin, ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        return WorkOrder.objects.select_related(
+        qs = WorkOrder.objects.select_related(
             'product__customer', 'sales_rep', 'branch'
         ).annotate(
             is_delivered=Case(
@@ -88,6 +89,62 @@ class WorkOrderListView(LoginRequiredMixin, ListView):
                 output_field=IntegerField(),
             )
         ).order_by('is_delivered', '-created_at')
+
+        status_filter = self.request.GET.get('status', '')
+        if status_filter and status_filter in dict(WorkOrder.STATUS_CHOICES):
+            qs = qs.filter(current_status=status_filter)
+            
+        q = self.request.GET.get('q', '').strip()
+        if q:
+            from django.db.models import Q
+            qs = qs.filter(
+                Q(ot_number__icontains=q) |
+                Q(product__customer__name__icontains=q) |
+                Q(product__name__icontains=q)
+            )
+
+        branch_filter = self.request.GET.get('branch', '')
+        if branch_filter:
+            qs = qs.filter(branch_id=branch_filter)
+
+        date_from = self.request.GET.get('date_from', '')
+        if date_from:
+            qs = qs.filter(created_at__gte=date_from)
+
+        date_to = self.request.GET.get('date_to', '')
+        if date_to:
+            qs = qs.filter(created_at__lte=date_to + " 23:59:59")
+
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        current_filter = self.request.GET.get('status', '')
+        context['current_status_filter'] = current_filter
+        context['current_q'] = self.request.GET.get('q', '').strip()
+        context['current_branch'] = self.request.GET.get('branch', '')
+        context['current_date_from'] = self.request.GET.get('date_from', '')
+        context['current_date_to'] = self.request.GET.get('date_to', '')
+        context['status_choices'] = WorkOrder.STATUS_CHOICES
+        context['branches'] = Branch.objects.all()
+
+        # Count across ALL orders (unfiltered) so pill counts are always accurate
+        all_counts = WorkOrder.objects.values('current_status').annotate(count=Count('id'))
+        counts_dict = {item['current_status']: item['count'] for item in all_counts}
+        context['total_count'] = sum(counts_dict.values())
+
+        # Build status_data: only include statuses that have orders, plus the active filter
+        context['status_data'] = [
+            {
+                'value': value,
+                'label': label,
+                'count': counts_dict.get(value, 0),
+                'is_active': current_filter == value,
+            }
+            for value, label in WorkOrder.STATUS_CHOICES
+            if counts_dict.get(value, 0) > 0 or current_filter == value
+        ]
+        return context
 
 
 class WorkOrderCreateView(LoginRequiredMixin, CreateView):

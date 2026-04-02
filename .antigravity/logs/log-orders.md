@@ -39,6 +39,13 @@ Módulo responsable de gestión de órdenes de trabajo (OT), seguimiento de prod
 - **Micro-Fragments DRY**: `orders/fragments/workorder_row.html` creado para reutilizar el HTML de las filas sin repetir código.
 - **Stock Panel Polish**: Scroll interno asegurado sin cortar UI limitando inline `max-height: 350px`.
 
+## Sprint: Orders Sprint 4 - Filtro por Estado en Tablero | 2026-04-01 | CERRADO ✅
+- **`WorkOrderListView.get_queryset()`**: Lee `request.GET.get('status', '')`, valida contra `WorkOrder.STATUS_CHOICES`, y aplica `.filter(current_status=status_filter)` si corresponde.
+- **`WorkOrderListView.get_context_data()`**: Pasa `current_status_filter` y `status_choices` al template.
+- **`workorder_list.html`**: Barra de pills dinámica generada con `{% for value, label in status_choices %}` — pill activo en naranja (`bg-orange-600`), inactivos en `bg-surface-dark`. Pill "Todos" limpia el filtro. Indicador de filtro activo con link "Limpiar filtro" cuando hay selección.
+- **Sin JS**: Filtro puramente via GET params — sin romper paginación ni el acordeón de entregadas.
+- **Archivos modificados**: `orders/views.py`, `templates/orders/workorder_list.html`.
+
 ## Archivos del módulo
 ```
 orders/

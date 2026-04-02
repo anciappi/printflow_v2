@@ -85,3 +85,7 @@ Para detalle completo ver log-[modulo].md correspondiente.
 ## 2026-03-30
 - orders: listado UI separation — Órdenes activas vs entregadas, histórico en acordeón, extracción DRY `workorder_row.html` fragment.
 - orders: panel stock — forzado inline de scrollbox tras 10 items (max-height 350px).
+
+## 2026-04-01
+- products: fix loop en submit `product_form.html` — banner global de errores, guard `form.instance.pk` en previews de archivos, `required=False` + `clean()` para campos condicionales deshabilitados por JS, removed `status` duplicado, HTML huérfanos removidos.
+- orders: filtro por estado en tablero de OTs — pills dinámicos en `workorder_list.html`, `get_queryset()` filtra por `?status=`, `get_context_data()` pasa choices y filtro activo al contexto.

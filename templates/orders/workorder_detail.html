@@ -66,6 +66,9 @@
                 </div>
             </div>
 
+            <!-- Especificaciones del Producto (Anverso/Reverso y Ficha Técnica) -->
+            {% include 'orders/fragments/product_details.html' with product=object.product %}
+
             <!-- Notas de Producción -->
             <div class="bg-surface border border-border-default rounded-lg overflow-hidden">
                 <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default">

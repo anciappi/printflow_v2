@@ -46,9 +46,17 @@ class ProductForm(forms.ModelForm):
 
         file_fields = {'design_front', 'design_back', 'diecut_file', 'tech_file'}
         config_fields = {
-            'laminate_type', 'varnish_type', 'mag_coercivity', 
+            'laminate_type', 'varnish_type', 'mag_coercivity',
             'mag_stripe_width', 'mag_stripe_distance_to_edge', 'chip_type'
         }
+
+        # These fields are conditionally shown/hidden by JS toggles.
+        # When the toggle is OFF the browser disables the input and it is
+        # not included in the POST data. Mark them not-required so Django
+        # does not raise a validation error; clean() will restore defaults.
+        for field_name in config_fields:
+            if field_name in self.fields:
+                self.fields[field_name].required = False
 
         for field_name, field in self.fields.items():
             if isinstance(field.widget, forms.CheckboxInput):
@@ -57,7 +65,7 @@ class ProductForm(forms.ModelForm):
             if field_name in file_fields:
                 # Clase ya seteada en widgets, no sobrescribir
                 continue
-            
+
             if field_name in config_fields:
                 field.widget.attrs['class'] = (
                     "w-full bg-[#0f1115] border border-[#2d333b] text-slate-300 text-xs rounded "
@@ -65,3 +73,25 @@ class ProductForm(forms.ModelForm):
                 )
             else:
                 field.widget.attrs['class'] = base_class
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        # When a main toggle is OFF its config select is disabled by JS and
+        # therefore absent from POST. Restore the model-level default so the
+        # record is saved with a valid, meaningful value instead of ''.
+        if not cleaned_data.get('has_laminate'):
+            cleaned_data['laminate_type'] = cleaned_data.get('laminate_type') or 'NONE'
+
+        if not cleaned_data.get('has_varnish'):
+            cleaned_data['varnish_type'] = cleaned_data.get('varnish_type') or 'NONE'
+
+        if not cleaned_data.get('has_mag_stripe'):
+            cleaned_data['mag_coercivity'] = cleaned_data.get('mag_coercivity') or 'NONE'
+            cleaned_data['mag_stripe_width'] = cleaned_data.get('mag_stripe_width') or ''
+            cleaned_data['mag_stripe_distance_to_edge'] = cleaned_data.get('mag_stripe_distance_to_edge') or ''
+
+        if not cleaned_data.get('has_chip'):
+            cleaned_data['chip_type'] = cleaned_data.get('chip_type') or ''
+
+        return cleaned_data
