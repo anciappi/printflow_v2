@@ -17,11 +17,7 @@
         <form hx-post="{% url 'orders:add_log' order.pk %}" hx-target="#ficha-medica-container" hx-swap="outerHTML" class="flex flex-wrap gap-4 items-end pl-2">
             {% csrf_token %}
             
-            <div class="w-full sm:w-auto min-w-[140px]">
-                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1 tracking-widest">Cant. Parcial</label>
-                {{ log_form.quantity_produced }}
-            </div>
-            
+
             <div class="w-full sm:flex-1 min-w-[250px]">
                 <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1 tracking-widest">Observaciones / Novedades</label>
                 {{ log_form.comment }}

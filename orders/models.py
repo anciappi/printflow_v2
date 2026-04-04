@@ -50,6 +50,10 @@ class WorkOrder(models.Model):
     # Notas específicas de ESTA orden (ej: "El cliente pidió cambiar el rojo por azul solo en esta tirada")
     production_notes = models.TextField(blank=True, verbose_name="Notas de Orden")
 
+    # Producción y Materiales
+    bocas = models.PositiveIntegerField(null=True, blank=True, verbose_name="Bocas (Poses) del Original")
+    material_used = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Material Utilizado (ml)")
+
     # Campos calculados (se llenarán al guardar)
     estimated_material_usage = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text="Metros lineales estimados a consumir")
 
@@ -88,7 +92,9 @@ class WorkOrderLog(models.Model):
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='work_order_logs', verbose_name="Usuario")
     status = models.CharField(max_length=20, choices=WorkOrder.STATUS_CHOICES, verbose_name="Etapa")
     quantity_produced = models.PositiveIntegerField(null=True, blank=True, verbose_name="Cantidad Parcial Producción")
-    comment = models.TextField(verbose_name="Observaciones / Novedad")
+    bocas = models.PositiveIntegerField(null=True, blank=True, verbose_name="Bocas (Poses)")
+    material_used = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Material Utilizado (ml)")
+    comment = models.TextField(blank=True, verbose_name="Observaciones / Novedad")
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

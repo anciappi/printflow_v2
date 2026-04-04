@@ -36,10 +36,11 @@
 
         <!-- Contenido Completo (Full Width) -->
         <div class="space-y-6">
-            <!-- Información del Producto -->
+            <!-- Parámetros Originales -->
             <div class="bg-surface border border-border-default rounded-lg overflow-hidden">
-                <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Información del Trabajo</h3>
+                <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default flex items-center justify-between">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Información Original</h3>
+                    <span class="text-[10px] text-slate-500">Planificación Inicial</span>
                 </div>
                 <div class="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div>
@@ -53,15 +54,49 @@
                         <p class="text-[10px] text-slate-400 mt-1">Sustrato: {{ object.product.substrate.name }}</p>
                     </div>
                     <div>
-                        <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Cantidad</p>
-                        <p class="text-xl text-white font-bold">{{ object.quantity }} <span class="text-xs font-normal text-slate-500">unidades</span></p>
+                        <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Cantidad / Bocas</p>
+                        <p class="text-xl text-white font-bold">{{ object.quantity }} <span class="text-xs font-normal text-slate-500">un.</span></p>
+                        <p class="text-[10px] text-slate-400 mt-1">Bocas (Poses): {{ object.bocas|default:"--" }}</p>
                     </div>
                     <div>
                         <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Entrega Prometida</p>
                         <p class="text-sm text-white font-bold">{{ object.due_date|date:"d/M/Y" }}</p>
-                        {% if object.start_date %}
-                        <p class="text-[10px] text-slate-400 mt-1">Inicio: {{ object.start_date|date:"d/M/Y" }}</p>
-                        {% endif %}
+                        <p class="text-[10px] text-slate-400 mt-1">{% if object.material_used %}Mat: {{ object.material_used }} ml{% else %}Mat no reportado{% endif %}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información Actualizada (Producción) -->
+            <div class="bg-surface border border-border-default rounded-lg overflow-hidden relative">
+                <div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 to-blue-600"></div>
+                <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default flex items-center justify-between pl-6">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest pl-2">Estado de Producción</h3>
+                    <span class="text-[10px] text-blue-400 font-bold uppercase tracking-widest bg-blue-900/30 px-2 py-0.5 rounded-sm">Taller</span>
+                </div>
+                <div class="p-6 pl-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div>
+                        <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Estado en Planta</p>
+                        <p id="info-current-status" class="text-sm text-blue-400 font-bold uppercase transition-colors">{{ object.get_current_status_display }}</p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Última Cantidad Reportada</p>
+                        <p id="info-current-quantity" class="text-sm text-white font-bold">
+                            {% if logs and logs.0.quantity_produced %}
+                            {{ logs.0.quantity_produced }} <span class="text-xs font-normal text-slate-500">un. parciales</span>
+                            {% else %}
+                            <span class="text-slate-500 text-xs italic">Aún sin reportes</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Último Material Consumido</p>
+                        <p id="info-current-material" class="text-sm text-white font-bold">
+                            {% if logs and logs.0.material_used %}
+                            {{ logs.0.material_used }} <span class="text-xs font-normal text-slate-500">ml parciales</span>
+                            {% else %}
+                            <span class="text-slate-500 text-xs italic">Aún sin reportes</span>
+                            {% endif %}
+                        </p>
                     </div>
                 </div>
             </div>
@@ -130,7 +165,9 @@
     </div>
 
     {# ── Ficha Médica / Log de Producción (Full Width) (HTMX swappable) ── #}
-    {% include 'orders/fragments/log_feed.html' %}
+    <div id="log-feed-wrapper" hx-get="{% url 'orders:add_log' object.pk %}" hx-trigger="statusUpdated from:body, logUpdated from:body" hx-swap="innerHTML">
+        {% include 'orders/fragments/log_feed.html' %}
+    </div>
 
     <!-- Volver al listado -->
     <div class="flex justify-start pt-6">

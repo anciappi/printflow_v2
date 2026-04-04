@@ -11,6 +11,7 @@ urlpatterns = [
     path('<int:pk>/', views.WorkOrderDetailView.as_view(), name='detail'),
     path('<int:pk>/edit/', views.WorkOrderUpdateView.as_view(), name='update'),
     path('<int:pk>/status/', views.WorkOrderStatusUpdateView.as_view(), name='status_update'),
+    path('<int:pk>/status-modal/', views.WorkOrderStatusUpdateModalView.as_view(), name='status_update_modal'),
     path('<int:pk>/consumo/', views.WorkOrderConsumoView.as_view(), name='consumo'),
     path('<int:pk>/log/', views.WorkOrderLogCreateView.as_view(), name='add_log'),
     path('log/<int:pk>/edit/', views.WorkOrderLogUpdateView.as_view(), name='edit_log'),

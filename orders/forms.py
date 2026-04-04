@@ -17,7 +17,8 @@ class WorkOrderForm(forms.ModelForm):
         fields = [
             'customer', 'product', 'quantity', 'branch',
             'start_date', 'due_date', 'sales_rep',
-            'priority', 'production_notes'
+            'priority', 'production_notes',
+            'bocas', 'material_used'
         ]
         widgets = {
             'production_notes': forms.Textarea(attrs={'rows': 3}),
@@ -70,17 +71,39 @@ class WorkOrderForm(forms.ModelForm):
 class WorkOrderLogForm(forms.ModelForm):
     class Meta:
         model = WorkOrderLog
-        fields = ['quantity_produced', 'comment']
+        fields = ['comment']
         widgets = {
-            'quantity_produced': forms.NumberInput(attrs={
-                'class': 'w-full bg-surface-dark border border-border-default text-white text-xs px-3 py-2.5 focus:border-orange-500 outline-none transition-colors rounded-sm',
-                'placeholder': 'Ej. 150',
-                'min': '1'
-            }),
             'comment': forms.Textarea(attrs={
                 'class': 'w-full bg-surface-dark border border-border-default text-white text-xs px-3 py-2 focus:border-orange-500 outline-none transition-colors rounded-sm resize-none',
                 'placeholder': 'Escribí aquí observaciones, novedades o desvíos...',
                 'rows': 1,
                 'required': True
+            }),
+        }
+
+class WorkOrderAdvanceForm(forms.ModelForm):
+    class Meta:
+        model = WorkOrderLog
+        fields = ['quantity_produced', 'bocas', 'material_used', 'comment']
+        widgets = {
+            'quantity_produced': forms.NumberInput(attrs={
+                'class': 'w-full bg-surface-dark border border-border-default text-white text-xs px-3 py-2.5 focus:border-orange-500 outline-none transition-colors rounded-sm',
+                'placeholder': 'Cantidad',
+                'min': '1',
+                'required': True
+            }),
+            'bocas': forms.NumberInput(attrs={
+                'class': 'w-full bg-surface-dark border border-border-default text-white text-xs px-3 py-2.5 focus:border-orange-500 outline-none transition-colors rounded-sm',
+                'placeholder': 'Ej. 4'
+            }),
+            'material_used': forms.NumberInput(attrs={
+                'class': 'w-full bg-surface-dark border border-border-default text-white text-xs px-3 py-2.5 focus:border-orange-500 outline-none transition-colors rounded-sm',
+                'placeholder': 'Ej. 1500.5',
+                'step': '0.01'
+            }),
+            'comment': forms.Textarea(attrs={
+                'class': 'w-full bg-surface-dark border border-border-default text-white text-xs px-3 py-2 focus:border-orange-500 outline-none transition-colors rounded-sm resize-none',
+                'placeholder': 'Escribí aquí observaciones...',
+                'rows': 3,
             }),
         }

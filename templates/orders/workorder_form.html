@@ -66,6 +66,24 @@
                     {% endif %}
                 </div>
 
+                <!-- Bocas (Opcional) -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Bocas (Poses)</label>
+                    {{ form.bocas }}
+                    {% if form.bocas.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.bocas.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Material Utilizado (Opcional) -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Material Estimado/Utilizado (ml)</label>
+                    {{ form.material_used }}
+                    {% if form.material_used.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.material_used.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
                 <!-- Vendedor -->
                 <div>
                     <label class="block mb-2 text-sm font-medium text-slate-400">Vendedor Responsable</label>

@@ -8,7 +8,7 @@ from django.template.loader import render_to_string
 from decimal import Decimal
 
 from .models import WorkOrder, WorkOrderLog
-from .forms import WorkOrderForm, WorkOrderLogForm
+from .forms import WorkOrderForm, WorkOrderLogForm, WorkOrderAdvanceForm
 from inventory.models import InventoryUnit, ConsumptionLog
 from products.models import Product
 from tenants.models import Branch
@@ -186,11 +186,43 @@ class WorkOrderDetailView(LoginRequiredMixin, DetailView):
         return context
 
 
+class WorkOrderStatusUpdateModalView(LoginRequiredMixin, View):
+    """
+    Returns the modal for advancing the status of a work order.
+    """
+    def get(self, request, pk):
+        order = get_object_or_404(WorkOrder, pk=pk)
+        next_status = WorkOrderStatusUpdateView.TRANSITIONS.get(order.current_status)
+        
+        if not next_status:
+            return HttpResponse("No valid transition", status=400)
+            
+        next_status_label = dict(WorkOrder.STATUS_CHOICES).get(next_status)
+        
+        # Pre-fill modal with existing order quantity or sensible defaults
+        initial_data = {
+            'quantity_produced': order.quantity,
+            'bocas': order.bocas,
+        }
+        
+        form = WorkOrderAdvanceForm(initial=initial_data)
+        
+        html = render_to_string(
+            'orders/fragments/status_update_modal.html',
+            {
+                'order': order,
+                'next_status_label': next_status_label,
+                'form': form
+            },
+            request=request
+        )
+        return HttpResponse(html)
+
+
 class WorkOrderStatusUpdateView(LoginRequiredMixin, View):
     """
-    Handles status transitions via HTMX POST.
-    Returns updated status badge fragment + fires 'statusUpdated' event so
-    the stock panel can re-fetch itself automatically.
+    Handles status transitions via HTMX POST from the Modal.
+    Saves new Log entry, updates WorkOrder, and triggers events.
     """
     TRANSITIONS = {
         'PENDING':         'PREPRESS',
@@ -206,21 +238,65 @@ class WorkOrderStatusUpdateView(LoginRequiredMixin, View):
         next_status = self.TRANSITIONS.get(order.current_status)
 
         if next_status:
-            order.current_status = next_status
-            if next_status == 'DELIVERED':
-                from django.utils import timezone
-                order.finished_at = timezone.now()
-            order.save()
+            form = WorkOrderAdvanceForm(request.POST)
+            if form.is_valid():
+                # Extract clean data
+                quantity = form.cleaned_data.get('quantity_produced')
+                bocas = form.cleaned_data.get('bocas')
+                material_used = form.cleaned_data.get('material_used')
+                comment = form.cleaned_data.get('comment')
+                
+                # Update WorkOrder status
 
-        html = render_to_string(
-            'orders/fragments/status_badge.html',
-            {'order': order},
-            request=request
-        )
-        response = HttpResponse(html)
-        # Notify stock panel to re-fetch — can_consume may have changed
-        response['HX-Trigger'] = 'statusUpdated'
-        return response
+                order.current_status = next_status
+                if next_status == 'DELIVERED':
+                    from django.utils import timezone
+                    order.finished_at = timezone.now()
+                order.save()
+                
+                # Create the Work Order Log for the completed status
+                WorkOrderLog.objects.create(
+                    work_order=order,
+                    user=request.user,
+                    status=next_status,
+                    quantity_produced=quantity,
+                    bocas=bocas,
+                    material_used=material_used,
+                    comment=comment
+                )
+
+                # Return empty to close modal, plus Out-Of-Band swap for status badge
+                html_badge = render_to_string(
+                    'orders/fragments/status_badge.html',
+                    {
+                        'order': order, 
+                        'swap_oob': True,
+                        'last_log_quantity': quantity,
+                        'last_log_material': material_used
+                    },
+                    request=request
+                )
+                # HTMX will put empty string in #modal-container, and swap #status-block automatically
+                response = HttpResponse(html_badge)
+                # Notify other components (progress bar, log feed, stock panel) to refresh
+                response['HX-Trigger'] = 'statusUpdated'
+                return response
+            else:
+                # Form is invalid, return the modal with errors to #modal-container
+                next_status_label = dict(WorkOrder.STATUS_CHOICES).get(next_status)
+                html_modal = render_to_string(
+                    'orders/fragments/status_update_modal.html',
+                    {
+                        'order': order,
+                        'next_status_label': next_status_label,
+                        'form': form
+                    },
+                    request=request
+                )
+                return HttpResponse(html_modal)
+        
+        # If no valid transition, just close the modal
+        return HttpResponse("")
 
 
 class WorkOrderStockPanelView(LoginRequiredMixin, View):
@@ -352,9 +428,20 @@ class WorkOrderConsumoView(LoginRequiredMixin, View):
 
 class WorkOrderLogCreateView(LoginRequiredMixin, View):
     """
-    Handles HTMX POST creation of a WorkOrderLog (Ficha Médica).
-    Returns the updated log_feed fragment.
+    Handles HTMX endpoint for the Log Feed.
+    GET: Returns the rendered log feed fragment (used by log refresh triggers)
+    POST: Handles manual creation of a log (Ficha Médica snippet) with just comments.
     """
+    def get(self, request, pk):
+        order = get_object_or_404(WorkOrder, pk=pk)
+        logs = order.logs.select_related('user').all()
+        html = render_to_string(
+            'orders/fragments/log_feed.html',
+            {'order': order, 'log_form': WorkOrderLogForm(), 'logs': logs},
+            request=request
+        )
+        return HttpResponse(html)
+
     def post(self, request, pk):
         order = get_object_or_404(WorkOrder, pk=pk)
         form = WorkOrderLogForm(request.POST)
