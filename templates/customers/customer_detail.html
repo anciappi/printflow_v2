@@ -1,0 +1,260 @@
+{% extends "base.html" %}
+
+{% block breadcrumbs %}
+<span class="text-slate-500">Sales / Clientes /</span> <span class="text-white ml-1">Ficha: {{ customer.name }}</span>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto space-y-6">
+
+    <!-- Header / Actions -->
+    <div class="bg-surface border border-border-default rounded-lg p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+            <div class="flex items-center gap-3 mb-1">
+                <h2 class="text-2xl font-bold text-white">{{ customer.name }}</h2>
+                {% if customer.is_active %}
+                <span class="px-2 py-0.5 text-[9px] font-bold bg-emerald-900/30 text-emerald-400 border border-emerald-800 rounded-full">ACTIVO</span>
+                {% else %}
+                <span class="px-2 py-0.5 text-[9px] font-bold bg-slate-800 text-slate-500 border border-slate-700 rounded-full">INACTIVO</span>
+                {% endif %}
+            </div>
+            <p class="text-slate-500 text-sm">
+                Registrado el {{ customer.created_at|date:"d M Y" }}
+            </p>
+        </div>
+
+        <div class="flex items-center gap-3 w-full md:w-auto flex-wrap">
+            <a href="{% url 'customers:list' %}" class="bg-surface hover:bg-surface-hover text-slate-300 border border-border-default text-[10px] font-bold py-3 px-6 transition-all uppercase tracking-widest rounded-sm text-center">
+                Volver al listado
+            </a>
+            <a href="{% url 'customers:update' customer.pk %}" class="bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-bold py-3 px-6 transition-all uppercase tracking-widest rounded-sm text-center">
+                Editar Cliente
+            </a>
+        </div>
+    </div>
+
+    <!-- Contenido -->
+    <div class="bg-surface border border-border-default rounded-lg overflow-hidden">
+        <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default flex items-center justify-between">
+            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Información Principal</h3>
+        </div>
+        <div class="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div>
+                <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Nombre o Razón Social</p>
+                <p class="text-sm text-white font-medium">{{ customer.name }}</p>
+            </div>
+            <div>
+                <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Tipo de Cliente</p>
+                <p class="text-sm text-slate-300">{{ customer.get_customer_type_display }}</p>
+            </div>
+            <div>
+                <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">ID Fiscal / Tax ID</p>
+                <p class="text-sm text-white font-mono bg-surface-dark px-2 py-1 rounded inline-block">{{ customer.tax_id }}</p>
+            </div>
+            <div>
+                <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Vendedor Asignado</p>
+                <p class="text-sm text-slate-300">{{ customer.assigned_to|default:"--" }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contacto y Notas -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-surface border border-border-default rounded-lg overflow-hidden h-full">
+            <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Contacto y Envío</h3>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Email Principal</p>
+                    <p class="text-sm text-orange-400 font-medium">
+                        {% if customer.email %}
+                        <a href="mailto:{{ customer.email }}" class="hover:underline">{{ customer.email }}</a>
+                        {% else %}
+                        --
+                        {% endif %}
+                    </p>
+                </div>
+                <div>
+                    <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Teléfono</p>
+                    <p class="text-sm text-slate-300">{{ customer.phone|default:"--" }}</p>
+                </div>
+                <div>
+                    <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Dirección Física Fiscal</p>
+                    <p class="text-sm text-slate-300 whitespace-pre-wrap">{{ customer.address|default:"Sin dirección registrada." }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-6">
+            <div class="bg-surface border border-border-default rounded-lg overflow-hidden flex-1">
+                <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Notas Internas</h3>
+                </div>
+                <div class="p-6">
+                    {% if customer.notes %}
+                    <p class="text-sm text-slate-300 leading-relaxed whitespace-pre-wrap">{{ customer.notes }}</p>
+                    {% else %}
+                    <p class="text-xs text-slate-500 italic">No hay notas registradas para este cliente.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Relacionados -->
+            <div class="bg-surface border border-border-default rounded-lg overflow-hidden">
+                <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default flex items-center justify-between">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Resumen de Actividad</h3>
+                </div>
+                <div class="p-6 grid grid-cols-2 gap-4">
+                    <div class="bg-surface-dark rounded border border-border-default p-4 text-center">
+                        <p class="text-3xl text-white font-bold">{{ customer.products.count }}</p>
+                        <p class="text-[10px] text-slate-500 uppercase font-bold mt-1">Productos</p>
+                    </div>
+                    <div class="bg-surface-dark rounded border border-border-default p-4 text-center">
+                        <p class="text-3xl text-white font-bold">{{ total_orders_count }}</p>
+                        <p class="text-[10px] text-slate-500 uppercase font-bold mt-1">Órdenes (OTs)</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tablas Relacionadas -->
+    <div class="grid grid-cols-1 gap-6">
+        
+        <!-- Tarjetas / Productos Activos -->
+        <div class="bg-surface border border-border-default rounded-lg overflow-hidden">
+            <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default flex items-center justify-between">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Productos Asociados</h3>
+                <a href="{% url 'products:create' %}" class="text-[10px] bg-emerald-900/30 text-emerald-400 border border-emerald-800 hover:bg-emerald-800 hover:text-white px-2 py-1 rounded-sm transition-colors uppercase font-bold">+ Nuevo Producto</a>
+            </div>
+            {% if products %}
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm whitespace-nowrap">
+                    <thead class="bg-surface-dark/30 text-[10px] uppercase text-slate-500 border-b border-[#2d333b]">
+                        <tr>
+                            <th class="px-6 py-3 font-medium">Cód. / Nombre</th>
+                            <th class="px-6 py-3 font-medium">Sustrato</th>
+                            <th class="px-6 py-3 font-medium">Dimensiones</th>
+                            <th class="px-6 py-3 font-medium text-right">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-[#2d333b]">
+                        {% for product in products %}
+                        <tr class="hover:bg-surface-dark/20 transition-colors">
+                            <td class="px-6 py-3">
+                                <div class="text-slate-200 font-medium">{{ product.name }}</div>
+                                <div class="text-[10px] text-emerald-500 font-mono">{{ product.code }}</div>
+                            </td>
+                            <td class="px-6 py-3 text-slate-400">{{ product.substrate.name }}</td>
+                            <td class="px-6 py-3 text-slate-400 text-xs">{{ product.width_mm|floatformat:0 }}x{{ product.height_mm|floatformat:0 }}mm</td>
+                            <td class="px-6 py-3 text-right">
+                                <a href="{% url 'orders:create' %}?product={{ product.id }}" class="text-[10px] text-blue-400 hover:text-blue-300 font-bold uppercase border border-blue-900/50 hover:border-blue-700 bg-blue-900/10 px-2 py-1 rounded-sm transition-colors">Crear OT</a>
+                                <a href="{% url 'products:update' product.id %}" class="ml-2 text-[10px] text-slate-400 hover:text-white transition-colors uppercase font-bold">Editar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="p-8 text-center text-slate-500 text-sm">
+                No hay productos activos para este cliente.
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Órdenes de Trabajo Activas -->
+        <div class="bg-surface border border-border-default rounded-lg overflow-hidden">
+            <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default flex items-center justify-between">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Órdenes Activas (En Curso)</h3>
+            </div>
+            {% if active_orders %}
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm whitespace-nowrap">
+                    <thead class="bg-surface-dark/30 text-[10px] uppercase text-slate-500 border-b border-[#2d333b]">
+                        <tr>
+                            <th class="px-6 py-3 font-medium">N° OT</th>
+                            <th class="px-6 py-3 font-medium">Producto</th>
+                            <th class="px-6 py-3 font-medium text-center">Estado</th>
+                            <th class="px-6 py-3 font-medium">Entrega</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-[#2d333b]">
+                        {% for order in active_orders %}
+                        <tr class="hover:bg-surface-dark/20 transition-colors">
+                            <td class="px-6 py-3 font-mono font-medium text-orange-400">
+                                <a href="{% url 'orders:detail' order.pk %}" class="hover:underline">{{ order.ot_number }}</a>
+                                {% if order.priority == 'URGENT' %}
+                                <span class="ml-2 px-1.5 py-0.5 text-[9px] bg-red-900/30 text-red-500 border border-red-800 rounded-sm">URG</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-3 text-slate-200">{{ order.product.name }}</td>
+                            <td class="px-6 py-3 text-center">
+                                <span class="text-[10px] uppercase tracking-wider font-bold">{{ order.get_current_status_display }}</span>
+                            </td>
+                            <td class="px-6 py-3 text-slate-400 text-xs">{{ order.due_date|date:"d/m/Y" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="p-8 text-center text-slate-500 text-sm">
+                No hay órdenes de trabajo en curso para este cliente.
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Historial: Entregadas y Canceladas -->
+        {% if completed_orders %}
+        <div class="bg-surface border border-border-default rounded-lg overflow-hidden">
+            <button onclick="this.nextElementSibling.classList.toggle('hidden'); this.querySelector('svg').classList.toggle('rotate-180')"
+                    class="w-full flex items-center justify-between px-6 py-3 border-b border-border-default bg-surface-dark/50 hover:bg-surface-dark transition-colors cursor-pointer">
+                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Historial de Órdenes (Entregadas / Canceladas)</h3>
+                <div class="flex items-center gap-3">
+                    <span class="text-[10px] text-slate-600 font-mono">{{ completed_orders|length }} registros</span>
+                    <svg class="w-4 h-4 text-slate-500 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </div>
+            </button>
+            <div class="hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm whitespace-nowrap opacity-75">
+                        <thead class="bg-surface-dark/30 text-[10px] uppercase text-slate-500 border-b border-[#2d333b]">
+                            <tr>
+                                <th class="px-6 py-3 font-medium">N° OT</th>
+                                <th class="px-6 py-3 font-medium">Producto</th>
+                                <th class="px-6 py-3 font-medium text-center">Estado</th>
+                                <th class="px-6 py-3 font-medium">Entrega</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-[#2d333b]">
+                            {% for order in completed_orders %}
+                            <tr class="hover:bg-surface-dark/20 transition-colors">
+                                <td class="px-6 py-3 font-mono font-medium text-slate-400">
+                                    <a href="{% url 'orders:detail' order.pk %}" class="hover:text-white transition-colors">{{ order.ot_number }}</a>
+                                </td>
+                                <td class="px-6 py-3 text-slate-400">{{ order.product.name }}</td>
+                                <td class="px-6 py-3 text-center">
+                                    {% if order.current_status == 'DELIVERED' %}
+                                    <span class="text-[10px] uppercase tracking-wider font-bold text-emerald-500">{{ order.get_current_status_display }}</span>
+                                    {% else %}
+                                    <span class="text-[10px] uppercase tracking-wider font-bold text-red-500">{{ order.get_current_status_display }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-6 py-3 text-slate-500 text-xs">{{ order.due_date|date:"d/m/Y" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+
+</div>
+{% endblock %}

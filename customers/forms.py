@@ -4,7 +4,7 @@ from .models import Customer
 class CustomerForm(forms.ModelForm):
     class Meta:
         model = Customer
-        fields = ['name', 'customer_type', 'tax_id', 'email', 'phone', 'address', 'is_active', 'notes']
+        fields = ['name', 'customer_type', 'tax_id', 'email', 'phone', 'address', 'assigned_to', 'is_active', 'notes']
         widgets = {
             'notes': forms.Textarea(attrs={'rows': 3}),
             'address': forms.Textarea(attrs={'rows': 2}),

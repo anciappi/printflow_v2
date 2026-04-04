@@ -156,6 +156,7 @@ class WorkOrderCreateView(LoginRequiredMixin, CreateView):
     def get_initial(self):
         initial = super().get_initial()
         product_id = self.request.GET.get('product')
+        customer_id = self.request.GET.get('customer')
         if product_id:
             try:
                 from products.models import Product
@@ -164,6 +165,8 @@ class WorkOrderCreateView(LoginRequiredMixin, CreateView):
                 initial['customer'] = product.customer_id
             except Exception:
                 pass
+        elif customer_id:
+            initial['customer'] = customer_id
         return initial
 
     def get_context_data(self, **kwargs):

@@ -11,10 +11,10 @@
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-surface p-6 border border-border-default rounded-lg gap-4">
         <div>
             <h2 class="text-2xl font-bold text-white">Órdenes de Trabajo</h2>
-            <p class="text-slate-500 text-sm">Monitorea y gestiona el ciclo de vida de producción.</p>
+            <p class="text-slate-500 text-sm">Monitorea y gestiona el ciclo de vida de producción. Las OTs se inician desde la ficha de cada producto.</p>
         </div>
-        <a href="{% url 'orders:create' %}" class="w-full sm:w-auto bg-orange-600 hover:bg-orange-500 text-white text-xs font-bold py-2.5 px-6 shadow-lg shadow-orange-900/20 transition-all uppercase tracking-widest rounded-sm text-center">
-            + Nueva OT
+        <a href="{% url 'products:catalog' %}" class="w-full sm:w-auto bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-bold py-3 px-6 transition-all uppercase tracking-widest rounded-sm text-center">
+            Ver Productos
         </a>
     </div>
 
@@ -86,7 +86,7 @@
     {% if not orders %}
     <div class="bg-surface border border-border-default rounded-lg p-12 text-center shadow-sm">
         <p class="text-slate-500 text-sm">No hay órdenes de trabajo registradas.</p>
-        <a href="{% url 'orders:create' %}" class="text-orange-500 hover:text-orange-400 text-xs mt-3 font-bold uppercase tracking-widest inline-block transition-colors">Crear la primera OT &rarr;</a>
+        <a href="{% url 'products:catalog' %}" class="text-orange-500 hover:text-orange-400 text-xs mt-3 font-bold uppercase tracking-widest inline-block transition-colors">Ir a Productos para crear una OT &rarr;</a>
     </div>
     {% else %}
         {% for group in grouped_orders %}
