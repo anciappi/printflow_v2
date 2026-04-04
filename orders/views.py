@@ -153,6 +153,30 @@ class WorkOrderCreateView(LoginRequiredMixin, CreateView):
     template_name = 'orders/workorder_form.html'
     success_url = reverse_lazy('orders:list')
 
+    def get_initial(self):
+        initial = super().get_initial()
+        product_id = self.request.GET.get('product')
+        if product_id:
+            try:
+                from products.models import Product
+                product = Product.objects.get(pk=product_id)
+                initial['product'] = product.id
+                initial['customer'] = product.customer_id
+            except Exception:
+                pass
+        return initial
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product_id = self.request.GET.get('product')
+        if product_id and not self.object:
+            try:
+                from products.models import Product
+                context['initial_product'] = Product.objects.get(pk=product_id)
+            except Exception:
+                pass
+        return context
+
     def form_valid(self, form):
         form.instance.sales_rep = self.request.user
         return super().form_valid(form)

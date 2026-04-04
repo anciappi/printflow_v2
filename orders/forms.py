@@ -64,6 +64,11 @@ class WorkOrderForm(forms.ModelForm):
                 ).order_by('name')
             except (ValueError, TypeError):
                 self.fields['product'].queryset = Product.objects.none()
+        elif kwargs.get('initial') and 'customer' in kwargs['initial']:
+            self.fields['product'].queryset = Product.objects.filter(
+                customer_id=kwargs['initial']['customer'],
+                status='ACTIVE'
+            ).order_by('name')
         else:
             # New form loading for the first time
             self.fields['product'].queryset = Product.objects.none()

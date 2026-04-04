@@ -106,6 +106,8 @@
             {% if form.instance.product %}
                 <!-- Si estamos editando y ya hay un producto, mostramos los detalles inmediatamente -->
                 {% include "orders/fragments/product_details.html" with product=form.instance.product %}
+            {% elif initial_product %}
+                {% include "orders/fragments/product_details.html" with product=initial_product %}
             {% endif %}
         </div>
 
