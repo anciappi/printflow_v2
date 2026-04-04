@@ -1,0 +1,64 @@
+{% comment %} Fragment: material_preview.html — resultado del cálculo de postura en tiempo real {% endcomment %}
+{% if ready %}
+<div class="bg-gradient-to-br from-slate-900 to-slate-800 border {% if width_warning %}border-red-700/60{% else %}border-emerald-800/40{% endif %} rounded-lg overflow-hidden shadow-lg">
+    <div class="flex items-center gap-2 px-4 py-3 border-b {% if width_warning %}border-red-800/30 bg-red-900/20{% else %}border-emerald-800/30 bg-emerald-900/20{% endif %}">
+        <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full {% if width_warning %}bg-red-400{% else %}bg-emerald-400{% endif %} opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 {% if width_warning %}bg-red-500{% else %}bg-emerald-500{% endif %}"></span>
+        </span>
+        <h4 class="text-[10px] font-bold {% if width_warning %}text-red-400{% else %}text-emerald-400{% endif %} uppercase tracking-widest">Estimación de Material en Bobina</h4>
+    </div>
+
+    {% if width_warning %}
+    <div class="mx-4 mt-4 flex items-start gap-3 bg-red-900/30 border border-red-700/50 rounded-md px-4 py-3">
+        <svg class="w-4 h-4 text-red-400 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+        </svg>
+        <div>
+            <p class="text-[11px] font-bold text-red-400 uppercase tracking-wider">Postura excede el ancho de bobina</p>
+            <p class="text-[10px] text-red-300 mt-0.5">
+                El ancho calculado de la postura (<strong>{{ ancho_postura }} mm</strong>) supera el ancho disponible de bobina (<strong>{{ bobina_width }} mm</strong>).
+                Reducí columnas, gap horizontal o margen lateral.
+            </p>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="p-4 grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div class="bg-slate-900/60 border border-slate-700 rounded p-3 text-center">
+            <p class="text-2xl font-bold text-white">{{ bocas_totales }}</p>
+            <p class="text-[9px] text-slate-500 uppercase font-bold mt-1">Bocas / Postura</p>
+            <p class="text-[9px] text-slate-600 mt-0.5">{{ rows }} fila{% if rows > 1 %}s{% endif %} x {{ cols }} col{% if cols > 1 %}s{% endif %}</p>
+        </div>
+        <div class="bg-slate-900/60 border border-slate-700 rounded p-3 text-center">
+            <p class="text-2xl font-bold text-orange-400">{{ pasadas }}</p>
+            <p class="text-[9px] text-slate-500 uppercase font-bold mt-1">Pasadas necesarias</p>
+            <p class="text-[9px] text-slate-600 mt-0.5">para {{ quantity }} unidades</p>
+        </div>
+        <div class="bg-slate-900/60 border {% if width_warning %}border-red-700/50{% else %}border-slate-700{% endif %} rounded p-3 text-center">
+            <p class="text-2xl font-bold text-blue-400">{{ largo_postura }}</p>
+            <p class="text-[9px] text-slate-500 uppercase font-bold mt-1">Largo polimero (mm)</p>
+            <p class="text-[9px] {% if width_warning %}text-red-400 font-bold{% else %}text-slate-600{% endif %} mt-0.5">
+                ancho: {{ ancho_postura }} mm
+                {% if bobina_width and not width_warning %} / bobina: {{ bobina_width }} mm{% endif %}
+            </p>
+        </div>
+        <div class="{% if width_warning %}bg-red-900/10 border-red-700/30{% else %}bg-emerald-900/30 border-emerald-700/50{% endif %} border rounded p-3 text-center">
+            <p class="text-2xl font-bold {% if width_warning %}text-red-300{% else %}text-emerald-300{% endif %}">{{ metros }}</p>
+            <p class="text-[9px] {% if width_warning %}text-red-500{% else %}text-emerald-500{% endif %} uppercase font-bold mt-1">Metros lineales est.</p>
+            <p class="text-[9px] {% if width_warning %}text-red-700{% else %}text-emerald-700{% endif %} mt-0.5">{{ orientation }}</p>
+        </div>
+    </div>
+
+    <div class="px-4 pb-3 flex items-start justify-between gap-4">
+        <p class="text-[9px] text-slate-600 italic">Estimacion teorica. No incluye mermas, arranques ni desperdicios de setup de maquina.</p>
+        {% if bobina_width and not width_warning %}
+        <p class="text-[9px] text-emerald-700 whitespace-nowrap">Postura entra en bobina ({{ bobina_width }} mm)</p>
+        {% endif %}
+    </div>
+</div>
+{% else %}
+<div class="border border-dashed border-slate-700 rounded-lg p-4 text-center text-slate-600 text-xs">
+    <p>Completa las filas, columnas, gaps y margenes para ver la estimacion de material.</p>
+</div>
+{% endif %}

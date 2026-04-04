@@ -55,15 +55,37 @@ Módulo responsable de gestión de órdenes de trabajo (OT), seguimiento de prod
 - **Micro-modal CRUD**: Botones explícitos nativos de Editar/Borrar en la grilla que activan modales en-pantalla en la zona designada (`modal-container`) de forma aislada.
 
 
+## Sprint: Orders Sprint 6 - Material Calculation Module | 2026-04-04 | CERRADO ✅
+
+Hito estratégico: Implementación de la calculadora de consumo de bobina en tiempo real para Órdenes de Trabajo.
+
+**Archivos modificados:** `orders/models.py`, `orders/forms.py`, `orders/views.py`, `orders/urls.py`, `templates/orders/workorder_form.html`, `templates/orders/fragments/material_preview.html`, `templates/orders/fragments/product_details.html`
+
+- **Model Level Logic (Core Engine)**:
+  - 8 nuevos campos de postura en `WorkOrder`: `layout_rows`, `layout_cols`, `gap_horizontal_mm`, `gap_vertical_mm`, `margin_lateral_mm`, `margin_top_mm`, `margin_bottom_mm`, `orientation`.
+  - Método `calculate_material()`: Fórmula industrial que procesa el largo de avance (Portrait/Landscape), mermas fijas por márgenes y gaps, y pasadas necesarias según cantidad solicitada.
+  - Auto-cálculo en `save()`: Persistencia automática de `estimated_material_usage` (metros lineales) y `bocas` totales al guardar la OT.
+- **HTMX Real-time Preview**:
+  - `LayoutPreviewView`: Endpoint GET de alto rendimiento que devuelve el fragmento calculado.
+  - `material_preview.html`: Panel visual interactivo con 4 KPIs (Bocas, Pasadas, Largo Polímero, Metros Est.).
+  - **Sistema de Alerta de Ancho**: Campo `bobina_width_mm` (opcional). El preview detecta si el ancho de postura supera el material disponible y dispara una alerta visual roja ("Warning Mode") con instrucciones de ajuste.
+- **UX Refinements**:
+  - Unificación del flujo: eliminación de botones de creación manual — toda OT nace desde un Producto.
+  - Formulario limpio: remoción de campos huérfanos/redundantes (`bocas` manual, `material_used` duplicado).
+  - Debounce JS (500ms) para evitar sobrecarga de red durante el tipeo de parámetros de postura.
+
+---
+
 ## Archivos del módulo
 ```
 orders/
-├── models.py          → WorkOrder (STATUS_CHOICES, get_next_status_display)
-├── views.py           → WorkOrderStatusUpdateView, WorkOrderDetailView
-├── urls.py            → status_update endpoint
-├── forms.py           → WorkOrderForm
+├── models.py          → WorkOrder (STATUS_CHOICES, calculate_material)
+├── views.py           → WorkOrderStatusUpdateView, LayoutPreviewView
+├── urls.py            → status_update, layout_preview endpoints
+├── forms.py           → WorkOrderForm (layout fields + bobina_width_mm)
 └── templates/orders/
-    ├── workorder_detail.html    → Status badge + Progress bar
+    ├── workorder_form.html      → Configuración de Postura + HTMX Preview
     └── fragments/
-        └── status_badge.html    → Fragmento HTMX
+        ├── status_badge.html    → Fragmento HTMX
+        └── material_preview.html → Panel de Estimación
 ```

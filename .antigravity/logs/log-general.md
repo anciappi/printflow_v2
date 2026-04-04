@@ -89,3 +89,10 @@ Para detalle completo ver log-[modulo].md correspondiente.
 ## 2026-04-01
 - products: fix loop en submit `product_form.html` — banner global de errores, guard `form.instance.pk` en previews de archivos, `required=False` + `clean()` para campos condicionales deshabilitados por JS, removed `status` duplicado, HTML huérfanos removidos.
 - orders: filtro por estado en tablero de OTs — pills dinámicos en `workorder_list.html`, `get_queryset()` filtra por `?status=`, `get_context_data()` pasa choices y filtro activo al contexto.
+
+## 2026-04-04
+- customers: CustomerDetailView (Hub centralizado) — KPIs, vinculación productos/OTs activos, historial colapsable.
+- customers: Asignación comercial — campo `assigned_to` en Customer model/form.
+- orders: Material Calculation Module — calculator polímero/posture, 8 nuevos campos en WorkOrder, real-time HTMX preview.
+- orders: UX Refactoring — toda OT nace desde Producto, remoción de redundancias en UI.
+- orders: Bobina width validation — sistema de alerta visual roja en el previeuw de postura.

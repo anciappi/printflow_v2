@@ -18,7 +18,11 @@ class WorkOrderForm(forms.ModelForm):
             'customer', 'product', 'quantity', 'branch',
             'start_date', 'due_date', 'sales_rep',
             'priority', 'production_notes',
-            'bocas', 'material_used'
+            # Postura / Polímero
+            'orientation', 'layout_rows', 'layout_cols',
+            'gap_horizontal_mm', 'gap_vertical_mm',
+            'margin_lateral_mm', 'margin_top_mm', 'margin_bottom_mm',
+            'bobina_width_mm',
         ]
         widgets = {
             'production_notes': forms.Textarea(attrs={'rows': 3}),

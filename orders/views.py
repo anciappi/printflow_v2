@@ -382,7 +382,6 @@ class LoadProductDetailsView(LoginRequiredMixin, View):
         product = None
         if product_id:
             try:
-                # Utilizamos select_related si hubiese foráneas importantes o prefetch si es útil
                 product = Product.objects.get(pk=product_id)
             except Product.DoesNotExist:
                 pass
@@ -393,6 +392,96 @@ class LoadProductDetailsView(LoginRequiredMixin, View):
             request=request
         )
         return HttpResponse(html)
+
+
+class LayoutPreviewView(LoginRequiredMixin, View):
+    """
+    HTMX endpoint that calculates and returns the material estimation panel
+    in real time as the user fills in the layout fields.
+    Called via GET with product_id + layout params as query string.
+    """
+    def get(self, request):
+        from math import ceil
+        from decimal import Decimal, InvalidOperation
+
+        def to_decimal(val):
+            try:
+                return Decimal(str(val))
+            except (InvalidOperation, TypeError):
+                return None
+
+        product_id   = request.GET.get('product')
+        quantity     = to_decimal(request.GET.get('quantity'))
+        rows         = request.GET.get('layout_rows')
+        cols         = request.GET.get('layout_cols')
+        gap_v        = to_decimal(request.GET.get('gap_vertical_mm'))
+        gap_h        = to_decimal(request.GET.get('gap_horizontal_mm'))
+        margin_top   = to_decimal(request.GET.get('margin_top_mm'))
+        margin_bot   = to_decimal(request.GET.get('margin_bottom_mm'))
+        margin_lat   = to_decimal(request.GET.get('margin_lateral_mm'))
+        orientation  = request.GET.get('orientation', 'PORTRAIT')
+        bobina_width = to_decimal(request.GET.get('bobina_width_mm'))
+
+        ctx = {'ready': False}
+
+        # Validate required numerics
+        try:
+            rows = int(rows)
+            cols = int(cols)
+            assert rows > 0 and cols > 0
+        except (TypeError, ValueError, AssertionError):
+            return HttpResponse(render_to_string('orders/fragments/material_preview.html', ctx, request=request))
+
+        required = [quantity, gap_v, margin_top, margin_bot]
+        if any(v is None for v in required):
+            return HttpResponse(render_to_string('orders/fragments/material_preview.html', ctx, request=request))
+
+        product = None
+        if product_id:
+            try:
+                product = Product.objects.get(pk=product_id)
+            except Product.DoesNotExist:
+                pass
+
+        if not product:
+            return HttpResponse(render_to_string('orders/fragments/material_preview.html', ctx, request=request))
+
+        # Core calculation
+        if orientation == 'LANDSCAPE':
+            largo_mm  = Decimal(str(product.width_mm))
+            ancho_mm  = Decimal(str(product.height_mm))
+        else:
+            largo_mm  = Decimal(str(product.height_mm))
+            ancho_mm  = Decimal(str(product.width_mm))
+
+        d_rows        = Decimal(rows)
+        d_cols        = Decimal(cols)
+        d_gap_v       = gap_v     or Decimal('0')
+        d_gap_h       = gap_h     or Decimal('0')
+        d_margin_lat  = margin_lat or Decimal('0')
+
+        largo_postura  = (d_rows * largo_mm) + ((d_rows - 1) * d_gap_v) + margin_top + margin_bot
+        ancho_postura  = (d_cols * ancho_mm) + ((d_cols - 1) * d_gap_h) + (d_margin_lat * 2)
+        bocas_totales  = rows * cols
+        pasadas        = ceil(int(quantity) / bocas_totales)
+        metros         = (Decimal(pasadas) * largo_postura) / Decimal('1000')
+
+        ctx = {
+            'ready':           True,
+            'product':         product,
+            'orientation':     orientation,
+            'rows':            rows,
+            'cols':            cols,
+            'bocas_totales':   bocas_totales,
+            'pasadas':         pasadas,
+            'largo_postura':   largo_postura.quantize(Decimal('0.1')),
+            'ancho_postura':   ancho_postura.quantize(Decimal('0.1')),
+            'metros':          metros.quantize(Decimal('0.01')),
+            'quantity':        int(quantity),
+            'bobina_width':    bobina_width,
+            'width_warning':   (bobina_width is not None and ancho_postura > bobina_width),
+        }
+        return HttpResponse(render_to_string('orders/fragments/material_preview.html', ctx, request=request))
 
 
 class WorkOrderConsumoView(LoginRequiredMixin, View):

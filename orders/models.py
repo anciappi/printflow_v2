@@ -50,12 +50,28 @@ class WorkOrder(models.Model):
     # Notas específicas de ESTA orden (ej: "El cliente pidió cambiar el rojo por azul solo en esta tirada")
     production_notes = models.TextField(blank=True, verbose_name="Notas de Orden")
 
+    ORIENTATION_CHOICES = [
+        ('PORTRAIT', 'Portrait (alto avanza en bobina)'),
+        ('LANDSCAPE', 'Landscape (ancho avanza en bobina)'),
+    ]
+
     # Producción y Materiales
     bocas = models.PositiveIntegerField(null=True, blank=True, verbose_name="Bocas (Poses) del Original")
     material_used = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Material Utilizado (ml)")
 
-    # Campos calculados (se llenarán al guardar)
-    estimated_material_usage = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, help_text="Metros lineales estimados a consumir")
+    # Configuración de Postura / Polímero
+    layout_rows         = models.PositiveIntegerField(null=True, blank=True, verbose_name="Filas de la Postura")
+    layout_cols         = models.PositiveIntegerField(null=True, blank=True, verbose_name="Columnas de la Postura")
+    gap_horizontal_mm   = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True, verbose_name="Gap Horizontal entre diseños (mm)")
+    gap_vertical_mm     = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True, verbose_name="Gap Vertical entre diseños (mm)")
+    margin_lateral_mm   = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True, verbose_name="Margen Lateral (cada lado, mm)")
+    margin_top_mm       = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True, verbose_name="Margen Superior (mm)")
+    margin_bottom_mm    = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True, verbose_name="Margen Inferior (mm)")
+    orientation         = models.CharField(max_length=10, choices=ORIENTATION_CHOICES, default='PORTRAIT', verbose_name="Orientación en Bobina")
+    bobina_width_mm     = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True, verbose_name="Ancho de Bobina disponible (mm)", help_text="Ancho útil del rollo o máquina. Se usará para validar que la postura entre.")
+
+    # Resultado calculado automáticamente
+    estimated_material_usage = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Material Estimado (metros lineales)")
 
     class Meta:
         verbose_name = "Orden de Trabajo"
@@ -78,6 +94,51 @@ class WorkOrder(models.Model):
         result = transitions.get(self.current_status)
         return result[1] if result else None
 
+    def calculate_material(self):
+        """
+        Calcula los metros lineales estimados de bobina para esta OT.
+        Retorna el valor en metros (Decimal) o None si faltan datos.
+        
+        Fórmula (en mm):
+          bobina avanza en la dirección del 'largo' del producto.
+          PORTRAIT: largo = height_mm, ancho_producto = width_mm
+          LANDSCAPE: largo = width_mm, ancho_producto = height_mm
+
+          largo_postura = (filas × largo) + ((filas-1) × gap_v) + margen_sup + margen_inf
+          bocas_totales = filas × columnas
+          pasadas       = ceil(cantidad / bocas_totales)
+          metros        = pasadas × largo_postura / 1000
+        """
+        from math import ceil
+        from decimal import Decimal
+
+        required = [
+            self.layout_rows, self.layout_cols, self.quantity,
+            self.gap_vertical_mm, self.margin_top_mm, self.margin_bottom_mm,
+        ]
+        if any(v is None for v in required):
+            return None
+        try:
+            product = self.product
+        except Exception:
+            return None
+
+        if self.orientation == 'LANDSCAPE':
+            largo_mm = Decimal(str(product.width_mm))
+        else:
+            largo_mm = Decimal(str(product.height_mm))
+
+        filas   = Decimal(self.layout_rows)
+        gap_v   = Decimal(str(self.gap_vertical_mm))
+        m_top   = Decimal(str(self.margin_top_mm))
+        m_bot   = Decimal(str(self.margin_bottom_mm))
+
+        largo_postura = (filas * largo_mm) + ((filas - 1) * gap_v) + m_top + m_bot
+        bocas_totales = self.layout_rows * self.layout_cols
+        pasadas       = ceil(self.quantity / bocas_totales)
+        metros        = (Decimal(pasadas) * largo_postura) / Decimal('1000')
+        return metros.quantize(Decimal('0.01'))
+
     def save(self, *args, **kwargs):
         # Generar número de OT atómicamente para prevenir condiciones de carrera
         if not self.ot_number:
@@ -85,6 +146,14 @@ class WorkOrder(models.Model):
                 last_order = WorkOrder.objects.select_for_update().order_by('id').last()
                 new_id = (last_order.id + 1) if last_order else 1
                 self.ot_number = f"OT-{timezone.now().year}-{new_id:04d}"
+
+        # Auto-calcular material estimado si hay datos de postura
+        resultado = self.calculate_material()
+        if resultado is not None:
+            self.estimated_material_usage = resultado
+            if self.layout_rows and self.layout_cols:
+                self.bocas = self.layout_rows * self.layout_cols
+
         super().save(*args, **kwargs)
 
 class WorkOrderLog(models.Model):

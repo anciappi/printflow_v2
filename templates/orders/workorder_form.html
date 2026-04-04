@@ -66,24 +66,6 @@
                     {% endif %}
                 </div>
 
-                <!-- Bocas (Opcional) -->
-                <div>
-                    <label class="block mb-2 text-sm font-medium text-slate-400">Bocas (Poses)</label>
-                    {{ form.bocas }}
-                    {% if form.bocas.errors %}
-                    <p class="text-red-500 text-xs mt-1">{{ form.bocas.errors.0 }}</p>
-                    {% endif %}
-                </div>
-
-                <!-- Material Utilizado (Opcional) -->
-                <div>
-                    <label class="block mb-2 text-sm font-medium text-slate-400">Material Estimado/Utilizado (ml)</label>
-                    {{ form.material_used }}
-                    {% if form.material_used.errors %}
-                    <p class="text-red-500 text-xs mt-1">{{ form.material_used.errors.0 }}</p>
-                    {% endif %}
-                </div>
-
                 <!-- Vendedor -->
                 <div>
                     <label class="block mb-2 text-sm font-medium text-slate-400">Vendedor Responsable</label>
@@ -104,14 +86,89 @@
         <!-- CONTENEDOR HTMX: DETALLES DINÁMICOS DEL PRODUCTO (Solo Lectura) -->
         <div id="product-details-container">
             {% if form.instance.product %}
-                <!-- Si estamos editando y ya hay un producto, mostramos los detalles inmediatamente -->
                 {% include "orders/fragments/product_details.html" with product=form.instance.product %}
             {% elif initial_product %}
                 {% include "orders/fragments/product_details.html" with product=initial_product %}
             {% endif %}
         </div>
 
-        <!-- SECCIÓN 2: PLANIFICACIÓN -->
+        <!-- SECCIÓN 2: CONFIGURACIÓN DE POSTURA / POLÍMERO -->
+        <div class="bg-surface border border-border-default rounded-lg p-6">
+            <h3 class="text-lg font-medium text-emerald-500 mb-1 border-b border-border-default pb-2">Configuración de Postura (Polímero)</h3>
+            <p class="text-[10px] text-slate-500 mb-4">Define la distribución del polímero para calcular el consumo estimado de bobina.</p>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                <!-- Orientación -->
+                <div class="md:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Orientación en Bobina</label>
+                    {{ form.orientation }}
+                </div>
+                <!-- Filas -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Filas de Postura</label>
+                    {{ form.layout_rows }}
+                </div>
+                <!-- Columnas -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Columnas de Postura</label>
+                    {{ form.layout_cols }}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                <!-- Gap Horizontal -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Gap Horizontal (mm)</label>
+                    {{ form.gap_horizontal_mm }}
+                    <p class="text-[10px] text-slate-600 mt-1">Entre diseños horizontal</p>
+                </div>
+                <!-- Gap Vertical -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Gap Vertical (mm)</label>
+                    {{ form.gap_vertical_mm }}
+                    <p class="text-[10px] text-slate-600 mt-1">Entre diseños vertical</p>
+                </div>
+                <!-- Margen Lateral -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Margen Lateral (mm)</label>
+                    {{ form.margin_lateral_mm }}
+                    <p class="text-[10px] text-slate-600 mt-1">Cada lado (bobina → postura)</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                <!-- Margen Superior -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Margen Superior (mm)</label>
+                    {{ form.margin_top_mm }}
+                </div>
+                <!-- Margen Inferior -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Margen Inferior (mm)</label>
+                    {{ form.margin_bottom_mm }}
+                </div>
+                <!-- Ancho Bobina (Validación) -->
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Ancho Bobina disponible (mm) <span class="text-slate-600 font-normal normal-case tracking-normal">opcional</span></label>
+                    {{ form.bobina_width_mm }}
+                    <p class="text-[10px] text-slate-600 mt-1">Para validar que la postura entre en el rollo</p>
+                </div>
+            </div>
+
+            <!-- HTMX Preview Panel -->
+            <div id="material-preview-container"
+                 hx-get="{% url 'orders:layout_preview' %}"
+                 hx-trigger="load"
+                 hx-include="#id_product, #id_quantity, #id_layout_rows, #id_layout_cols, #id_gap_horizontal_mm, #id_gap_vertical_mm, #id_margin_lateral_mm, #id_margin_top_mm, #id_margin_bottom_mm, #id_orientation, #id_bobina_width_mm"
+                 hx-vals='{"product": "{{ form.instance.product.id|default:'' }}"}'
+                >
+                <div class="border border-dashed border-slate-700 rounded-lg p-4 text-center text-slate-600 text-xs">
+                    <p>Completa las filas, columnas, gaps y margenes para ver la estimacion de material.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN 3: PLANIFICACIÓN -->
         <div class="bg-surface border border-border-default rounded-lg p-6">
             <h3 class="text-lg font-medium text-blue-500 mb-4 border-b border-border-default pb-2">Cronograma y Prioridad
             </h3>
@@ -141,7 +198,7 @@
             </div>
         </div>
 
-        <!-- SECCIÓN 3: NOTAS -->
+        <!-- SECCIÓN 4: NOTAS -->
         <div class="bg-surface border border-border-default rounded-lg p-6">
             <h3 class="text-lg font-medium text-slate-400 mb-4 border-b border-border-default pb-2">Observaciones de
                 Producción</h3>
@@ -168,4 +225,52 @@
         </div>
     </form>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Trigger HTMX preview whenever any layout field changes
+document.addEventListener('DOMContentLoaded', function () {
+    const layoutFields = [
+        'id_product', 'id_quantity', 'id_layout_rows', 'id_layout_cols',
+        'id_gap_horizontal_mm', 'id_gap_vertical_mm', 'id_margin_lateral_mm',
+        'id_margin_top_mm', 'id_margin_bottom_mm', 'id_orientation', 'id_bobina_width_mm'
+    ];
+
+    const previewContainer = document.getElementById('material-preview-container');
+    if (!previewContainer) return;
+
+    function buildPreviewUrl() {
+        const params = new URLSearchParams();
+        layoutFields.forEach(function (id) {
+            const el = document.getElementById(id);
+            if (el && el.value) params.append(id.replace('id_', ''), el.value);
+        });
+        return "{% url 'orders:layout_preview' %}?" + params.toString();
+    }
+
+    function refreshPreview() {
+        const url = buildPreviewUrl();
+        htmx.ajax('GET', url, { target: '#material-preview-container', swap: 'innerHTML' });
+    }
+
+    // Debounce helper
+    let debounceTimer;
+    function debounced() {
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(refreshPreview, 500);
+    }
+
+    layoutFields.forEach(function (id) {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', debounced);
+        if (el) el.addEventListener('change', debounced);
+    });
+
+    // Initial load if product already selected
+    if (document.getElementById('id_product') && document.getElementById('id_product').value) {
+        refreshPreview();
+    }
+});
+</script>
 {% endblock %}
