@@ -9,8 +9,7 @@
     <!-- HEADER -->
     <div class="mb-6 border-b border-border-default pb-4">
         <h2 class="text-xl font-bold text-white tracking-tight">{{ titulo }}</h2>
-        <p class="text-xs text-slate-500 mt-1">{% if is_edit %}Modificá los datos de la orden pendiente.{% else %}Cargá
-            los datos de la nueva orden de compra.{% endif %}</p>
+        <p class="text-xs text-slate-500 mt-1">{% if is_edit %}Modificá los datos de la orden pendiente.{% else %}Cargá los datos de la nueva orden de compra.{% endif %}</p>
     </div>
 
     <form method="POST" id="po-form">
@@ -129,5 +128,6 @@
     </div>
 </div>
 
+<script id="materials-data" type="application/json">{{ materials_json|safe }}</script>
 <script src="{% static 'js/formset.js' %}"></script>
 {% endblock %}

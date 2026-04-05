@@ -26,4 +26,21 @@ document.addEventListener('DOMContentLoaded', function() {
             row.remove();
         }
     });
+    // Auto-rellenar cantidad estándar (MTS/UNI) basado en el material guardado
+    const materialsDataEl = document.getElementById('materials-data');
+    if (materialsDataEl) {
+        const materialsData = JSON.parse(materialsDataEl.textContent);
+        
+        document.addEventListener('change', function(e) {
+            if (e.target.tagName === 'SELECT' && e.target.name.endsWith('-material')) {
+                const materialId = e.target.value;
+                const prefix = e.target.name.replace('-material', '');
+                const qtyInput = document.querySelector(`input[name="${prefix}-quantity_per_unit"]`);
+                
+                if (qtyInput && materialId && materialsData[materialId] !== undefined) {
+                    qtyInput.value = materialsData[materialId];
+                }
+            }
+        });
+    }
 });

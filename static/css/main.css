@@ -3,6 +3,10 @@
    Modularized CSS for better maintainability.
 */
 
+:root {
+    color-scheme: dark;
+}
+
 /* Estilo global para el dark mode en selects nativos */
 select option {
     background-color: #0f1115 !important;

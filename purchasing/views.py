@@ -15,6 +15,8 @@ from django.utils import timezone
 # Models now live in this app
 from .models import PurchaseOrder, Supplier
 from .forms import PurchaseOrderForm, PurchaseOrderItemFormSet, SupplierForm
+from inventory.models import Material
+import json
 
 
 # ---------------------------------------------------------------------------
@@ -74,11 +76,14 @@ def create_purchase_order(request):
         form = PurchaseOrderForm()
         formset = PurchaseOrderItemFormSet()
 
+    materials_json = json.dumps({m.id: float(m.length or 0) for m in Material.objects.all()})
+
     return render(request, 'purchasing/oc_create.html', {
         'form': form,
         'formset': formset,
         'titulo': 'Nueva Orden de Compra',
         'is_edit': False,
+        'materials_json': materials_json,
     })
 
 
@@ -105,12 +110,15 @@ def edit_purchase_order(request, pk):
         form = PurchaseOrderForm(instance=oc)
         formset = PurchaseOrderItemFormSet(instance=oc)
 
+    materials_json = json.dumps({m.id: float(m.length or 0) for m in Material.objects.all()})
+
     return render(request, 'purchasing/oc_create.html', {
         'form': form,
         'formset': formset,
         'titulo': f'Editar Orden {oc.remito_number}',
         'is_edit': True,
         'oc': oc,
+        'materials_json': materials_json,
     })
 
 

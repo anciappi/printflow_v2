@@ -97,61 +97,51 @@
             <h3 class="text-lg font-medium text-emerald-500 mb-1 border-b border-border-default pb-2">Configuración de Postura (Polímero)</h3>
             <p class="text-[10px] text-slate-500 mb-4">Define la distribución del polímero para calcular el consumo estimado de bobina.</p>
 
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                <!-- Orientación -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                <!-- Fila 1: Orientación y Ancho Bobina -->
                 <div class="md:col-span-2">
                     <label class="block mb-2 text-sm font-medium text-slate-400">Orientación en Bobina</label>
                     {{ form.orientation }}
                 </div>
-                <!-- Filas -->
+                <div class="md:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Ancho Bobina disponible (mm)</label>
+                    {{ form.bobina_width_mm }}
+                    <p class="text-[10px] text-slate-600 mt-1">Para validar que la postura entre en el rollo</p>
+                </div>
+
+                <!-- Fila 2: Configuración de Postura y Gaps -->
                 <div>
                     <label class="block mb-2 text-sm font-medium text-slate-400">Filas de Postura</label>
                     {{ form.layout_rows }}
                 </div>
-                <!-- Columnas -->
                 <div>
                     <label class="block mb-2 text-sm font-medium text-slate-400">Columnas de Postura</label>
                     {{ form.layout_cols }}
                 </div>
-            </div>
-
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                <!-- Gap Horizontal -->
                 <div>
                     <label class="block mb-2 text-sm font-medium text-slate-400">Gap Horizontal (mm)</label>
                     {{ form.gap_horizontal_mm }}
                     <p class="text-[10px] text-slate-600 mt-1">Entre diseños horizontal</p>
                 </div>
-                <!-- Gap Vertical -->
                 <div>
                     <label class="block mb-2 text-sm font-medium text-slate-400">Gap Vertical (mm)</label>
                     {{ form.gap_vertical_mm }}
                     <p class="text-[10px] text-slate-600 mt-1">Entre diseños vertical</p>
                 </div>
-                <!-- Margen Lateral -->
+
+                <!-- Fila 3: Márgenes -->
                 <div>
                     <label class="block mb-2 text-sm font-medium text-slate-400">Margen Lateral (mm)</label>
                     {{ form.margin_lateral_mm }}
                     <p class="text-[10px] text-slate-600 mt-1">Cada lado (bobina → postura)</p>
                 </div>
-            </div>
-
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <!-- Margen Superior -->
                 <div>
                     <label class="block mb-2 text-sm font-medium text-slate-400">Margen Superior (mm)</label>
                     {{ form.margin_top_mm }}
                 </div>
-                <!-- Margen Inferior -->
                 <div>
                     <label class="block mb-2 text-sm font-medium text-slate-400">Margen Inferior (mm)</label>
                     {{ form.margin_bottom_mm }}
-                </div>
-                <!-- Ancho Bobina (Validación) -->
-                <div>
-                    <label class="block mb-2 text-sm font-medium text-slate-400">Ancho Bobina disponible (mm) <span class="text-slate-600 font-normal normal-case tracking-normal">opcional</span></label>
-                    {{ form.bobina_width_mm }}
-                    <p class="text-[10px] text-slate-600 mt-1">Para validar que la postura entre en el rollo</p>
                 </div>
             </div>
 
