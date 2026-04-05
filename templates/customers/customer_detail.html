@@ -64,24 +64,108 @@
             <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default">
                 <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Contacto y Envío</h3>
             </div>
-            <div class="p-6 space-y-4">
-                <div>
-                    <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Email Principal</p>
-                    <p class="text-sm text-orange-400 font-medium">
-                        {% if customer.email %}
-                        <a href="mailto:{{ customer.email }}" class="hover:underline">{{ customer.email }}</a>
-                        {% else %}
-                        --
+            <div class="p-6 space-y-5">
+                <!-- Email y Teléfono -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Email Principal</p>
+                        <p class="text-sm text-orange-400 font-medium">
+                            {% if customer.email %}
+                            <a href="mailto:{{ customer.email }}" class="hover:underline">{{ customer.email }}</a>
+                            {% else %}
+                            --
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Teléfono</p>
+                        <p class="text-sm text-slate-300">{{ customer.phone|default:"--" }}</p>
+                    </div>
+                </div>
+
+                <!-- Dirección Fiscal -->
+                <div class="border-t border-border-default pt-4">
+                    <p class="text-[10px] text-emerald-500 uppercase font-bold mb-3">Dirección Fiscal / Legal</p>
+                    {% if customer.street %}
+                    <div class="grid grid-cols-5 gap-x-4 gap-y-2 text-sm">
+                        <div class="col-span-2">
+                            <p class="text-[9px] text-slate-600 uppercase font-bold">Calle</p>
+                            <p class="text-slate-300">{{ customer.street }}</p>
+                        </div>
+                        <div class="col-span-1">
+                            <p class="text-[9px] text-slate-600 uppercase font-bold">Número</p>
+                            <p class="text-slate-300">{{ customer.street_number|default:"--" }}</p>
+                        </div>
+                        <div class="col-span-1">
+                            <p class="text-[9px] text-slate-600 uppercase font-bold">Piso/Dto</p>
+                            <p class="text-slate-300">{{ customer.floor_apt|default:"--" }}</p>
+                        </div>
+                        <div class="col-span-1">
+                            <p class="text-[9px] text-slate-600 uppercase font-bold">CP</p>
+                            <p class="text-slate-300">{{ customer.zip_code|default:"--" }}</p>
+                        </div>
+                        <div class="col-span-2">
+                            <p class="text-[9px] text-slate-600 uppercase font-bold">Localidad</p>
+                            <p class="text-slate-300">{{ customer.city|default:"--" }}</p>
+                        </div>
+                        <div class="col-span-2">
+                            <p class="text-[9px] text-slate-600 uppercase font-bold">Provincia</p>
+                            <p class="text-slate-300">{{ customer.province|default:"--" }}</p>
+                        </div>
+                        <div class="col-span-1">
+                            <p class="text-[9px] text-slate-600 uppercase font-bold">País</p>
+                            <p class="text-slate-300">{{ customer.country|default:"--" }}</p>
+                        </div>
+                    </div>
+                    {% else %}
+                    <p class="text-xs text-slate-500 italic">Sin dirección fiscal registrada.</p>
+                    {% endif %}
+                </div>
+
+                <!-- Dirección de Entrega -->
+                <div class="border-t border-border-default pt-4">
+                    <div class="flex items-center gap-2 mb-3">
+                        <p class="text-[10px] text-purple-400 uppercase font-bold">Dirección de Entrega</p>
+                        {% if customer.delivery_same_as_fiscal %}
+                        <span class="text-[9px] text-slate-500 italic">(misma que fiscal)</span>
                         {% endif %}
-                    </p>
-                </div>
-                <div>
-                    <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Teléfono</p>
-                    <p class="text-sm text-slate-300">{{ customer.phone|default:"--" }}</p>
-                </div>
-                <div>
-                    <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Dirección Física Fiscal</p>
-                    <p class="text-sm text-slate-300 whitespace-pre-wrap">{{ customer.address|default:"Sin dirección registrada." }}</p>
+                    </div>
+                    {% if customer.delivery_same_as_fiscal %}
+                    <p class="text-xs text-slate-500 italic">Se utiliza la dirección fiscal para los envíos.</p>
+                    {% elif customer.delivery_street %}
+                    <div class="grid grid-cols-5 gap-x-4 gap-y-2 text-sm">
+                        <div class="col-span-2">
+                            <p class="text-[9px] text-slate-600 uppercase font-bold">Calle</p>
+                            <p class="text-slate-300">{{ customer.delivery_street }}</p>
+                        </div>
+                        <div class="col-span-1">
+                            <p class="text-[9px] text-slate-600 uppercase font-bold">Número</p>
+                            <p class="text-slate-300">{{ customer.delivery_street_number|default:"--" }}</p>
+                        </div>
+                        <div class="col-span-1">
+                            <p class="text-[9px] text-slate-600 uppercase font-bold">Piso/Dto</p>
+                            <p class="text-slate-300">{{ customer.delivery_floor_apt|default:"--" }}</p>
+                        </div>
+                        <div class="col-span-1">
+                            <p class="text-[9px] text-slate-600 uppercase font-bold">CP</p>
+                            <p class="text-slate-300">{{ customer.delivery_zip_code|default:"--" }}</p>
+                        </div>
+                        <div class="col-span-2">
+                            <p class="text-[9px] text-slate-600 uppercase font-bold">Localidad</p>
+                            <p class="text-slate-300">{{ customer.delivery_city|default:"--" }}</p>
+                        </div>
+                        <div class="col-span-2">
+                            <p class="text-[9px] text-slate-600 uppercase font-bold">Provincia</p>
+                            <p class="text-slate-300">{{ customer.delivery_province|default:"--" }}</p>
+                        </div>
+                        <div class="col-span-1">
+                            <p class="text-[9px] text-slate-600 uppercase font-bold">País</p>
+                            <p class="text-slate-300">{{ customer.delivery_country|default:"--" }}</p>
+                        </div>
+                    </div>
+                    {% else %}
+                    <p class="text-xs text-slate-500 italic">Sin dirección de entrega registrada.</p>
+                    {% endif %}
                 </div>
             </div>
         </div>

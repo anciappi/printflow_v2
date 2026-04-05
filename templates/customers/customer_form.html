@@ -63,32 +63,108 @@
             </div>
         </div>
 
-        <!-- SECCIÓN 2: CONTACTO Y UBICACIÓN -->
+        <!-- SECCIÓN 2: CONTACTO -->
         <div class="bg-surface border border-border-default rounded-lg p-6">
-            <h3 class="text-lg font-medium text-blue-500 mb-4 border-b border-border-default pb-2">Contacto y Ubicación</h3>
-
+            <h3 class="text-lg font-medium text-blue-500 mb-4 border-b border-border-default pb-2">Contacto</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Email -->
                 <div>
                     <label class="block mb-2 text-sm font-medium text-slate-400">Email de Contacto</label>
                     {{ form.email }}
                 </div>
-
-                <!-- Teléfono -->
                 <div>
                     <label class="block mb-2 text-sm font-medium text-slate-400">Teléfono / WhatsApp</label>
                     {{ form.phone }}
                 </div>
+            </div>
+        </div>
 
-                <!-- Dirección -->
-                <div class="md:col-span-2">
-                    <label class="block mb-2 text-sm font-medium text-slate-400">Dirección de Entrega / Fiscal</label>
-                    {{ form.address }}
+        <!-- SECCIÓN 3: DIRECCIÓN FISCAL -->
+        <div class="bg-surface border border-border-default rounded-lg p-6">
+            <h3 class="text-lg font-medium text-emerald-500 mb-4 border-b border-border-default pb-2">Dirección Fiscal / Legal</h3>
+            <div class="grid grid-cols-5 gap-4">
+                <!-- Fila 1: Calle / Número / Piso-Dto / CP -->
+                <div class="col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Calle</label>
+                    {{ form.street }}
+                </div>
+                <div class="col-span-1">
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Número</label>
+                    {{ form.street_number }}
+                </div>
+                <div class="col-span-1">
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Piso / Dto</label>
+                    {{ form.floor_apt }}
+                </div>
+                <div class="col-span-1">
+                    <label class="block mb-2 text-sm font-medium text-slate-400">C. Postal</label>
+                    {{ form.zip_code }}
+                </div>
+                <!-- Fila 2: Localidad / Provincia / País -->
+                <div class="col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Localidad</label>
+                    {{ form.city }}
+                </div>
+                <div class="col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Provincia</label>
+                    {{ form.province }}
+                </div>
+                <div class="col-span-1">
+                    <label class="block mb-2 text-sm font-medium text-slate-400">País</label>
+                    {{ form.country }}
                 </div>
             </div>
         </div>
 
-        <!-- SECCIÓN 3: CONFIGURACIÓN Y NOTAS -->
+        <!-- SECCIÓN 4: DIRECCIÓN DE ENTREGA -->
+        <div class="bg-surface border border-border-default rounded-lg p-6">
+            <div class="flex items-center justify-between border-b border-border-default pb-3 mb-4">
+                <h3 class="text-lg font-medium text-purple-400">Dirección de Entrega</h3>
+                <!-- Toggle: misma que fiscal -->
+                <label class="flex items-center gap-3 cursor-pointer select-none" for="{{ form.delivery_same_as_fiscal.id_for_label }}">
+                    {{ form.delivery_same_as_fiscal }}
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Misma que fiscal</span>
+                </label>
+            </div>
+
+            <div id="delivery-address-block" class="grid grid-cols-5 gap-4">
+                <!-- Fila 1: Calle / Número / Piso-Dto / CP -->
+                <div class="col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Calle</label>
+                    {{ form.delivery_street }}
+                </div>
+                <div class="col-span-1">
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Número</label>
+                    {{ form.delivery_street_number }}
+                </div>
+                <div class="col-span-1">
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Piso / Dto</label>
+                    {{ form.delivery_floor_apt }}
+                </div>
+                <div class="col-span-1">
+                    <label class="block mb-2 text-sm font-medium text-slate-400">C. Postal</label>
+                    {{ form.delivery_zip_code }}
+                </div>
+                <!-- Fila 2: Localidad / Provincia / País -->
+                <div class="col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Localidad</label>
+                    {{ form.delivery_city }}
+                </div>
+                <div class="col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Provincia</label>
+                    {{ form.delivery_province }}
+                </div>
+                <div class="col-span-1">
+                    <label class="block mb-2 text-sm font-medium text-slate-400">País</label>
+                    {{ form.delivery_country }}
+                </div>
+            </div>
+            <!-- Mensaje cuando "misma que fiscal" está activo -->
+            <p id="delivery-same-msg" class="hidden text-xs text-slate-500 italic">
+                Se utilizará la misma dirección fiscal para los envíos.
+            </p>
+        </div>
+
+        <!-- SECCIÓN 5: CONFIGURACIÓN Y NOTAS -->
         <div class="bg-surface border border-border-default rounded-lg p-6">
             <h3 class="text-lg font-medium text-slate-400 mb-4 border-b border-border-default pb-2">Información Adicional</h3>
             <div class="space-y-6">
