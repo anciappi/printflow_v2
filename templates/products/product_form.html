@@ -434,6 +434,37 @@
                 </thead>
                 <tbody class="divide-y divide-[#2d333b] bg-surface">
                     
+                    <!-- Originales -->
+                    <tr class="hover:bg-surface-hover/30 transition-colors">
+                        <td class="px-4 py-3">
+                            <span class="text-xs text-white font-bold flex items-center gap-2">
+                                <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                                Originales / PDF
+                            </span>
+                        </td>
+                        <td class="px-4 py-3">
+                            {% if form.instance.pk and form.instance.tech_file %}<span id="status-tech_file" class="status-badge status-badge-cargado"><span class="dot" style="background-color:#a855f7;"></span> Cargado</span>{% else %}<span id="status-tech_file" class="status-badge status-badge-pendiente">Pendiente</span>{% endif %}
+                        </td>
+                        <td class="px-4 py-3">
+                            {% if form.instance.pk and form.instance.tech_file %}
+                            <a href="{{ form.instance.tech_file.url }}" download class="text-xs text-blue-400 hover:text-blue-300 hover:underline flex items-center gap-1 w-max">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                {{ form.instance.tech_file.name|slice:"15:" }}
+                            </a>
+                            {% else %}
+                            <span class="text-xs text-slate-600 italic">No hay archivo</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-3 flex items-center justify-end gap-2 isolate">
+                            {% if form.instance.tech_file %}
+                            <button type="button" onclick="markForDeletion('tech_file')" class="btn-doc-action" style="color:#f87171;">✕ Eliminar</button>
+                            {% endif %}
+                            <label for="id_tech_file" class="btn-doc-action cursor-pointer bg-slate-800 hover:bg-slate-700 text-white">↑ Subir Nuevo</label>
+                            <div class="hidden hide-django-file-labels"><div class="hide-django-file-labels">{{ form.tech_file }}</div></div>
+                            <input type="checkbox" name="tech_file-clear" id="tech_file-clear_id" class="hidden">
+                        </td>
+                    </tr>
+                    
                     <!-- Sacabocados -->
                     <tr class="hover:bg-surface-hover/30 transition-colors">
                         <td class="px-4 py-3">
@@ -465,36 +496,6 @@
                         </td>
                     </tr>
 
-                    <!-- Originales -->
-                    <tr class="hover:bg-surface-hover/30 transition-colors">
-                        <td class="px-4 py-3">
-                            <span class="text-xs text-white font-bold flex items-center gap-2">
-                                <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                                Originales / PDF
-                            </span>
-                        </td>
-                        <td class="px-4 py-3">
-                            {% if form.instance.pk and form.instance.tech_file %}<span id="status-tech_file" class="status-badge status-badge-cargado"><span class="dot" style="background-color:#a855f7;"></span> Cargado</span>{% else %}<span id="status-tech_file" class="status-badge status-badge-pendiente">Pendiente</span>{% endif %}
-                        </td>
-                        <td class="px-4 py-3">
-                            {% if form.instance.pk and form.instance.tech_file %}
-                            <a href="{{ form.instance.tech_file.url }}" download class="text-xs text-blue-400 hover:text-blue-300 hover:underline flex items-center gap-1 w-max">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                                {{ form.instance.tech_file.name|slice:"15:" }}
-                            </a>
-                            {% else %}
-                            <span class="text-xs text-slate-600 italic">No hay archivo</span>
-                            {% endif %}
-                        </td>
-                        <td class="px-4 py-3 flex items-center justify-end gap-2 isolate">
-                            {% if form.instance.tech_file %}
-                            <button type="button" onclick="markForDeletion('tech_file')" class="btn-doc-action" style="color:#f87171;">✕ Eliminar</button>
-                            {% endif %}
-                            <label for="id_tech_file" class="btn-doc-action cursor-pointer bg-slate-800 hover:bg-slate-700 text-white">↑ Subir Nuevo</label>
-                            <div class="hidden hide-django-file-labels"><div class="hide-django-file-labels">{{ form.tech_file }}</div></div>
-                            <input type="checkbox" name="tech_file-clear" id="tech_file-clear_id" class="hidden">
-                        </td>
-                    </tr>
                 </tbody>
             </table>
             

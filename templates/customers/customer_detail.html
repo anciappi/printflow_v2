@@ -87,33 +87,33 @@
                 <div class="border-t border-border-default pt-4">
                     <p class="text-[10px] text-emerald-500 uppercase font-bold mb-3">Dirección Fiscal / Legal</p>
                     {% if customer.street %}
-                    <div class="grid grid-cols-5 gap-x-4 gap-y-2 text-sm">
+                    <div class="grid grid-cols-5 gap-x-4 gap-y-4 text-sm">
                         <div class="col-span-2">
-                            <p class="text-[9px] text-slate-600 uppercase font-bold">Calle</p>
+                            <p class="text-[9px] text-slate-600 uppercase font-bold mb-0.5">Calle</p>
                             <p class="text-slate-300">{{ customer.street }}</p>
                         </div>
                         <div class="col-span-1">
-                            <p class="text-[9px] text-slate-600 uppercase font-bold">Número</p>
+                            <p class="text-[9px] text-slate-600 uppercase font-bold mb-0.5">Número</p>
                             <p class="text-slate-300">{{ customer.street_number|default:"--" }}</p>
                         </div>
                         <div class="col-span-1">
-                            <p class="text-[9px] text-slate-600 uppercase font-bold">Piso/Dto</p>
+                            <p class="text-[9px] text-slate-600 uppercase font-bold mb-0.5">Piso/Dto</p>
                             <p class="text-slate-300">{{ customer.floor_apt|default:"--" }}</p>
                         </div>
                         <div class="col-span-1">
-                            <p class="text-[9px] text-slate-600 uppercase font-bold">CP</p>
+                            <p class="text-[9px] text-slate-600 uppercase font-bold mb-0.5">CP</p>
                             <p class="text-slate-300">{{ customer.zip_code|default:"--" }}</p>
                         </div>
                         <div class="col-span-2">
-                            <p class="text-[9px] text-slate-600 uppercase font-bold">Localidad</p>
+                            <p class="text-[9px] text-slate-600 uppercase font-bold mb-0.5 mt-4">Localidad</p>
                             <p class="text-slate-300">{{ customer.city|default:"--" }}</p>
                         </div>
                         <div class="col-span-2">
-                            <p class="text-[9px] text-slate-600 uppercase font-bold">Provincia</p>
+                            <p class="text-[9px] text-slate-600 uppercase font-bold mb-0.5 mt-4">Provincia</p>
                             <p class="text-slate-300">{{ customer.province|default:"--" }}</p>
                         </div>
                         <div class="col-span-1">
-                            <p class="text-[9px] text-slate-600 uppercase font-bold">País</p>
+                            <p class="text-[9px] text-slate-600 uppercase font-bold mb-0.5 mt-4">País</p>
                             <p class="text-slate-300">{{ customer.country|default:"--" }}</p>
                         </div>
                     </div>
@@ -133,33 +133,33 @@
                     {% if customer.delivery_same_as_fiscal %}
                     <p class="text-xs text-slate-500 italic">Se utiliza la dirección fiscal para los envíos.</p>
                     {% elif customer.delivery_street %}
-                    <div class="grid grid-cols-5 gap-x-4 gap-y-2 text-sm">
+                    <div class="grid grid-cols-5 gap-x-4 gap-y-4 text-sm">
                         <div class="col-span-2">
-                            <p class="text-[9px] text-slate-600 uppercase font-bold">Calle</p>
+                            <p class="text-[9px] text-slate-600 uppercase font-bold mb-0.5">Calle</p>
                             <p class="text-slate-300">{{ customer.delivery_street }}</p>
                         </div>
                         <div class="col-span-1">
-                            <p class="text-[9px] text-slate-600 uppercase font-bold">Número</p>
+                            <p class="text-[9px] text-slate-600 uppercase font-bold mb-0.5">Número</p>
                             <p class="text-slate-300">{{ customer.delivery_street_number|default:"--" }}</p>
                         </div>
                         <div class="col-span-1">
-                            <p class="text-[9px] text-slate-600 uppercase font-bold">Piso/Dto</p>
+                            <p class="text-[9px] text-slate-600 uppercase font-bold mb-0.5">Piso/Dto</p>
                             <p class="text-slate-300">{{ customer.delivery_floor_apt|default:"--" }}</p>
                         </div>
                         <div class="col-span-1">
-                            <p class="text-[9px] text-slate-600 uppercase font-bold">CP</p>
+                            <p class="text-[9px] text-slate-600 uppercase font-bold mb-0.5">CP</p>
                             <p class="text-slate-300">{{ customer.delivery_zip_code|default:"--" }}</p>
                         </div>
                         <div class="col-span-2">
-                            <p class="text-[9px] text-slate-600 uppercase font-bold">Localidad</p>
+                            <p class="text-[9px] text-slate-600 uppercase font-bold mb-0.5 mt-4">Localidad</p>
                             <p class="text-slate-300">{{ customer.delivery_city|default:"--" }}</p>
                         </div>
                         <div class="col-span-2">
-                            <p class="text-[9px] text-slate-600 uppercase font-bold">Provincia</p>
+                            <p class="text-[9px] text-slate-600 uppercase font-bold mb-0.5 mt-4">Provincia</p>
                             <p class="text-slate-300">{{ customer.delivery_province|default:"--" }}</p>
                         </div>
                         <div class="col-span-1">
-                            <p class="text-[9px] text-slate-600 uppercase font-bold">País</p>
+                            <p class="text-[9px] text-slate-600 uppercase font-bold mb-0.5 mt-4">País</p>
                             <p class="text-slate-300">{{ customer.delivery_country|default:"--" }}</p>
                         </div>
                     </div>
