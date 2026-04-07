@@ -10,3 +10,10 @@ Seguimiento de cambios globales de UI/UX, Tailwind tokens, CSS y fragments trans
 - **Dark Theme CSS**:
   - `static/css/main.css`: Fix global para checkboxes (`accent-color: #f97316`) para mejor visibilidad en temas oscuros.
 - **UX**: Navegación fluida en el cambio de estados sin recarga de página usando HTMX.
+
+## 2026-04-06 | Modernización Tipográfica Global | ✅
+- **Encode Sans**: Migración total a la fuente Encode Sans, eliminando fuentes serif/sans genéricas y monospace.
+- **Normal/Light Design**: Estandarización de pesos tipográficos. Se prohibió el uso de `font-bold` y `font-semibold`, reemplazándolos por `font-normal` (400) y `font-light` (300).
+- **Industrial Hierarchy**: Mejoras en la legibilidad mediante el uso de `tracking-widest`, `uppercase` y contrastes tonales en lugar de grosor de fuente.
+- **Login UI**: Rediseño de la pantalla de acceso para alinearla con la estética premium VS Code del resto del sistema.
+

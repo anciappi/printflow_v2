@@ -10,10 +10,10 @@
 {% block content %}
 <div class="max-w-4xl mx-auto">
     <div class="mb-6">
-        <h2 class="text-2xl font-bold text-white">
+        <h2 class="text-2xl font-normal text-white">
             {% if form.instance.pk %}Editar Ficha Técnica{% else %}Nueva Ficha Técnica{% endif %}
         </h2>
-        <p class="text-slate-500 text-sm">Registra las especificaciones de un nuevo producto para producción.</p>
+        <p class="text-slate-500 text-sm font-light">Registra las especificaciones de un nuevo producto para producción.</p>
     </div>
 
     <form method="post" enctype="multipart/form-data" class="space-y-6">
@@ -23,10 +23,10 @@
         <div class="bg-red-900/20 border border-red-500/40 rounded-lg p-4 flex items-start gap-3">
             <svg class="w-5 h-5 text-red-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             <div>
-                <p class="text-sm font-bold text-red-400 mb-1">Hay errores en el formulario. Por favor corregí los campos marcados en rojo.</p>
+                <p class="text-sm font-normal text-red-400 mb-1">Hay errores en el formulario. Por favor corregí los campos marcados en rojo.</p>
                 <ul class="text-xs text-red-300/80 list-disc list-inside space-y-0.5">
                     {% for field, errors in form.errors.items %}
-                        {% for error in errors %}<li><span class="font-semibold">{{ field }}:</span> {{ error }}</li>{% endfor %}
+                        {% for error in errors %}<li><span class="font-normal">{{ field }}:</span> {{ error }}</li>{% endfor %}
                     {% endfor %}
                 </ul>
             </div>
@@ -36,10 +36,10 @@
 
         <!-- SECCIÓN 1: IDENTIFICACIÓN -->
         <div class="bg-surface border border-border-default rounded-lg p-6">
-            <h3 class="text-lg font-medium text-emerald-500 mb-4 border-b border-border-default pb-2">Identificación</h3>
+            <h3 class="text-lg font-light text-emerald-500 mb-4 border-b border-border-default pb-2">Identificación</h3>
             <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div class="md:col-span-2">
-                    <label class="block mb-2 text-sm font-medium text-slate-400">Cliente</label>
+                    <label class="block mb-2 text-sm font-light text-slate-400">Cliente</label>
                     {{ form.customer }}
                     {% if form.customer.errors %}<p class="text-red-500 text-xs mt-1">{{ form.customer.errors.0 }}</p>{% endif %}
                     <p class="text-[12px] text-slate-600 mt-1">¿No existe? <a href="{% url 'customers:create' %}" class="text-blue-500 hover:underline">Crear Cliente</a></p>
@@ -54,7 +54,7 @@
                     {{ form.status }}
                 </div>
                 <div class="md:col-span-3">
-                    <label class="block mb-2 text-sm font-medium text-slate-400">Nombre del Producto</label>
+                    <label class="block mb-2 text-sm font-light text-slate-400">Nombre del Producto</label>
                     {{ form.name }}
                     {% if form.name.errors %}<p class="text-red-500 text-xs mt-1">{{ form.name.errors.0 }}</p>{% endif %}
                 </div>
@@ -68,7 +68,7 @@
         <!-- CARD: ANVERSO (Frente) -->
         <div class="bg-surface border border-border-default rounded-lg p-6">
             <div class="flex items-center justify-between mb-6 border-b border-border-default pb-4">
-                <h3 class="text-base font-bold text-emerald-400 uppercase tracking-wide flex items-center gap-2">
+                <h3 class="text-base font-normal text-emerald-400 uppercase tracking-wide flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                     ANVERSO
                 </h3>
@@ -115,7 +115,7 @@
                 </div>
                 <!-- Tintas Anverso -->
                 <div class="bg-[#15181e] border border-border-default rounded-lg p-6 h-max shrink-0">
-                        <label class="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-5 border-b border-border-default pb-3">Gestión de Tintas (Frente)</label>
+                        <label class="block text-[10px] font-normal text-slate-500 uppercase tracking-widest mb-5 border-b border-border-default pb-3">Gestión de Tintas (Frente)</label>
                         <div class="hidden">{{ form.colors_front }}</div>
                         <div id="colors-front-container" class="space-y-1.5"></div>
                         <button type="button" onclick="addColorRow('colors-front-container')"
@@ -134,9 +134,9 @@
         <!-- CARD: REVERSO (Dorso) -->
         <div class="bg-surface border border-border-default rounded-lg p-6">
             <div class="flex items-center justify-between mb-6 border-b border-border-default pb-4">
-                <h3 class="text-base font-bold text-blue-400 uppercase tracking-wide flex items-center gap-2">
+                <h3 class="text-base font-normal text-blue-400 uppercase tracking-wide flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
-                    REVERSO <span class="text-slate-500 font-normal text-sm normal-case">(Dorso)</span>
+                    REVERSO <span class="text-slate-500 font-light text-sm normal-case">(Dorso)</span>
                 </h3>
                 <div class="flex items-center gap-3">
                     {% if form.instance.pk and form.instance.design_back %}
@@ -225,7 +225,7 @@
         <!-- SECCIÓN 3: ESPECIFICACIONES TÉCNICAS (Terminaciones) -->
         <div class="bg-surface border border-border-default rounded-lg mb-6 overflow-hidden shadow-sm">
             <div class="flex items-center gap-3 p-4 border-b border-border-default bg-[#15181e]">
-                <h3 class="text-sm font-bold text-emerald-400 uppercase tracking-widest">Especificaciones Técnicas</h3>
+                <h3 class="text-sm font-normal text-emerald-400 uppercase tracking-widest">Especificaciones Técnicas</h3>
                 <span class="text-[9px] text-slate-500 italic uppercase">Terminaciones y Acabados</span>
             </div>
             
@@ -543,8 +543,8 @@
             {% endif %}
         </div>
         <div class="flex items-center gap-4">
-            <a href="{% url 'products:catalog' %}" class="text-[10px] font-bold text-slate-500 hover:text-white uppercase tracking-widest transition-colors px-4">Cancelar</a>
-            <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold py-2.5 px-8 shadow-lg shadow-emerald-900/20 transition-all uppercase tracking-widest">
+            <a href="{% url 'products:catalog' %}" class="text-[10px] font-normal text-slate-500 hover:text-white uppercase tracking-widest transition-colors px-4">Cancelar</a>
+            <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-normal py-2.5 px-8 shadow-lg shadow-emerald-900/20 transition-all uppercase tracking-widest">
                 {% if form.instance.pk %}Actualizar{% else %}Guardar{% endif %} Ficha Técnica
             </button>
         </div>

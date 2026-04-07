@@ -19,3 +19,9 @@ Módulo de gestión de clientes (CRM básico), asignación comercial y vinculaci
 - **UX Refinements**:
   - Enlace "Ver cliente" desde el listado general (ícono ojo esmeralda).
   - Normalización de estilos de tablas y badges para consistencia con el resto del sistema.
+
+## 2026-04-06 | Typography & Quick Actions | ✅
+- **Quick Links**: Adición del botón "Ver Ficha" en la card de productos asociados para navegación directa a la ficha técnica.
+- **Typography Overhaul**: Estandarización a Encode Sans / font-light en el dashboard de clientes y listados de OTs vinculadas.
+- **Mono-Removal**: Limpieza de fuentes monospace en CUITs y datos de contacto para mayor elegancia visual.
+

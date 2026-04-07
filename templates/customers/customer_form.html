@@ -15,7 +15,7 @@
 
     <div class="mb-6 flex justify-between items-end">
         <div>
-            <h2 class="text-2xl font-bold text-white">
+            <h2 class="text-2xl font-normal text-white">
                 {% if form.instance.pk %}
                 Editar
                 {% else %}
@@ -23,7 +23,7 @@
                 {% endif %}
                 Cliente
             </h2>
-            <p class="text-slate-500 text-sm">Registra o actualiza la información fiscal y de contacto del cliente.</p>
+            <p class="text-slate-500 text-sm font-light">Registra o actualiza la información fiscal y de contacto del cliente.</p>
         </div>
         <a href="{% url 'customers:list' %}" class="text-xs text-slate-500 hover:text-white transition-colors mb-1">
             Volver al listado
@@ -35,11 +35,11 @@
 
         <!-- SECCIÓN 1: IDENTIFICACIÓN -->
         <div class="bg-surface border border-border-default rounded-lg p-6">
-            <h3 class="text-lg font-medium text-orange-500 mb-4 border-b border-border-default pb-2">Datos de Identificación</h3>
+            <h3 class="text-lg font-light text-orange-500 mb-4 border-b border-border-default pb-2">Datos de Identificación</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Nombre / Razón Social -->
                 <div class="md:col-span-2">
-                    <label class="block mb-2 text-sm font-medium text-slate-400">Nombre o Razón Social</label>
+                    <label class="block mb-2 text-sm font-light text-slate-400">Nombre o Razón Social</label>
                     {{ form.name }}
                     {% if form.name.errors %}
                     <p class="text-red-500 text-xs mt-1">{{ form.name.errors.0 }}</p>
@@ -48,13 +48,13 @@
 
                 <!-- Tipo de Cliente -->
                 <div>
-                    <label class="block mb-2 text-sm font-medium text-slate-400">Tipo de Cliente</label>
+                    <label class="block mb-2 text-sm font-light text-slate-400">Tipo de Cliente</label>
                     {{ form.customer_type }}
                 </div>
 
                 <!-- ID Fiscal -->
                 <div>
-                    <label class="block mb-2 text-sm font-medium text-slate-400">CUIT / ID Fiscal</label>
+                    <label class="block mb-2 text-sm font-light text-slate-400">CUIT / ID Fiscal</label>
                     {{ form.tax_id }}
                     {% if form.tax_id.errors %}
                     <p class="text-red-500 text-xs mt-1">{{ form.tax_id.errors.0 }}</p>
@@ -65,14 +65,14 @@
 
         <!-- SECCIÓN 2: CONTACTO -->
         <div class="bg-surface border border-border-default rounded-lg p-6">
-            <h3 class="text-lg font-medium text-blue-500 mb-4 border-b border-border-default pb-2">Contacto</h3>
+            <h3 class="text-lg font-light text-blue-500 mb-4 border-b border-border-default pb-2">Contacto</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label class="block mb-2 text-sm font-medium text-slate-400">Email de Contacto</label>
+                    <label class="block mb-2 text-sm font-light text-slate-400">Email de Contacto</label>
                     {{ form.email }}
                 </div>
                 <div>
-                    <label class="block mb-2 text-sm font-medium text-slate-400">Teléfono / WhatsApp</label>
+                    <label class="block mb-2 text-sm font-light text-slate-400">Teléfono / WhatsApp</label>
                     {{ form.phone }}
                 </div>
             </div>
@@ -80,36 +80,36 @@
 
         <!-- SECCIÓN 3: DIRECCIÓN FISCAL -->
         <div class="bg-surface border border-border-default rounded-lg p-6">
-            <h3 class="text-lg font-medium text-emerald-500 mb-4 border-b border-border-default pb-2">Dirección Fiscal / Legal</h3>
+            <h3 class="text-lg font-light text-emerald-500 mb-4 border-b border-border-default pb-2">Dirección Fiscal / Legal</h3>
             <div class="grid grid-cols-5 gap-4">
                 <!-- Fila 1: Calle / Número / Piso-Dto / CP -->
                 <div class="col-span-2">
-                    <label class="block mb-2 text-sm font-medium text-slate-400">Calle</label>
+                    <label class="block mb-2 text-sm font-light text-slate-400">Calle</label>
                     {{ form.street }}
                 </div>
                 <div class="col-span-1">
-                    <label class="block mb-2 text-sm font-medium text-slate-400">Número</label>
+                    <label class="block mb-2 text-sm font-light text-slate-400">Número</label>
                     {{ form.street_number }}
                 </div>
                 <div class="col-span-1">
-                    <label class="block mb-2 text-sm font-medium text-slate-400">Piso / Dto</label>
+                    <label class="block mb-2 text-sm font-light text-slate-400">Piso / Dto</label>
                     {{ form.floor_apt }}
                 </div>
                 <div class="col-span-1">
-                    <label class="block mb-2 text-sm font-medium text-slate-400">C. Postal</label>
+                    <label class="block mb-2 text-sm font-light text-slate-400">C. Postal</label>
                     {{ form.zip_code }}
                 </div>
                 <!-- Fila 2: Localidad / Provincia / País -->
                 <div class="col-span-2">
-                    <label class="block mb-2 text-sm font-medium text-slate-400">Localidad</label>
+                    <label class="block mb-2 text-sm font-light text-slate-400">Localidad</label>
                     {{ form.city }}
                 </div>
                 <div class="col-span-2">
-                    <label class="block mb-2 text-sm font-medium text-slate-400">Provincia</label>
+                    <label class="block mb-2 text-sm font-light text-slate-400">Provincia</label>
                     {{ form.province }}
                 </div>
                 <div class="col-span-1">
-                    <label class="block mb-2 text-sm font-medium text-slate-400">País</label>
+                    <label class="block mb-2 text-sm font-light text-slate-400">País</label>
                     {{ form.country }}
                 </div>
             </div>
@@ -129,32 +129,32 @@
             <div id="delivery-address-block" class="grid grid-cols-5 gap-4">
                 <!-- Fila 1: Calle / Número / Piso-Dto / CP -->
                 <div class="col-span-2">
-                    <label class="block mb-2 text-sm font-medium text-slate-400">Calle</label>
+                    <label class="block mb-2 text-sm font-light text-slate-400">Calle</label>
                     {{ form.delivery_street }}
                 </div>
                 <div class="col-span-1">
-                    <label class="block mb-2 text-sm font-medium text-slate-400">Número</label>
+                    <label class="block mb-2 text-sm font-light text-slate-400">Número</label>
                     {{ form.delivery_street_number }}
                 </div>
                 <div class="col-span-1">
-                    <label class="block mb-2 text-sm font-medium text-slate-400">Piso / Dto</label>
+                    <label class="block mb-2 text-sm font-light text-slate-400">Piso / Dto</label>
                     {{ form.delivery_floor_apt }}
                 </div>
                 <div class="col-span-1">
-                    <label class="block mb-2 text-sm font-medium text-slate-400">C. Postal</label>
+                    <label class="block mb-2 text-sm font-light text-slate-400">C. Postal</label>
                     {{ form.delivery_zip_code }}
                 </div>
                 <!-- Fila 2: Localidad / Provincia / País -->
                 <div class="col-span-2">
-                    <label class="block mb-2 text-sm font-medium text-slate-400">Localidad</label>
+                    <label class="block mb-2 text-sm font-light text-slate-400">Localidad</label>
                     {{ form.delivery_city }}
                 </div>
                 <div class="col-span-2">
-                    <label class="block mb-2 text-sm font-medium text-slate-400">Provincia</label>
+                    <label class="block mb-2 text-sm font-light text-slate-400">Provincia</label>
                     {{ form.delivery_province }}
                 </div>
                 <div class="col-span-1">
-                    <label class="block mb-2 text-sm font-medium text-slate-400">País</label>
+                    <label class="block mb-2 text-sm font-light text-slate-400">País</label>
                     {{ form.delivery_country }}
                 </div>
             </div>
@@ -166,7 +166,7 @@
 
         <!-- SECCIÓN 5: CONFIGURACIÓN Y NOTAS -->
         <div class="bg-surface border border-border-default rounded-lg p-6">
-            <h3 class="text-lg font-medium text-slate-400 mb-4 border-b border-border-default pb-2">Información Adicional</h3>
+            <h3 class="text-lg font-light text-slate-400 mb-4 border-b border-border-default pb-2">Información Adicional</h3>
             <div class="space-y-6">
                 <!-- Vendedor Asignado -->
                 <div>
@@ -178,7 +178,7 @@
                 <!-- Estado Activo -->
                 <div class="flex items-center gap-3 bg-surface-dark/50 p-4 border border-border-default rounded-sm">
                     {{ form.is_active }}
-                    <label class="text-[10px] font-bold text-slate-500 uppercase tracking-wider cursor-pointer" for="{{ form.is_active.id_for_label }}">Cliente Activo (Habilitado para Órdenes)</label>
+                    <label class="text-[10px] font-normal text-slate-500 uppercase tracking-wider cursor-pointer" for="{{ form.is_active.id_for_label }}">Cliente Activo (Habilitado para Órdenes)</label>
                 </div>
 
                 <!-- Notas -->
@@ -204,8 +204,8 @@
                 {% endif %}
             </div>
             <div class="flex items-center gap-4">
-                <a href="{% url 'customers:list' %}" class="text-[10px] font-bold text-slate-500 hover:text-white uppercase tracking-widest transition-colors px-4">Cancelar</a>
-                <button type="submit" class="bg-orange-600 hover:bg-orange-500 text-white text-xs font-bold py-2.5 px-8 shadow-lg shadow-orange-900/20 transition-all uppercase tracking-widest">
+                <a href="{% url 'customers:list' %}" class="text-[10px] font-normal text-slate-500 hover:text-white uppercase tracking-widest transition-colors px-4">Cancelar</a>
+                <button type="submit" class="bg-orange-600 hover:bg-orange-500 text-white text-xs font-normal py-2.5 px-8 shadow-lg shadow-orange-900/20 transition-all uppercase tracking-widest">
                     {% if form.instance.pk %}
                     Actualizar
                     {% else %}

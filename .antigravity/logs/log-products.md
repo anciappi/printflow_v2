@@ -56,7 +56,7 @@ Seguimiento de cambios en la app Products (Maestro de Productos), modelo de nego
     - Galería de diseño (Anverso/Reverso) con **Zoom Modal** dinámico (`product_detail.js`) y efectos de escala.
     - Cuadrícula de especificaciones optimizada: Ancho, Largo/Alto y Sustrato unificados en una sola fila para mayor densidad de información.
     - Visualización de terminaciones mediante **badges semánticos** (Laminados, Barnices, Chips, etc.) con códigos de color específicos.
-- **Unificación Tipográfica**: Eliminación total de `font-mono` en favor de una estética más limpia y corporativa basada en `font-medium` y `font-light`.
+- **Unificación Tipográfica**: Migración total a **Encode Sans**, eliminando fuentes mono y reduciendo pesos a `font-normal` (400) y `font-light` (300) para una estética "Dark Industrial" premium.
 - **Ecosistema de Navegación**:
     - Inclusión de botones "Ver Ficha" en el catálogo general y en el detalle de cliente.
     - Vinculación directa para creación de nuevas OTs pre-cargando el producto seleccionado.

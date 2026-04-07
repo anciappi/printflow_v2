@@ -1,9 +1,13 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Encode+Sans:wght@300;400&display=swap');
 
 @source "../../templates/**/*.html";
 @source "../../**/*.py";
 
 @theme {
+  --font-sans: "Encode Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Encode Sans", sans-serif; /* Forzamos sans incluso en mono */
+  
   --color-surface: #1a1d23;
   --color-surface-dark: #0f1115;
   --color-surface-mid: #252932;
@@ -21,7 +25,9 @@
   --color-info: #3b82f6;
   --color-special: #a855f7;
 
-  --font-mono: "JetBrains Mono", "Fira Code", monospace;
+  /* Estilos genéricos PrintFlow */
+  --font-weight-pf-normal: 400;
+  --font-weight-pf-light: 300;
 
   --radius-sm: 2px;
 }

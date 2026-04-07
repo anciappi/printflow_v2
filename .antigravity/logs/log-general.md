@@ -100,3 +100,5 @@ Para detalle completo ver log-[modulo].md correspondiente.
 ## 2026-04-06
 - products: Migración a múltiples archivos (ProductDocument), autoría `uploaded_by`, borrado HTMX y rediseño UI premium.
 - products: Implementación de `ProductDetailView` y Hub Técnico 360°, Zoom Modal de diseños, visualización de OTs activas/histórico y navegación unificada ("Ver Ficha").
+- global-ui: Fase 1 Modernización Tipográfica — migración a **Encode Sans**, estandarización de pesos Normal/Light y remoción completa de fuentes mono en todo el sistema.
+- global-ui: Barrido quirúrgico de pesos en OTs, Clientes, Productos e Inventario para estética "Dark Industrial" premium.

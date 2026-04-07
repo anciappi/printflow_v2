@@ -10,10 +10,10 @@
     <!-- Header de Sección -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-surface p-6 border border-border-default rounded-lg gap-4">
         <div>
-            <h2 class="text-2xl font-bold text-white">Órdenes de Trabajo</h2>
-            <p class="text-slate-500 text-sm">Monitorea y gestiona el ciclo de vida de producción. Las OTs se inician desde la ficha de cada producto.</p>
+            <h2 class="text-2xl font-normal text-white">Órdenes de Trabajo</h2>
+            <p class="text-slate-500 text-sm font-light">Monitorea y gestiona el ciclo de vida de producción. Las OTs se inician desde la ficha de cada producto.</p>
         </div>
-        <a href="{% url 'products:catalog' %}" class="w-full sm:w-auto bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-bold py-3 px-6 transition-all uppercase tracking-widest rounded-sm text-center">
+        <a href="{% url 'products:catalog' %}" class="w-full sm:w-auto bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-normal py-3 px-6 transition-all uppercase tracking-widest rounded-sm text-center">
             Ver Productos
         </a>
     </div>
@@ -24,13 +24,13 @@
     
             <!-- Search -->
             <div class="flex-1 min-w-[200px]">
-                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Buscar</label>
+                <label class="block text-[10px] font-normal text-slate-500 uppercase mb-1">Buscar</label>
                 <input type="text" name="q" value="{{ current_q }}" placeholder="Cliente, N° OT, producto..." class="w-full bg-surface-dark border border-border-default text-white text-xs px-3 py-2 focus:border-orange-500 outline-none transition-colors">
             </div>
     
             <!-- Status filter -->
             <div class="min-w-[160px]">
-                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Estado de Producción</label>
+                <label class="block text-[10px] font-normal text-slate-500 uppercase mb-1">Estado de Producción</label>
                 <select name="status" onchange="this.form.submit()" class="w-full bg-surface-dark border border-border-default text-slate-300 text-xs px-3 py-2 focus:border-orange-500 outline-none">
                     <option value="">Todos ({{ total_count }})</option>
                     {% for item in status_data %}
@@ -43,7 +43,7 @@
 
             <!-- Branch filter -->
             <div class="min-w-[140px]">
-                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Sucursal</label>
+                <label class="block text-[10px] font-normal text-slate-500 uppercase mb-1">Sucursal</label>
                 <select name="branch" onchange="this.form.submit()" class="w-full bg-surface-dark border border-border-default text-slate-300 text-xs px-3 py-2 focus:border-orange-500 outline-none">
                     <option value="">Todas</option>
                     {% for branch in branches %}
@@ -56,13 +56,13 @@
     
             <!-- Date from -->
             <div class="min-w-[130px]">
-                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Desde</label>
+                <label class="block text-[10px] font-normal text-slate-500 uppercase mb-1">Desde</label>
                 <input type="date" name="date_from" value="{{ current_date_from }}" onchange="this.form.submit()" class="w-full bg-surface-dark border border-border-default text-slate-300 text-xs px-3 py-2 focus:border-orange-500 outline-none">
             </div>
     
             <!-- Date to -->
             <div class="min-w-[130px]">
-                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Hasta</label>
+                <label class="block text-[10px] font-normal text-slate-500 uppercase mb-1">Hasta</label>
                 <input type="date" name="date_to" value="{{ current_date_to }}" onchange="this.form.submit()" class="w-full bg-surface-dark border border-border-default text-slate-300 text-xs px-3 py-2 focus:border-orange-500 outline-none">
             </div>
     
@@ -71,7 +71,7 @@
 
             {% if current_status_filter or current_q or current_branch or current_date_from or current_date_to %}
             <div class="ml-auto">
-                <a href="{% url 'orders:list' %}" class="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 hover:text-white transition-colors border border-border-default hover:border-slate-500 px-3 py-2 rounded-sm bg-surface-dark h-[34px]">
+                <a href="{% url 'orders:list' %}" class="flex items-center gap-1 text-[10px] font-normal uppercase tracking-wider text-slate-400 hover:text-white transition-colors border border-border-default hover:border-slate-500 px-3 py-2 rounded-sm bg-surface-dark h-[34px]">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                     Limpiar
                 </a>
@@ -93,7 +93,7 @@
             {% if group.grouper == 0 %}
             <!-- ÓRDENES ACTIVAS -->
             <div class="mb-8">
-                <h3 class="text-sm font-bold text-orange-500 uppercase tracking-widest mb-3 flex items-center gap-2">
+                <h3 class="text-sm font-normal text-orange-500 uppercase tracking-widest mb-3 flex items-center gap-2">
                     <span class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span> Activas en Curso
                 </h3>
                 <div class="bg-surface border border-border-default rounded-lg overflow-hidden shadow-xl">
@@ -101,12 +101,12 @@
                         <table class="w-full text-left border-collapse">
                             <thead>
                                 <tr class="border-b border-border-default bg-surface-dark/50">
-                                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">OT # / Creación</th>
-                                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Cliente / Producto</th>
-                                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">Cant. / Entrega</th>
-                                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">Estado</th>
-                                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-center">Prioridad</th>
-                                    <th class="px-6 py-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest text-right">Acciones</th>
+                                    <th class="px-6 py-4 text-[10px] font-normal text-slate-500 uppercase tracking-widest">OT # / Creación</th>
+                                    <th class="px-6 py-4 text-[10px] font-normal text-slate-500 uppercase tracking-widest">Cliente / Producto</th>
+                                    <th class="px-6 py-4 text-[10px] font-normal text-slate-500 uppercase tracking-widest">Cant. / Entrega</th>
+                                    <th class="px-6 py-4 text-[10px] font-normal text-slate-500 uppercase tracking-widest text-center">Estado</th>
+                                    <th class="px-6 py-4 text-[10px] font-normal text-slate-500 uppercase tracking-widest text-center">Prioridad</th>
+                                    <th class="px-6 py-4 text-[10px] font-normal text-slate-500 uppercase tracking-widest text-right">Acciones</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-[#2d333b]">
@@ -127,7 +127,7 @@
                         <span class="relative flex h-3 w-3">
                             <span class="relative inline-flex rounded-full h-3 w-3 bg-slate-500"></span>
                         </span>
-                        <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest">
+                        <h3 class="text-sm font-normal text-slate-400 uppercase tracking-widest">
                             Órdenes Finalizadas e Histórico
                         </h3>
                     </div>

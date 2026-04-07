@@ -88,4 +88,13 @@ orders/
     └── fragments/
         ├── status_badge.html    → Fragmento HTMX
         └── material_preview.html → Panel de Estimación
+
+---
+
+## 2026-04-06 | Modernización Tipográfica Global | ✅
+- **Encode Sans Integration**: Barrido completo de `workorder_list.html` y `workorder_detail.html` para unificar la tipografía del sistema.
+- **Weight Reduccion**: Eliminación de `font-bold` y `font-medium`, estandarizando en `font-normal` (400) y `font-light` (300).
+- **Atomic Refactor**: Actualización visual de `workorder_row.html` (fragmento de tabla) para mejorar el aire y la legibilidad en listados densos sin usar negritas.
+- **Status Pills**: Ajuste de contrastes en estados de producción para mantener la visibilidad con fuentes más delgadas.
+
 ```

@@ -9,25 +9,25 @@
     <!-- Header -->
     <div class="flex justify-between items-end mb-8">
         <div>
-            <h2 class="text-xl font-bold text-white tracking-tight">Resumen General Stock</h2>
-            <p class="text-xs text-slate-500 mt-1">Informe de disponibilidad de materiales actualizado</p>
+            <h2 class="text-xl font-normal text-white tracking-tight">Resumen General Stock</h2>
+            <p class="text-xs text-slate-500 mt-1 font-light">Informe de disponibilidad de materiales actualizado</p>
         </div>
         <div class="flex items-center gap-2 px-3 py-1.5 bg-surface border border-border-default rounded-sm shadow-sm">
-            <span class="text-[10px] text-slate-500 uppercase tracking-widest">Fecha:</span>
-            <span class="text-xs font-mono text-blue-400">{% now "d/m/Y H:i" %}</span>
+            <span class="text-[10px] text-slate-500 uppercase tracking-widest font-normal">Fecha:</span>
+            <span class="text-xs text-blue-400">{% now "d/m/Y H:i" %}</span>
         </div>
     </div>
 
     <!-- SECCIÓN 1: STOCK ACTIVO -->
     <div class="mb-8">
-        <h3 class="text-sm font-bold text-emerald-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+        <h3 class="text-sm font-normal text-emerald-400 uppercase tracking-widest mb-3 flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Stock Disponible
         </h3>
         
         <div class="bg-surface border border-border-default overflow-hidden shadow-xl rounded-sm">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="border-b border-border-default bg-surface-dark/50 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                    <tr class="border-b border-border-default bg-surface-dark/50 text-[10px] font-normal text-slate-500 uppercase tracking-widest">
                         <th class="px-6 py-3">Material</th>
                         <th class="px-6 py-3">Especificaciones</th> <!-- Columna Clave -->
                         <th class="px-6 py-3 text-center">Bultos</th>
@@ -39,10 +39,10 @@
                     <tr class="hover:bg-surface-hover/30 transition-colors group">
                         <!-- Nombre, Marca y Tipo -->
                         <td class="px-6 py-3">
-                            <div class="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">{{ item.name }}</div>
+                            <div class="text-sm font-normal text-white group-hover:text-blue-400 transition-colors">{{ item.name }}</div>
                             <div class="flex items-center gap-2 mt-1">
-                                <span class="text-[10px] text-slate-500">{{ item.brand|default:"-" }}</span>
-                                <span class="px-1.5 py-0.5 text-[9px] bg-surface-hover text-slate-400 rounded border border-slate-600">{{ item.get_material_type_display }}</span>
+                                <span class="text-[10px] text-slate-500 font-light">{{ item.brand|default:"-" }}</span>
+                                <span class="px-1.5 py-0.5 text-[9px] bg-surface-hover text-slate-400 rounded border border-slate-600 font-light">{{ item.get_material_type_display }}</span>
                             </div>
                         </td>
 
@@ -50,10 +50,10 @@
                         <td class="px-6 py-3">
                             <div class="flex flex-col justify-center h-full">
                                 <!-- Medidas y Gramaje destacados -->
-                                <div class="text-xs text-slate-300 font-mono">
-                                    {{ item.width|default:"?" }} x {{ item.length|default:"?" }} <span class="text-slate-600">cm</span>
+                                <div class="text-xs text-slate-300">
+                                    {{ item.width|default:"?" }} x {{ item.length|default:"?" }} <span class="text-slate-600 font-light">cm</span>
                                     <span class="text-slate-600 mx-1">|</span>
-                                    <strong class="text-emerald-400">{{ item.grammage|default:"?" }}g</strong>
+                                    <strong class="text-emerald-400 font-normal">{{ item.grammage|default:"?" }}g</strong>
                                 </div>
                                 
                                 <!-- Tecnología / Chip (si tiene) -->
@@ -73,11 +73,11 @@
                         <td class="px-6 py-3 text-right">
                             {% if item.standard_quantity and item.total_qty < item.standard_quantity %}
                                 <div class="flex flex-col items-end">
-                                    <span class="text-sm font-mono font-bold text-amber-400">{{ item.total_qty }}</span>
-                                    <span class="text-[9px] text-amber-500 flex items-center gap-1">📉 Bajo</span>
+                                    <span class="text-sm font-normal text-amber-400">{{ item.total_qty }}</span>
+                                    <span class="text-[9px] text-amber-500 font-light flex items-center gap-1">📉 Bajo</span>
                                 </div>
                             {% else %}
-                                <span class="text-sm font-mono font-bold text-emerald-400">{{ item.total_qty }}</span>
+                                <span class="text-sm font-normal text-emerald-400">{{ item.total_qty }}</span>
                             {% endif %}
                         </td>
                     </tr>
@@ -92,14 +92,14 @@
     <!-- SECCIÓN INTERMEDIA: EN TRÁNSITO (PENDIENTES DE INGRESO) -->
     {% if ordenes_pendientes %}
     <div class="mb-8">
-        <h3 class="text-sm font-bold text-cyan-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+        <h3 class="text-sm font-normal text-cyan-400 uppercase tracking-widest mb-3 flex items-center gap-2">
             <span class="w-2 h-2 rounded-full bg-cyan-500 animate-pulse"></span> Pedidos en Curso (En Tránsito)
         </h3>
         
         <div class="bg-surface border border-cyan-900/30 overflow-hidden shadow-xl rounded-sm">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="border-b border-cyan-900/20 bg-cyan-900/10 text-[10px] font-bold text-cyan-400 uppercase tracking-widest">
+                    <tr class="border-b border-cyan-900/20 bg-cyan-900/10 text-[10px] font-normal text-cyan-400 uppercase tracking-widest">
                         <th class="px-6 py-3">Fecha Emisión</th>
                         <th class="px-6 py-3">Proveedor</th>
                         <th class="px-6 py-3">Detalle de Materiales</th>
@@ -110,8 +110,8 @@
                     {% for oc in ordenes_pendientes %}
                     <tr class="hover:bg-cyan-900/5 transition-colors">
                         <td class="px-6 py-3">
-                            <div class="text-sm font-bold text-slate-300">{{ oc.order_date|date:"d/m/Y" }}</div>
-                            <div class="text-[10px] text-slate-500">OC Int: {{ oc.remito_number }}</div>
+                            <div class="text-sm font-normal text-slate-300">{{ oc.order_date|date:"d/m/Y" }}</div>
+                            <div class="text-[10px] text-slate-500 font-light">OC Int: {{ oc.remito_number }}</div>
                         </td>
                         <td class="px-6 py-3">
                             <div class="text-sm text-white">{{ oc.supplier.name }}</div>
@@ -152,7 +152,7 @@
                   <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
                   <span class="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
                 </span>
-                <h3 class="text-sm font-bold text-red-400 uppercase tracking-widest">
+                <h3 class="text-sm font-normal text-red-400 uppercase tracking-widest">
                     Materiales sin stock
                 </h3>
             </div>
@@ -172,7 +172,7 @@
         <div id="agotados-wrapper" class="hidden border-x border-b border-red-900/30 bg-surface shadow-xl rounded-b-sm">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="bg-red-900/10 text-[10px] font-bold text-red-400 uppercase tracking-widest border-b border-red-900/20">
+                    <tr class="bg-red-900/10 text-[10px] font-normal text-red-400 uppercase tracking-widest border-b border-red-900/20">
                         <th class="px-6 py-3">Material</th>
                         <th class="px-6 py-3">Especificaciones</th>
                         <th class="px-6 py-3 text-right">Acción</th>
@@ -182,21 +182,21 @@
                     {% for item in stock_agotado %}
                     <tr class="hover:bg-red-900/5 transition-colors">
                         <td class="px-6 py-3">
-                            <div class="text-sm font-bold text-slate-300">{{ item.name }}</div>
-                            <div class="text-[10px] text-slate-500">{{ item.brand|default:"-" }}</div>
+                            <div class="text-sm font-normal text-slate-300">{{ item.name }}</div>
+                            <div class="text-[10px] text-slate-500 font-light">{{ item.brand|default:"-" }}</div>
                         </td>
                         <td class="px-6 py-3">
-                             <div class="text-xs text-slate-400 font-mono">
+                             <div class="text-xs text-slate-400 font-light">
                                 {{ item.width|default:"?" }} x {{ item.length|default:"?" }}
                                 <span class="text-slate-600 mx-1">|</span>
-                                <strong class="text-slate-300">{{ item.grammage|default:"?" }}g</strong>
+                                <strong class="text-slate-300 font-normal">{{ item.grammage|default:"?" }}g</strong>
                             </div>
                             {% if item.technology %}
                                 <div class="text-[10px] text-slate-500 mt-0.5">{{ item.technology }}</div>
                             {% endif %}
                         </td>
                         <td class="px-6 py-3 text-right">
-                            <a href="{% url 'inventory:oc_create' %}" class="text-[10px] font-bold uppercase tracking-wider text-red-400 hover:text-white hover:underline transition-colors">
+                            <a href="{% url 'inventory:oc_create' %}" class="text-[10px] font-normal uppercase tracking-wider text-red-400 hover:text-white hover:underline transition-colors">
                                 + Solicitar Compra
                             </a>
                         </td>

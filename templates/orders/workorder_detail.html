@@ -21,10 +21,10 @@
 
         <div class="flex items-center gap-3 w-full md:w-auto flex-wrap">
             {% include 'orders/fragments/status_badge.html' with order=object %}
-            <a href="{% url 'orders:list' %}" class="bg-surface hover:bg-surface-hover border border-border-default text-slate-300 text-[10px] font-bold py-3 px-6 transition-all uppercase tracking-widest rounded-sm">
+            <a href="{% url 'orders:list' %}" class="bg-surface hover:bg-surface-hover border border-border-default text-slate-300 text-[10px] font-normal py-3 px-6 transition-all uppercase tracking-widest rounded-sm">
                 Volver al listado
             </a>
-            <a href="{% url 'orders:update' object.pk %}" class="bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-bold py-3 px-6 transition-all uppercase tracking-widest rounded-sm">
+            <a href="{% url 'orders:update' object.pk %}" class="bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-normal py-3 px-6 transition-all uppercase tracking-widest rounded-sm">
                 Editar OT
             </a>
         </div>
@@ -42,14 +42,14 @@
             <!-- Parámetros Originales -->
             <div class="bg-surface border border-border-default rounded-lg overflow-hidden">
                 <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default flex items-center justify-between">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Información Original</h3>
-                    <span class="text-[10px] text-slate-500">Planificación Inicial</span>
+                    <h3 class="text-xs font-normal text-slate-400 uppercase tracking-widest">Información Original</h3>
+                    <span class="text-[10px] text-slate-500 font-light">Planificación Inicial</span>
                 </div>
                 <div class="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div>
-                        <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Cliente</p>
-                        <p class="text-sm text-white font-medium">{{ object.product.customer.name }}</p>
-                        <p class="text-[10px] text-slate-400 mt-1">{{ object.product.customer.tax_id }}</p>
+                        <p class="text-[10px] text-slate-500 uppercase font-normal mb-1">Cliente</p>
+                        <p class="text-sm text-white font-normal">{{ object.product.customer.name }}</p>
+                        <p class="text-[10px] text-slate-400 mt-1 font-light">{{ object.product.customer.tax_id }}</p>
                     </div>
                     <div>
                         <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Producto</p>
@@ -57,9 +57,9 @@
                         <p class="text-[10px] text-slate-400 mt-1">Sustrato: {{ object.product.substrate.name }}</p>
                     </div>
                     <div>
-                        <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Cantidad / Bocas</p>
-                        <p class="text-xl text-white font-bold">{{ object.quantity }} <span class="text-xs font-normal text-slate-500">un.</span></p>
-                        <p class="text-[10px] text-slate-400 mt-1">Bocas (Poses): {{ object.bocas|default:"--" }}</p>
+                        <p class="text-[10px] text-slate-500 uppercase font-normal mb-1">Cantidad / Bocas</p>
+                        <p class="text-xl text-white font-normal">{{ object.quantity }} <span class="text-xs font-normal text-slate-500">un.</span></p>
+                        <p class="text-[10px] text-slate-400 mt-1 font-light">Bocas (Poses): {{ object.bocas|default:"--" }}</p>
                     </div>
                     <div>
                         <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Entrega Prometida</p>
@@ -73,13 +73,13 @@
             <div class="bg-surface border border-border-default rounded-lg overflow-hidden relative">
                 <div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 to-blue-600"></div>
                 <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default flex items-center justify-between pl-6">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest pl-2">Estado de Producción</h3>
-                    <span class="text-[10px] text-blue-400 font-bold uppercase tracking-widest bg-blue-900/30 px-2 py-0.5 rounded-sm">Taller</span>
+                    <h3 class="text-xs font-normal text-slate-400 uppercase tracking-widest pl-2">Estado de Producción</h3>
+                    <span class="text-[10px] text-blue-400 font-normal uppercase tracking-widest bg-blue-900/30 px-2 py-0.5 rounded-sm">Taller</span>
                 </div>
                 <div class="p-6 pl-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
                     <div>
-                        <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Estado en Planta</p>
-                        <p id="info-current-status" class="text-sm text-blue-400 font-bold uppercase transition-colors">{{ object.get_current_status_display }}</p>
+                        <p class="text-[10px] text-slate-500 uppercase font-normal mb-1">Estado en Planta</p>
+                        <p id="info-current-status" class="text-sm text-blue-400 font-normal uppercase transition-colors">{{ object.get_current_status_display }}</p>
                     </div>
                     <div>
                         <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Última Cantidad Reportada</p>
@@ -149,8 +149,8 @@
                         <span class="text-sm text-white font-bold">{{ object.estimated_material_usage|default:"--" }} ml</span>
                     </div>
                     <div class="flex justify-between items-center py-2 border-b border-border-default/50">
-                        <span class="text-[11px] text-slate-500">Prioridad:</span>
-                        <span class="text-[10px] font-bold uppercase {% if object.priority == 'URGENT' %}text-red-500{% elif object.priority == 'HIGH' %}text-orange-500{% else %}text-slate-400{% endif %}">
+                        <span class="text-[11px] text-slate-500 font-light">Prioridad:</span>
+                        <span class="text-[10px] font-normal uppercase {% if object.priority == 'URGENT' %}text-red-500{% elif object.priority == 'HIGH' %}text-orange-500{% else %}text-slate-400{% endif %}">
                             {{ object.get_priority_display }}
                         </span>
                     </div>
@@ -160,8 +160,8 @@
             <div class="bg-orange-600/5 border border-orange-900/20 rounded-lg p-6 flex flex-col justify-center">
                 <h3 class="text-[10px] font-bold text-orange-500 uppercase tracking-widest mb-3">Acciones Rápidas</h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <button class="w-full bg-surface hover:bg-surface-hover text-slate-300 text-[10px] font-bold py-2 rounded transition-colors uppercase">Imprimir Hoja de Ruta</button>
-                    <button class="w-full bg-surface hover:bg-surface-hover text-slate-300 text-[10px] font-bold py-2 rounded transition-colors uppercase">Generar Remito</button>
+                    <button class="w-full bg-surface hover:bg-surface-hover text-slate-300 text-[10px] font-normal py-2 rounded transition-colors uppercase">Imprimir Hoja de Ruta</button>
+                    <button class="w-full bg-surface hover:bg-surface-hover text-slate-300 text-[10px] font-normal py-2 rounded transition-colors uppercase">Generar Remito</button>
                 </div>
             </div>
         </div>
