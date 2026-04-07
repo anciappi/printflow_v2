@@ -23,3 +23,41 @@ Seguimiento de cambios en la app Products (Maestro de Productos), modelo de nego
 - **Campo `status` duplicado:** `{{ form.status }}` se renderizaba dos veces (sección Identificación y sección Medidas). Se eliminó la segunda ocurrencia.
 - **Errores de campos requeridos sin feedback:** `qty_per_box`, `width_mm` y `height_mm` no mostraban sus mensajes de error individuales. Se agregaron los bloques `{% if form.X.errors %}`.
 - **HTML roto:** Removido `</script>` huérfano y `</div>` huérfano que quedaban al final del template.
+
+---
+
+## 2026-04-06 | Migración a Múltiples Archivos de Documentación Técnica | ✅
+
+**Archivos modificados:** `products/models.py`, `products/forms.py`, `products/views.py`, `products/urls.py`, `templates/products/product_form.html`, `static/js/product_form.js`
+
+- **Refactorización del Modelo (`ProductDocument`)**: Se eliminaron los campos estáticos `tech_file` y `diecut_file` del modelo `Product`. Se creó el modelo relacional `ProductDocument` con `ForeignKey` a `Product`, permitiendo carga ilimitada de archivos categorizados por `doc_type` (TECH/DIECUT).
+- **Trazabilidad (`uploaded_by`)**: Se integró el campo `uploaded_by` vinculado al modelo de usuario de Django para registrar quién realizó cada carga.
+- **Gestión Asíncrona HTMX**:
+    - Implementación de `ProductDocumentDeleteView` para borrado físico y lógico de archivos sin recargar el formulario.
+    - Corrección de error 403 (Forbidden) mediante el uso de `hx-headers` para incluir el token CSRF en peticiones `DELETE`.
+    - Uso de `hx-confirm` para validación de borrado en dos etapas solicitada por el usuario.
+- **Rediseño UI Premium**:
+    - Consolidación a una sola columna en la sección de "Documentación Técnica".
+    - Tipografía `font-light` y tamaño `text-xs` para mejorar la elegibilidad de metadatos (fecha, usuario, nombre).
+    - Botonera de acción rectificada (`w-8 h-8`) con iconos SVG (Download/Trash) y efectos hover sólidos.
+- **Live Preview**: Lógica en `static/js/product_form.js` para mostrar una lista de archivos seleccionados localmente antes de confirmar el guardado de la ficha.
+
+---
+
+## 2026-04-06 | Implementación de ProductDetailView y Hub Técnico | ✅
+
+**Archivos modificados:** `products/views.py`, `products/urls.py`, `templates/products/product_detail.html`, `static/js/product_detail.js`, `templates/products/product_list.html`, `templates/customers/customer_detail.html`
+
+- **Visualización Técnica 360° (`ProductDetailView`)**:
+    - Creación de la vista de detalle centralizada modelada bajo el estándar de `customer_detail.html`.
+    - Integración de **KPIs de producción**: Listado de OTs activas y acordeón colapsable para historial de entregas/cancelaciones.
+    - Segmentación de documentación técnica (Originales vs. Sacabocados) con metadatos de autoría y descarga directa.
+- **Diseño Premium "Dark Industrial"**:
+    - Galería de diseño (Anverso/Reverso) con **Zoom Modal** dinámico (`product_detail.js`) y efectos de escala.
+    - Cuadrícula de especificaciones optimizada: Ancho, Largo/Alto y Sustrato unificados en una sola fila para mayor densidad de información.
+    - Visualización de terminaciones mediante **badges semánticos** (Laminados, Barnices, Chips, etc.) con códigos de color específicos.
+- **Unificación Tipográfica**: Eliminación total de `font-mono` en favor de una estética más limpia y corporativa basada en `font-medium` y `font-light`.
+- **Ecosistema de Navegación**:
+    - Inclusión de botones "Ver Ficha" en el catálogo general y en el detalle de cliente.
+    - Vinculación directa para creación de nuevas OTs pre-cargando el producto seleccionado.
+

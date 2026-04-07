@@ -96,3 +96,7 @@ Para detalle completo ver log-[modulo].md correspondiente.
 - orders: Material Calculation Module — calculator polímero/posture, 8 nuevos campos en WorkOrder, real-time HTMX preview.
 - orders: UX Refactoring — toda OT nace desde Producto, remoción de redundancias en UI.
 - orders: Bobina width validation — sistema de alerta visual roja en el previeuw de postura.
+
+## 2026-04-06
+- products: Migración a múltiples archivos (ProductDocument), autoría `uploaded_by`, borrado HTMX y rediseño UI premium.
+- products: Implementación de `ProductDetailView` y Hub Técnico 360°, Zoom Modal de diseños, visualización de OTs activas/histórico y navegación unificada ("Ver Ficha").

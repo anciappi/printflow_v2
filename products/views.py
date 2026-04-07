@@ -1,6 +1,6 @@
 from django.urls import reverse_lazy
 from django.http import HttpResponse
-from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, UpdateView, DeleteView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Product, ProductDocument
 from .forms import ProductForm
@@ -48,6 +48,22 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
         for f in tech_files:
             ProductDocument.objects.create(product=self.object, file=f, doc_type='TECH', uploaded_by=self.request.user)
         return response
+
+class ProductDetailView(LoginRequiredMixin, DetailView):
+    model = Product
+    template_name = 'products/product_detail.html'
+    context_object_name = 'product'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        product = self.get_object()
+        from orders.models import WorkOrder
+        all_orders = WorkOrder.objects.filter(product=product).select_related('product').order_by('-created_at')
+        context['active_orders'] = all_orders.exclude(current_status__in=['DELIVERED', 'CANCELLED'])
+        context['completed_orders'] = all_orders.filter(current_status__in=['DELIVERED', 'CANCELLED'])
+        context['tech_docs'] = product.documents.filter(doc_type='TECH').select_related('uploaded_by')
+        context['diecut_docs'] = product.documents.filter(doc_type='DIECUT').select_related('uploaded_by')
+        return context
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
