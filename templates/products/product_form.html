@@ -423,88 +423,110 @@
         <div class="bg-surface border border-border-default overflow-hidden shadow-sm rounded-lg mb-6">
             <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-0 border-b border-border-default p-4 bg-surface-dark/50">Documentación Técnica</h3>
             
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="border-b border-border-default bg-[#15181e] text-[9px] font-bold text-slate-500 uppercase tracking-widest">
-                        <th class="px-4 py-2 w-1/4">Documento</th>
-                        <th class="px-4 py-2 w-32">Estado</th>
-                        <th class="px-4 py-2">Archivo Actual</th>
-                        <th class="px-4 py-2 text-right">Acción</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-[#2d333b] bg-surface">
+            <div class="grid grid-cols-1 divide-y divide-border-default">
+                <!-- Originales / PDF -->
+                <div class="p-5 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-white font-bold flex items-center gap-2">
+                            <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+                            Originales / PDF
+                        </span>
+                        <label class="btn-doc-action cursor-pointer bg-slate-800 hover:bg-slate-700 text-white text-[10px] py-1.5 px-3 rounded">
+                            ↑ Agregar Archivos
+                            <input type="file" id="tech_files_multiple" name="tech_files_multiple" multiple class="hidden" onchange="updateFilePreview(this, 'tech-preview-list')">
+                        </label>
+                    </div>
+                    <ul id="tech-preview-list" class="text-xs text-slate-400 font-light list-disc list-inside"></ul>
                     
-                    <!-- Originales -->
-                    <tr class="hover:bg-surface-hover/30 transition-colors">
-                        <td class="px-4 py-3">
-                            <span class="text-xs text-white font-bold flex items-center gap-2">
-                                <svg class="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
-                                Originales / PDF
-                            </span>
-                        </td>
-                        <td class="px-4 py-3">
-                            {% if form.instance.pk and form.instance.tech_file %}<span id="status-tech_file" class="status-badge status-badge-cargado"><span class="dot" style="background-color:#a855f7;"></span> Cargado</span>{% else %}<span id="status-tech_file" class="status-badge status-badge-pendiente">Pendiente</span>{% endif %}
-                        </td>
-                        <td class="px-4 py-3">
-                            {% if form.instance.pk and form.instance.tech_file %}
-                            <a href="{{ form.instance.tech_file.url }}" download class="text-xs text-blue-400 hover:text-blue-300 hover:underline flex items-center gap-1 w-max">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                                {{ form.instance.tech_file.name|slice:"15:" }}
-                            </a>
-                            {% else %}
-                            <span class="text-xs text-slate-600 italic">No hay archivo</span>
-                            {% endif %}
-                        </td>
-                        <td class="px-4 py-3 flex items-center justify-end gap-2 isolate">
-                            {% if form.instance.tech_file %}
-                            <button type="button" onclick="markForDeletion('tech_file')" class="btn-doc-action" style="color:#f87171;">✕ Eliminar</button>
-                            {% endif %}
-                            <label for="id_tech_file" class="btn-doc-action cursor-pointer bg-slate-800 hover:bg-slate-700 text-white">↑ Subir Nuevo</label>
-                            <div class="hidden hide-django-file-labels"><div class="hide-django-file-labels">{{ form.tech_file }}</div></div>
-                            <input type="checkbox" name="tech_file-clear" id="tech_file-clear_id" class="hidden">
-                        </td>
-                    </tr>
-                    
-                    <!-- Sacabocados -->
-                    <tr class="hover:bg-surface-hover/30 transition-colors">
-                        <td class="px-4 py-3">
-                            <span class="text-xs text-white font-bold flex items-center gap-2">
-                                <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 15.536c-1.171 1.952-3.07 1.952-4.242 0-1.172-1.953-1.172-5.119 0-7.072 1.171-1.952 3.07-1.952 4.242 0M8 10.5h4m-4 3h4m9-1.5a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                Sacabocados / Corte
-                            </span>
-                        </td>
-                        <td class="px-4 py-3">
-                            {% if form.instance.pk and form.instance.diecut_file %}<span id="status-diecut_file" class="status-badge status-badge-cargado"><span class="dot" style="background-color:#f97316;"></span> Cargado</span>{% else %}<span id="status-diecut_file" class="status-badge status-badge-pendiente">Pendiente</span>{% endif %}
-                        </td>
-                        <td class="px-4 py-3">
-                            {% if form.instance.pk and form.instance.diecut_file %}
-                            <a href="{{ form.instance.diecut_file.url }}" download class="text-xs text-blue-400 hover:text-blue-300 hover:underline flex items-center gap-1 w-max">
-                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                                {{ form.instance.diecut_file.name|slice:"15:" }}
-                            </a>
-                            {% else %}
-                            <span class="text-xs text-slate-600 italic">No hay archivo</span>
-                            {% endif %}
-                        </td>
-                        <td class="px-4 py-3 flex items-center justify-end gap-2 isolate">
-                            {% if form.instance.diecut_file %}
-                            <button type="button" onclick="markForDeletion('diecut_file')" class="btn-doc-action" style="color:#f87171;">✕ Eliminar</button>
-                            {% endif %}
-                            <label for="id_diecut_file" class="btn-doc-action cursor-pointer bg-slate-800 hover:bg-slate-700 text-white">↑ Subir Nuevo</label>
-                            <div class="hidden hide-django-file-labels"><div class="hide-django-file-labels">{{ form.diecut_file }}</div></div>
-                            <input type="checkbox" name="diecut_file-clear" id="diecut_file-clear_id" class="hidden">
-                        </td>
-                    </tr>
+                    <div class="bg-[#15181e] rounded border border-[#2d333b] min-h-[80px] p-2 space-y-2">
+                        {% if form.instance.pk %}
+                            {% for doc in form.instance.documents.all %}
+                                {% if doc.doc_type == 'TECH' %}
+                                <div class="flex items-center justify-between bg-surface p-2 rounded border border-border-default hover:border-purple-500/30 transition-colors" id="doc-{{ doc.id }}">
+                                    <div class="flex flex-col overflow-hidden mr-2">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs text-slate-500 font-light uppercase tracking-wider shrink-0">{{ doc.created_at|date:"d/m/y H:i" }}{% if doc.uploaded_by %} • {{ doc.uploaded_by.first_name|default:doc.uploaded_by.email }}{% endif %}</span>
+                                            <a href="{{ doc.file.url }}" download class="text-xs text-blue-400 font-light hover:text-blue-300 hover:underline truncate" title="{{ doc.file.name }}">
+                                                {{ doc.file.name|slice:"19:" }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2 shrink-0">
+                                        <a href="{{ doc.file.url }}" download class="flex-none w-8 h-8 flex items-center justify-center rounded-md bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all group" title="Descargar">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                        </a>
+                                        <button type="button" 
+                                                hx-delete="{% url 'products:document-delete' doc.id %}" 
+                                                hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                                                hx-confirm="¿Seguro que deseas eliminar este archivo?"
+                                                hx-target="#doc-{{ doc.id }}" 
+                                                hx-swap="outerHTML"
+                                                class="flex-none w-8 h-8 flex items-center justify-center rounded-md bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all group" title="Eliminar">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
 
-                </tbody>
-            </table>
+                <!-- Sacabocados -->
+                <div class="p-5 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-white font-bold flex items-center gap-2">
+                            <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.121 15.536c-1.171 1.952-3.07 1.952-4.242 0-1.172-1.953-1.172-5.119 0-7.072 1.171-1.952 3.07-1.952 4.242 0M8 10.5h4m-4 3h4m9-1.5a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                            Sacabocados / Corte
+                        </span>
+                        <label class="btn-doc-action cursor-pointer bg-slate-800 hover:bg-slate-700 text-white text-[10px] py-1.5 px-3 rounded">
+                            ↑ Agregar Archivos
+                            <input type="file" id="diecut_files_multiple" name="diecut_files_multiple" multiple class="hidden" onchange="updateFilePreview(this, 'diecut-preview-list')">
+                        </label>
+                    </div>
+                    <ul id="diecut-preview-list" class="text-xs text-slate-400 font-light list-disc list-inside"></ul>
+                    
+                    <div class="bg-[#15181e] rounded border border-[#2d333b] min-h-[80px] p-2 space-y-2">
+                        {% if form.instance.pk %}
+                            {% for doc in form.instance.documents.all %}
+                                {% if doc.doc_type == 'DIECUT' %}
+                                <div class="flex items-center justify-between bg-surface p-2 rounded border border-border-default hover:border-orange-500/30 transition-colors" id="doc-{{ doc.id }}">
+                                    <div class="flex flex-col overflow-hidden mr-2">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs text-slate-500 font-light uppercase tracking-wider shrink-0">{{ doc.created_at|date:"d/m/y H:i" }}{% if doc.uploaded_by %} • {{ doc.uploaded_by.first_name|default:doc.uploaded_by.email }}{% endif %}</span>
+                                            <a href="{{ doc.file.url }}" download class="text-xs text-blue-400 font-light hover:text-blue-300 hover:underline truncate" title="{{ doc.file.name }}">
+                                                {{ doc.file.name|slice:"19:" }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-2 shrink-0">
+                                        <a href="{{ doc.file.url }}" download class="flex-none w-8 h-8 flex items-center justify-center rounded-md bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-white transition-all group" title="Descargar">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                                        </a>
+                                        <button type="button" 
+                                                hx-delete="{% url 'products:document-delete' doc.id %}" 
+                                                hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                                                hx-confirm="¿Seguro que deseas eliminar este archivo?"
+                                                hx-target="#doc-{{ doc.id }}" 
+                                                hx-swap="outerHTML"
+                                                class="flex-none w-8 h-8 flex items-center justify-center rounded-md bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white transition-all group" title="Eliminar">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
             
             <!-- Notas generales -->
             <div class="p-4 border-t border-border-default bg-surface">
-                    <label class="block mb-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Notas Internas / Instrucciones Especiales</label>
-                    {{ form.notes }}
-                    <p class="text-[10px] text-slate-600 mt-2 italic">Ej: "El cliente solicita que el color sea igual a la muestra física enviada por correo".</p>
-                </div>
+                <label class="block mb-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Notas Internas / Instrucciones Especiales</label>
+                {{ form.notes }}
+                <p class="text-[10px] text-slate-600 mt-2 italic">Ej: "El cliente solicita que el color sea igual a la muestra física enviada por correo".</p>
+            </div>
             </div>
         </div>
 
@@ -526,11 +548,6 @@
                 {% if form.instance.pk %}Actualizar{% else %}Guardar{% endif %} Ficha Técnica
             </button>
         </div>
-    </div>
-
-    </form>
-
-
 <script src="{% static 'js/product_form.js' %}"></script>
 
 <!-- Zoom Modal Overlay -->

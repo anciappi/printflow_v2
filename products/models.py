@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from customers.models import Customer  # Importamos tu modelo de Cliente
 from inventory.models import Material  # Importamos tu modelo de Material
 
@@ -145,8 +146,6 @@ class Product(models.Model):
     # --- Archivos y Documentación ---
     design_front = models.FileField(upload_to='products/designs/front/', blank=True, null=True, verbose_name="Diseño Anverso (Original)")
     design_back = models.FileField(upload_to='products/designs/back/', blank=True, null=True, verbose_name="Diseño Reverso (Original)")
-    diecut_file = models.FileField(upload_to='products/diecuts/', blank=True, null=True, verbose_name="Sacabocados / Plano de Corte")
-    tech_file = models.FileField(upload_to='products/tech_files/', blank=True, null=True, verbose_name="Otros Adjuntos (Ficha / JPG)")
     notes = models.TextField(blank=True, verbose_name="Notas Internas")
     notes_front = models.TextField(blank=True, verbose_name="Observaciones Anverso", help_text="Instrucciones específicas de impresión frontal, historial de cambios OTs")
     notes_back = models.TextField(blank=True, verbose_name="Observaciones Reverso", help_text="Instrucciones específicas de impresión dorso, historial de cambios OTs")
@@ -159,3 +158,17 @@ class Product(models.Model):
 
     def __str__(self):
         return f"{self.code} - {self.name}"
+
+class ProductDocument(models.Model):
+    DOC_TYPES = [
+        ('DIECUT', 'Sacabocados / Corte'),
+        ('TECH', 'Originales / PDF / Otros'),
+    ]
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='documents')
+    file = models.FileField(upload_to='products/documents/')
+    doc_type = models.CharField(max_length=20, choices=DOC_TYPES)
+    uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL, related_name='uploaded_product_docs')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.product.code} - {self.get_doc_type_display()} - {self.file.name}"

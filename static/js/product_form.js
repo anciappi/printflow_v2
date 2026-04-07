@@ -194,3 +194,19 @@ document.addEventListener('keydown', (e) => {
         closeZoomModal();
     }
 });
+
+// File Preview Logic for Multiple Files
+function updateFilePreview(inputElement, previewListId) {
+    const list = document.getElementById(previewListId);
+    if (!list) return;
+    list.innerHTML = ''; 
+    if (inputElement.files && inputElement.files.length > 0) {
+        list.innerHTML = `<li class="text-blue-400 font-bold mb-1 list-none">Archivos listos para adjuntar (Guardar para confirmar):</li>`;
+        Array.from(inputElement.files).forEach(file => {
+            const li = document.createElement('li');
+            li.className = 'text-slate-300 text-xs ml-4';
+            li.textContent = file.name;
+            list.appendChild(li);
+        });
+    }
+}

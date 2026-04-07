@@ -17,7 +17,7 @@ class ProductForm(forms.ModelForm):
             'has_holograma', 'holograma_front', 'holograma_back',
             'has_troquelado', 'troquelado_front', 'troquelado_back',
             'packaging_type', 'qty_per_box',
-            'design_front', 'design_back', 'diecut_file', 'tech_file',
+            'design_front', 'design_back',
             'notes', 'notes_front', 'notes_back'
         ]
         widgets = {
@@ -33,8 +33,6 @@ class ProductForm(forms.ModelForm):
             # ClearableFileInput to support deletion, hidden as we use custom buttons
             'design_front': forms.ClearableFileInput(attrs={'id': 'id_design_front', 'class': 'hidden'}),
             'design_back':  forms.ClearableFileInput(attrs={'id': 'id_design_back',  'class': 'hidden'}),
-            'diecut_file':  forms.ClearableFileInput(attrs={'id': 'id_diecut_file',  'class': 'hidden'}),
-            'tech_file':    forms.ClearableFileInput(attrs={'id': 'id_tech_file',    'class': 'hidden'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -44,7 +42,7 @@ class ProductForm(forms.ModelForm):
             "focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 block p-2.5 placeholder-slate-600"
         )
 
-        file_fields = {'design_front', 'design_back', 'diecut_file', 'tech_file'}
+        file_fields = {'design_front', 'design_back'}
         config_fields = {
             'laminate_type', 'varnish_type', 'mag_coercivity',
             'mag_stripe_width', 'mag_stripe_distance_to_edge', 'chip_type'
