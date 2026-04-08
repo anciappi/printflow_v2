@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | PrintFlow v2</title>
+    <title>Login | {{ request.tenant.name|default:"PRINTFLOW" }}</title>
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
 </head>
 <body class="h-full flex items-center justify-center p-6 text-slate-300 antialiased font-sans">
@@ -12,10 +12,10 @@
     <div class="w-full max-w-sm">
         <!-- Logo / Marca -->
         <div class="text-center mb-10">
-            <h1 class="text-3xl font-normal text-white tracking-tighter">
-                PRINTFLOW <span class="text-blue-500">v2</span>
+            <h1 class="text-3xl font-normal text-white tracking-widest">
+                {{ request.tenant.name|default:"PRINTFLOW" }}
             </h1>
-            <p class="text-xs uppercase tracking-[0.3em] text-slate-500 mt-2 font-light">Gestión de Imprenta</p>
+            <p class="text-xs uppercase tracking-[0.3em] text-slate-500 mt-2 font-light">powered by printflow</p>
         </div>
 
         <!-- Caja de Login (Estética VS Code) -->

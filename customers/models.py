@@ -57,6 +57,18 @@ class Customer(models.Model):
     def __str__(self):
         return f"{self.name} ({self.tax_id})"
 
+    @property
+    def full_delivery_address(self):
+        if not self.delivery_street:
+            return None
+        address = f"{self.delivery_street} {self.delivery_street_number}".strip()
+        if self.delivery_floor_apt:
+            address += f" {self.delivery_floor_apt}"
+        location = ", ".join(filter(bool, [self.delivery_city, self.delivery_province]))
+        if location:
+            address += f", {location}"
+        return address
+
     def save(self, *args, **kwargs):
         if self.delivery_same_as_fiscal:
             self.delivery_street = self.street

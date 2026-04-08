@@ -1,6 +1,5 @@
 {% extends "base.html" %}
-
-{% block breadcrumbs %}
+{% load static %}{% block breadcrumbs %}
 <span class="text-slate-500">Producción / Órdenes /</span> <span class="text-white ml-1">
     {% if form.instance.pk %}
     Editar
@@ -92,8 +91,12 @@
             {% endif %}
         </div>
 
-        <!-- SECCIÓN 2: CONFIGURACIÓN DE POSTURA / POLÍMERO -->
-        <div class="bg-surface border border-border-default rounded-lg p-6">
+        <!-- CONTENEDOR 2 COLUMNAS -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+            
+            <!-- COlumna Izquierda -->
+            <!-- SECCIÓN 2: CONFIGURACIÓN DE POSTURA / POLÍMERO -->
+            <div class="bg-surface border border-border-default rounded-lg p-6 h-full">
             <h3 class="text-lg font-medium text-emerald-500 mb-1 border-b border-border-default pb-2">Configuración de Postura (Polímero)</h3>
             <p class="text-[10px] text-slate-500 mb-4">Define la distribución del polímero para calcular el consumo estimado de bobina.</p>
 
@@ -150,7 +153,7 @@
                  hx-get="{% url 'orders:layout_preview' %}"
                  hx-trigger="load"
                  hx-include="#id_product, #id_quantity, #id_layout_rows, #id_layout_cols, #id_gap_horizontal_mm, #id_gap_vertical_mm, #id_margin_lateral_mm, #id_margin_top_mm, #id_margin_bottom_mm, #id_orientation, #id_bobina_width_mm"
-                 hx-vals='{"product": "{{ form.instance.product.id|default:'' }}"}'
+                 hx-vals='{"product": "{{ form.instance.product.id|default:"" }}"}'
                 >
                 <div class="border border-dashed border-slate-700 rounded-lg p-4 text-center text-slate-600 text-xs">
                     <p>Completa las filas, columnas, gaps y margenes para ver la estimacion de material.</p>
@@ -158,8 +161,12 @@
             </div>
         </div>
 
-        <!-- SECCIÓN 3: PLANIFICACIÓN -->
-        <div class="bg-surface border border-border-default rounded-lg p-6">
+            </div>
+            
+            <!-- Columna Derecha -->
+            <div class="flex flex-col gap-6 h-full">
+                <!-- SECCIÓN 3: PLANIFICACIÓN -->
+                <div class="bg-surface border border-border-default rounded-lg p-6">
             <h3 class="text-lg font-medium text-blue-500 mb-4 border-b border-border-default pb-2">Cronograma y Prioridad
             </h3>
 
@@ -172,8 +179,7 @@
 
                 <!-- Fecha Entrega -->
                 <div>
-                    <label class="block mb-2 text-sm font-medium text-slate-400 text-orange-400 font-bold">Fecha de
-                        Entrega Prometida</label>
+                    <label class="block mb-2 text-sm font-medium text-slate-400 text-orange-400 font-bold">Fecha de Entrega Prometida</label>
                     {{ form.due_date }}
                     {% if form.due_date.errors %}
                     <p class="text-red-500 text-xs mt-1">{{ form.due_date.errors.0 }}</p>
@@ -190,14 +196,14 @@
 
         <!-- SECCIÓN 4: NOTAS -->
         <div class="bg-surface border border-border-default rounded-lg p-6">
-            <h3 class="text-lg font-medium text-slate-400 mb-4 border-b border-border-default pb-2">Observaciones de
-                Producción</h3>
+            <h3 class="text-lg font-medium text-slate-400 mb-4 border-b border-border-default pb-2">Observaciones de Producción</h3>
 
             <div>
                 <label class="block mb-2 text-sm font-medium text-slate-400">Notas específicas para taller</label>
                 {{ form.production_notes }}
-                <p class="text-[10px] text-slate-600 mt-2 italic">Ej: "Atención al tono del azul", "No refilar hasta
-                    nuevo aviso".</p>
+                <p class="text-[10px] text-slate-600 mt-2 italic">Ej: "Atención al tono del azul", "No refilar hasta nuevo aviso".</p>
+            </div>
+                </div>
             </div>
         </div>
 
@@ -219,48 +225,7 @@
 
 {% block scripts %}
 <script>
-// Trigger HTMX preview whenever any layout field changes
-document.addEventListener('DOMContentLoaded', function () {
-    const layoutFields = [
-        'id_product', 'id_quantity', 'id_layout_rows', 'id_layout_cols',
-        'id_gap_horizontal_mm', 'id_gap_vertical_mm', 'id_margin_lateral_mm',
-        'id_margin_top_mm', 'id_margin_bottom_mm', 'id_orientation', 'id_bobina_width_mm'
-    ];
-
-    const previewContainer = document.getElementById('material-preview-container');
-    if (!previewContainer) return;
-
-    function buildPreviewUrl() {
-        const params = new URLSearchParams();
-        layoutFields.forEach(function (id) {
-            const el = document.getElementById(id);
-            if (el && el.value) params.append(id.replace('id_', ''), el.value);
-        });
-        return "{% url 'orders:layout_preview' %}?" + params.toString();
-    }
-
-    function refreshPreview() {
-        const url = buildPreviewUrl();
-        htmx.ajax('GET', url, { target: '#material-preview-container', swap: 'innerHTML' });
-    }
-
-    // Debounce helper
-    let debounceTimer;
-    function debounced() {
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(refreshPreview, 500);
-    }
-
-    layoutFields.forEach(function (id) {
-        const el = document.getElementById(id);
-        if (el) el.addEventListener('input', debounced);
-        if (el) el.addEventListener('change', debounced);
-    });
-
-    // Initial load if product already selected
-    if (document.getElementById('id_product') && document.getElementById('id_product').value) {
-        refreshPreview();
-    }
-});
+    window.layoutPreviewUrl = "{% url 'orders:layout_preview' %}";
 </script>
+<script src="{% static 'js/workorder_layout_preview.js' %}?v={% now 'U' %}"></script>
 {% endblock %}

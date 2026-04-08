@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PrintFlow | Stock</title>
+    <title>{{ request.tenant.name|default:"PRINTFLOW" }} | Stock</title>
     <link rel="stylesheet" href="{% static 'css/output.css' %}">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
 </head>
@@ -18,7 +18,8 @@
 
         <!-- Logo -->
         <div class="p-6 border-b border-border-default">
-            <h1 class="text-xl font-normal text-white tracking-[0.2em]">PRINTFLOW</h1>
+            <h1 class="text-xl font-normal text-white uppercase tracking-[0.2em]">{{ request.tenant.name|default:"PRINTFLOW" }}</h1>
+            <p class="text-[10px] text-slate-500 uppercase tracking-widest mt-1">POWERED BY PRINTFLOW</p>
         </div>
 
         <!-- Menú Scrolleable -->

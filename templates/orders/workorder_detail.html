@@ -19,14 +19,19 @@
             <p class="text-slate-500 text-sm">Creada el {{ object.created_at|date:"d M Y, H:i" }} por {{ object.sales_rep.get_full_name|default:object.sales_rep.username }}</p>
         </div>
 
-        <div class="flex items-center gap-3 w-full md:w-auto flex-wrap">
+        <div class="flex items-center gap-2 w-full md:w-auto flex-wrap">
             {% include 'orders/fragments/status_badge.html' with order=object %}
-            <a href="{% url 'orders:list' %}" class="bg-surface hover:bg-surface-hover border border-border-default text-slate-300 text-[10px] font-normal py-3 px-6 transition-all uppercase tracking-widest rounded-sm">
-                Volver al listado
+            <div class="h-6 w-px bg-border-default mx-1 hidden md:block"></div>
+            <a href="{% url 'orders:list' %}" class="text-[9px] font-bold text-slate-400 hover:text-white uppercase tracking-widest transition-colors px-2">
+                Volver
             </a>
-            <a href="{% url 'orders:update' object.pk %}" class="bg-slate-800 hover:bg-slate-700 text-white text-[10px] font-normal py-3 px-6 transition-all uppercase tracking-widest rounded-sm">
+            <a href="{% url 'orders:update' object.pk %}" class="text-[9px] font-bold text-blue-400 hover:text-blue-300 uppercase tracking-widest transition-colors px-2">
                 Editar OT
             </a>
+            <button class="bg-surface hover:bg-surface-hover border border-slate-700/50 text-slate-300 hover:text-white text-[9px] font-bold py-1.5 px-3 transition-colors uppercase tracking-widest rounded shadow-sm flex items-center gap-1.5 ml-2">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                Hoja de Ruta
+            </button>
         </div>
     </div>
 
@@ -35,149 +40,163 @@
         {% include 'orders/fragments/progress_bar.html' with order=object %}
     </div>
 
+    
     <div class="space-y-6">
-
-        <!-- Contenido Completo (Full Width) -->
-        <div class="space-y-6">
-            <!-- Parámetros Originales -->
-            <div class="bg-surface border border-border-default rounded-lg overflow-hidden">
-                <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default flex items-center justify-between">
-                    <h3 class="text-xs font-normal text-slate-400 uppercase tracking-widest">Información Original</h3>
-                    <span class="text-[10px] text-slate-500 font-light">Planificación Inicial</span>
-                </div>
-                <div class="p-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    <div>
-                        <p class="text-[10px] text-slate-500 uppercase font-normal mb-1">Cliente</p>
-                        <p class="text-sm text-white font-normal">{{ object.product.customer.name }}</p>
-                        <p class="text-[10px] text-slate-400 mt-1 font-light">{{ object.product.customer.tax_id }}</p>
+        
+        <!-- Fila 1: Info Original y Estado (Grid 50/50) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            <!-- Columna Izquierda: Información del Trabajo y Logística -->
+            <div class="flex flex-col gap-6 h-full">
+                <div class="bg-surface border border-border-default rounded-lg overflow-hidden flex-1">
+                    <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default flex items-center justify-between">
+                        <h3 class="text-xs font-normal text-slate-400 uppercase tracking-widest">Información del Trabajo</h3>
                     </div>
-                    <div>
-                        <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Producto</p>
-                        <p class="text-sm text-orange-400 font-bold">{{ object.product.name }}</p>
-                        <p class="text-[10px] text-slate-400 mt-1">Sustrato: {{ object.product.substrate.name }}</p>
+                    <div class="p-6 flex flex-row justify-between items-start gap-4 flex-wrap">
+                        <div class="flex flex-col">
+                            <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Cliente</span>
+                            <span class="text-sm text-white">{{ object.product.customer.name }}</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Producto</span>
+                            <span class="text-sm text-orange-400 font-bold">{{ object.product.name }}</span>
+                        </div>
+                        <div class="flex flex-col text-center">
+                            <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Bocas</span>
+                            <span class="text-sm text-white">{{ object.bocas|default:"--" }}</span>
+                        </div>
+                        <div class="flex flex-col text-center">
+                            <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Cantidad</span>
+                            <span class="text-sm text-white">{{ object.quantity }}</span>
+                        </div>
+                        <div class="flex flex-col text-center">
+                            <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Cálculo Mat.</span>
+                            <span class="text-sm text-slate-300 font-bold">{{ object.estimated_material_usage|default:"--" }} ml</span>
+                        </div>
+                        <div class="flex flex-col text-right">
+                            <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Entrega</span>
+                            <span class="text-sm text-white font-bold">{{ object.due_date|date:"d/m/Y" }}</span>
+                        </div>
                     </div>
-                    <div>
-                        <p class="text-[10px] text-slate-500 uppercase font-normal mb-1">Cantidad / Bocas</p>
-                        <p class="text-xl text-white font-normal">{{ object.quantity }} <span class="text-xs font-normal text-slate-500">un.</span></p>
-                        <p class="text-[10px] text-slate-400 mt-1 font-light">Bocas (Poses): {{ object.bocas|default:"--" }}</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Entrega Prometida</p>
-                        <p class="text-sm text-white font-bold">{{ object.due_date|date:"d/M/Y" }}</p>
-                        <p class="text-[10px] text-slate-400 mt-1">{% if object.material_used %}Mat: {{ object.material_used }} ml{% else %}Mat no reportado{% endif %}</p>
+                    
+                    <!-- Lugar de Entrega Integrado -->
+                    <div class="border-t border-border-default bg-surface-dark/20 p-6">
+                        <div class="flex items-center gap-2 mb-4">
+                            <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Lugar de Entrega</h3>
+                        </div>
+                        {% if object.product.customer.delivery_street %}
+                        <div class="flex flex-row justify-between items-start gap-4 flex-wrap">
+                            <div class="flex flex-col">
+                                <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Dirección</span>
+                                <span class="text-sm text-white">{{ object.product.customer.delivery_street }} {{ object.product.customer.delivery_street_number }}{% if object.product.customer.delivery_floor_apt %} {{ object.product.customer.delivery_floor_apt }}{% endif %}</span>
+                            </div>
+                            <div class="flex flex-col text-center">
+                                <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Localidad</span>
+                                <span class="text-sm text-white">{{ object.product.customer.delivery_city|default:"--" }}</span>
+                            </div>
+                            <div class="flex flex-col text-center">
+                                <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Provincia</span>
+                                <span class="text-sm text-white">{{ object.product.customer.delivery_province|default:"--" }}</span>
+                            </div>
+                            <div class="flex flex-col text-right">
+                                <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">País</span>
+                                <span class="text-sm text-white">{{ object.product.customer.delivery_country|default:"--" }}</span>
+                            </div>
+                        </div>
+                        {% else %}
+                        <p class="text-sm text-slate-500 italic">No hay dirección de entrega registrada en la ficha del cliente.</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
-
-            <!-- Información Actualizada (Producción) -->
-            <div class="bg-surface border border-border-default rounded-lg overflow-hidden relative">
-                <div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 to-blue-600"></div>
-                <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default flex items-center justify-between pl-6">
-                    <h3 class="text-xs font-normal text-slate-400 uppercase tracking-widest pl-2">Estado de Producción</h3>
-                    <span class="text-[10px] text-blue-400 font-normal uppercase tracking-widest bg-blue-900/30 px-2 py-0.5 rounded-sm">Taller</span>
-                </div>
-                <div class="p-6 pl-8 grid grid-cols-1 sm:grid-cols-3 gap-6">
-                    <div>
-                        <p class="text-[10px] text-slate-500 uppercase font-normal mb-1">Estado en Planta</p>
-                        <p id="info-current-status" class="text-sm text-blue-400 font-normal uppercase transition-colors">{{ object.get_current_status_display }}</p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Última Cantidad Reportada</p>
-                        <p id="info-current-quantity" class="text-sm text-white font-bold">
-                            {% if logs and logs.0.quantity_produced %}
-                            {{ logs.0.quantity_produced }} <span class="text-xs font-normal text-slate-500">un. parciales</span>
-                            {% else %}
-                            <span class="text-slate-500 text-xs italic">Aún sin reportes</span>
-                            {% endif %}
-                        </p>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Último Material Consumido</p>
-                        <p id="info-current-material" class="text-sm text-white font-bold">
-                            {% if logs and logs.0.material_used %}
-                            {{ logs.0.material_used }} <span class="text-xs font-normal text-slate-500">ml parciales</span>
-                            {% else %}
-                            <span class="text-slate-500 text-xs italic">Aún sin reportes</span>
-                            {% endif %}
-                        </p>
-                    </div>
-                </div>
-            </div>
-
+            
             <!-- Especificaciones del Producto (Anverso/Reverso y Ficha Técnica) -->
             {% include 'orders/fragments/product_details.html' with product=object.product %}
 
-            <!-- Notas de Producción -->
-            {% if object.production_notes %}
-            <div class="bg-surface border border-border-default rounded-lg overflow-hidden">
-                <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default border-l-2 border-l-yellow-500">
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Notas de Producción</h3>
-                </div>
-                <div class="p-4 bg-yellow-900/10">
-                    <p class="text-xs text-yellow-500/80 whitespace-pre-wrap leading-relaxed">{{ object.production_notes }}</p>
+            <!-- Columna Derecha: Proceso y Métricas -->
+            <div class="flex flex-col gap-6 h-full">
+                <!-- Estado en Planta -->
+                <div class="bg-surface border border-border-default rounded-lg overflow-hidden relative flex-1">
+                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 to-blue-600"></div>
+                    <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default flex items-center justify-between pl-6">
+                        <h3 class="text-xs font-normal text-slate-400 uppercase tracking-widest pl-2">Estado de Producción</h3>
+                        <span class="text-[10px] text-blue-400 font-normal uppercase tracking-widest bg-blue-900/30 px-2 py-0.5 rounded-sm">Taller</span>
+                    </div>
+                    
+                    <div class="p-6 pl-8 flex flex-row justify-between items-start gap-4 flex-wrap">
+                        <div class="flex flex-col">
+                            <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Estado Actual</span>
+                            <span id="info-current-status" class="text-sm text-blue-400 font-bold uppercase transition-colors">{{ object.get_current_status_display }}</span>
+                        </div>
+                        <div class="flex flex-col text-center">
+                            <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Última Cantidad</span>
+                            <span id="info-current-quantity" class="text-sm text-white font-bold">
+                                {% if logs and logs.0.quantity_produced %}
+                                {{ logs.0.quantity_produced }} <span class="text-[9px] font-normal text-slate-500 uppercase">parcial</span>
+                                {% else %}
+                                <span class="text-slate-500 text-xs italic">--</span>
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="flex flex-col text-center">
+                            <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Último Consumo</span>
+                            <span id="info-current-material" class="text-sm text-white font-bold">
+                                {% if logs and logs.0.material_used %}
+                                {{ logs.0.material_used }} <span class="text-[9px] font-normal text-slate-500 uppercase">parcial</span>
+                                {% else %}
+                                <span class="text-slate-500 text-xs italic">--</span>
+                                {% endif %}
+                            </span>
+                        </div>
+                        <div class="flex flex-col text-right">
+                            <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Prioridad</span>
+                            <span class="text-[10px] font-bold uppercase {% if object.priority == 'URGENT' %}text-red-500{% elif object.priority == 'HIGH' %}text-orange-500{% else %}text-slate-400{% endif %}">
+                                {{ object.get_priority_display }}
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
-            {% endif %}
 
-            <!-- Logística y Entrega -->
-            <div class="bg-surface border border-border-default rounded-lg overflow-hidden">
-                <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default flex items-center gap-2">
-                    <svg class="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Lugar de Entrega</h3>
-                </div>
-                <div class="p-6">
-                    {% if object.product.customer.address %}
-                    <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Dirección fiscal del cliente</p>
-                    <p class="text-sm text-white font-medium">{{ object.product.customer.address }}</p>
-                    {% else %}
-                    <p class="text-[10px] text-slate-500 uppercase font-bold mb-1">Dirección no especificada</p>
-                    <p class="text-sm text-slate-500 italic">No hay dirección registrada en la ficha del cliente.</p>
-                    {% endif %}
-                </div>
-            </div>
+        </div> <!-- Fin Fila 1 -->
 
+        <!-- Fila 2: Stock y Tareas (Grid 50/50) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+            
             {# ── Material / Stock Panel (HTMX swappable) ── #}
             {% include 'orders/fragments/stock_panel.html' with order=object %}
 
-        <!-- KPIs y Acciones (Ahora horizontales full width) -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-surface border border-border-default rounded-lg p-6 flex flex-col justify-center">
-                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Métricas Estimadas</h3>
-                <div class="space-y-4">
-                    <div class="flex justify-between items-center py-2 border-b border-border-default/50">
-                        <span class="text-[11px] text-slate-500">Uso de Material:</span>
-                        <span class="text-sm text-white font-bold">{{ object.estimated_material_usage|default:"--" }} ml</span>
+            <div class="flex flex-col gap-6">
+                <!-- Notas de Producción -->
+                {% if object.production_notes %}
+                <div class="bg-surface border border-border-default rounded-lg overflow-hidden">
+                    <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default border-l-2 border-l-yellow-500">
+                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Notas de Producción</h3>
                     </div>
-                    <div class="flex justify-between items-center py-2 border-b border-border-default/50">
-                        <span class="text-[11px] text-slate-500 font-light">Prioridad:</span>
-                        <span class="text-[10px] font-normal uppercase {% if object.priority == 'URGENT' %}text-red-500{% elif object.priority == 'HIGH' %}text-orange-500{% else %}text-slate-400{% endif %}">
-                            {{ object.get_priority_display }}
-                        </span>
+                    <div class="p-4 bg-yellow-900/10 h-full min-h-[120px]">
+                        <p class="text-xs text-yellow-500/80 whitespace-pre-wrap leading-relaxed">{{ object.production_notes }}</p>
                     </div>
                 </div>
-            </div>
+                {% endif %}
 
-            <div class="bg-orange-600/5 border border-orange-900/20 rounded-lg p-6 flex flex-col justify-center">
-                <h3 class="text-[10px] font-bold text-orange-500 uppercase tracking-widest mb-3">Acciones Rápidas</h3>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <button class="w-full bg-surface hover:bg-surface-hover text-slate-300 text-[10px] font-normal py-2 rounded transition-colors uppercase">Imprimir Hoja de Ruta</button>
-                    <button class="w-full bg-surface hover:bg-surface-hover text-slate-300 text-[10px] font-normal py-2 rounded transition-colors uppercase">Generar Remito</button>
-                </div>
-            </div>
+
+        </div>
+
+        {# ── Ficha Médica / Log de Producción (Full Width) (HTMX swappable) ── #}
+        <div id="log-feed-wrapper" hx-get="{% url 'orders:add_log' object.pk %}" hx-trigger="statusUpdated from:body, logUpdated from:body" hx-swap="innerHTML">
+            {% include 'orders/fragments/log_feed.html' %}
+        </div>
+        
+        <!-- Volver al listado -->
+        <div class="flex justify-start pt-6">
+            <a href="{% url 'orders:list' %}" class="text-xs text-slate-500 hover:text-white transition-colors">
+                &larr; Volver al listado de órdenes
+            </a>
         </div>
     </div>
 
-    {# ── Ficha Médica / Log de Producción (Full Width) (HTMX swappable) ── #}
-    <div id="log-feed-wrapper" hx-get="{% url 'orders:add_log' object.pk %}" hx-trigger="statusUpdated from:body, logUpdated from:body" hx-swap="innerHTML">
-        {% include 'orders/fragments/log_feed.html' %}
-    </div>
 
-    <!-- Volver al listado -->
-    <div class="flex justify-start pt-6">
-        <a href="{% url 'orders:list' %}" class="text-xs text-slate-500 hover:text-white transition-colors">
-            &larr; Volver al listado de órdenes
-        </a>
-    </div>
 </div>
 
 <div id="modal-container"></div>

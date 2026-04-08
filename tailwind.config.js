@@ -37,7 +37,7 @@ module.exports = {
         'special':        '#a855f7', // purple-400
       },
       fontFamily: {
-        'mono': ['JetBrains Mono', 'Fira Code', 'monospace'],
+        'sans-serif': ['Inter', 'sans-serif', 'encode-sans'],
       },
       borderRadius: {
         'sm': '2px',   // Buttons, badges — sharp corporate feel

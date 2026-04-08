@@ -94,15 +94,51 @@ User.objects.create_user(
 )
 print('✅ Usuario velton_admin creado para Grupo Velton.')
 "
-# python manage.py tenant_command import_pantone --schema=velton
-# echo "🎨  Seeding CMYK colors..."
-# python seed_cmyk.py
+
+
+# 7. Crear tenant Salleo SRL con sus branches
+echo "🏭  Creando tenant Salleo..."
+python manage.py shell -c "
+from tenants.models import PrintShop, Domain, Branch
+velton = PrintShop(schema_name='salleo', name='Salleo SRL', plan='pro')
+velton.save()
+Domain.objects.create(domain='salleo.localhost', tenant=velton, is_primary=True)
+print('✅ Tenant Salleo SRL creado.')
+"
+
+# 8. Crear usuario operativo para Salleo
+echo "👤  Creando usuario operativo en Salleo..."
+python manage.py shell -c "
+from django.db import connection
+from users.models import User
+from tenants.models import PrintShop
+
+salleo = PrintShop.objects.get(schema_name='salleo')
+
+# Set RLS context before creating user
+with connection.cursor() as cursor:
+    cursor.execute(\"SELECT set_config('app.current_tenant_id', %s, false)\", [str(salleo.id)])
+
+User.objects.create_user(
+    username='salleo_admin',
+    email='admin@salleo.com',
+    password='salleo1234',
+    role='ADMIN',
+    tenant=salleo,
+)
+print('✅ Usuario salleo_admin creado para Salleo SRL.')
+"
+
+
+
 echo ""
 echo "✅  ¡LISTO! Sistema reseteado y configurado para desarrollo."
 echo ""
 echo "   Accesos disponibles:"
 echo "   → Admin público:  http://localhost:8001/admin/"
 echo "   → Grupo Velton:   http://velton.localhost:8001/"
+echo "   → Salleo SRL:   http://salleo.localhost:8001/"
 echo ""
 echo "   Recordá agregar a /etc/hosts:"
 echo "   127.0.0.1  velton.localhost"
+echo "   127.0.0.1  salleo.localhost"
