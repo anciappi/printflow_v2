@@ -108,3 +108,11 @@ Para detalle completo ver log-[modulo].md correspondiente.
 - dashboard: Implementación de KPI Bar, Tablas de Clientes, Materiales y Producción Vigente.
 - dashboard: Estética Premium "Dark Industrial" con grid asimétrico y tags de prioridad.
 - core: Redirección raíz a dashboard y actualización de navegación sidebar.
+
+## 2026-04-09
+- security: Auditoría multi-tenant completa — descubierta fuga crítica de Branch entre tenants.
+- security: purchasing, orders, quotes, inventory — `branch` filtrado por tenant en todos los forms y contextos.
+- security: `StaffMixin` aplicado a todas las views de orders que solo tenían `LoginRequiredMixin`.
+- infra: Salleo SRL agregado como segundo tenant en `reset_app.sh` para testing de aislamiento.
+- infra: `inventory/forms.py` — `PurchaseOrderForm` duplicado eliminado; imports redirigidos a `purchasing/forms.py`.
+- Ver detalle: log-purchasing.md, log-tenants.md, log-orders.md

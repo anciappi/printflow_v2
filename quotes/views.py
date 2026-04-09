@@ -263,7 +263,9 @@ class CardJobOrderListView(LoginRequiredMixin, StaffMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['status_choices'] = CardJobOrder.STATUS_CHOICES
-        context['branches'] = Branch.objects.all()
+        context['branches'] = Branch.objects.filter(
+            tenant=self.request.tenant, is_active=True
+        )
         context['current_filters'] = {
             'q': self.request.GET.get('q', ''),
             'status': self.request.GET.get('status', ''),

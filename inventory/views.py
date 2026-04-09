@@ -20,7 +20,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 # Importa Modelos y Forms
 from .models import InventoryUnit, Material, ConsumptionLog
 from purchasing.models import PurchaseOrder, Supplier
-from .forms import PurchaseOrderForm, PurchaseOrderItemFormSet, SupplierForm, MaterialForm
+from purchasing.forms import PurchaseOrderForm, PurchaseOrderItemFormSet, SupplierForm
+from .forms import MaterialForm
 
 # Create your views here.
 
@@ -89,7 +90,7 @@ def edit_purchase_order(request, pk):
         return redirect('inventory:oc_list')
 
     if request.method == 'POST':
-        form = PurchaseOrderForm(request.POST, instance=oc)
+        form = PurchaseOrderForm(request.POST, instance=oc, request=request)
         # Importante: instance=oc conecta los items a esta orden
         formset = PurchaseOrderItemFormSet(request.POST, instance=oc)
 
@@ -100,7 +101,7 @@ def edit_purchase_order(request, pk):
                 messages.success(request, f"Orden {oc.remito_number} actualizada correctamente.")
                 return redirect('inventory:oc_list')
     else:
-        form = PurchaseOrderForm(instance=oc)
+        form = PurchaseOrderForm(instance=oc, request=request)
         formset = PurchaseOrderItemFormSet(instance=oc)
 
     # Reutilizamos el template de creación o creamos uno nuevo. 
@@ -196,25 +197,19 @@ def registrar_consumo(request, unit_id):
 def create_purchase_order(request):
     # 1. Si enviaron el formulario (POST)
     if request.method == 'POST':
-        form = PurchaseOrderForm(request.POST)
+        form = PurchaseOrderForm(request.POST, request=request)
         formset = PurchaseOrderItemFormSet(request.POST)
         
         if form.is_valid() and formset.is_valid():
             try:
                 with transaction.atomic():
                     purchase_order = form.save(commit=False)
-                    
-                    
-                    # Generamos el ID Automático
                     fecha = timezone.now().strftime('%y%m%d')
                     random_str = str(uuid.uuid4())[:4].upper()
                     purchase_order.remito_number = f"OC-{fecha} - {random_str}"
-                    
                     purchase_order.save()
-                    
                     formset.instance = purchase_order
                     formset.save()
-                    
                     messages.success(request, f"Orden generada con ID: {purchase_order.remito_number}")
                     return redirect('inventory:oc_list')
             except Exception as e:
@@ -222,7 +217,7 @@ def create_purchase_order(request):
     
     # 2. Si entran por primera vez (GET)
     else:
-        form = PurchaseOrderForm()
+        form = PurchaseOrderForm(request=request)
         formset = PurchaseOrderItemFormSet()
 
     # --- IMPORTANTE: ESTE RETURN DEBE ESTAR ALINEADO CON EL 'IF' ---

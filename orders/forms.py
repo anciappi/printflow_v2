@@ -1,5 +1,6 @@
 from django import forms
 from django.urls import reverse_lazy
+from django_tenants.utils import get_tenant
 from .models import WorkOrder, WorkOrderLog
 from tenants.models import Branch
 from customers.models import Customer
@@ -31,11 +32,19 @@ class WorkOrderForm(forms.ModelForm):
         }
 
     def __init__(self, *args, **kwargs):
+        # Accept request to resolve the current tenant and filter branch queryset.
+        request = kwargs.pop('request', None)
         super().__init__(*args, **kwargs)
         base_class = "w-full bg-surface-dark border border-border-default text-slate-300 text-sm rounded focus:ring-1 focus:ring-orange-500 focus:border-orange-500 block p-2.5 placeholder-slate-600"
-        
+
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = base_class
+
+        if request is not None:
+            current_tenant = get_tenant(request)
+            self.fields['branch'].queryset = Branch.objects.filter(
+                tenant=current_tenant, is_active=True
+            )
 
         # Add HTMX triggers to the customer field
         self.fields['customer'].widget.attrs.update({

@@ -1,6 +1,6 @@
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, View
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.db.models import Sum, Case, When, Value, IntegerField, Count
@@ -12,6 +12,13 @@ from .forms import WorkOrderForm, WorkOrderLogForm, WorkOrderAdvanceForm
 from inventory.models import InventoryUnit, ConsumptionLog
 from products.models import Product
 from tenants.models import Branch
+from users.models import User
+
+
+class StaffMixin(UserPassesTestMixin):
+    """Blocks PORTAL role users from internal views."""
+    def test_func(self):
+        return self.request.user.role != User.Roles.PORTAL
 
 
 # ---------------------------------------------------------------------------
@@ -73,7 +80,7 @@ def _render_stock_panel(request, order, extra_ctx=None):
 # VIEWS
 # ---------------------------------------------------------------------------
 
-class WorkOrderListView(LoginRequiredMixin, ListView):
+class WorkOrderListView(LoginRequiredMixin, StaffMixin, ListView):
     model = WorkOrder
     template_name = 'orders/workorder_list.html'
     context_object_name = 'orders'
@@ -126,7 +133,9 @@ class WorkOrderListView(LoginRequiredMixin, ListView):
         context['current_date_from'] = self.request.GET.get('date_from', '')
         context['current_date_to'] = self.request.GET.get('date_to', '')
         context['status_choices'] = WorkOrder.STATUS_CHOICES
-        context['branches'] = Branch.objects.all()
+        context['branches'] = Branch.objects.filter(
+            tenant=self.request.tenant, is_active=True
+        )
 
         # Count across ALL orders (unfiltered) so pill counts are always accurate
         all_counts = WorkOrder.objects.values('current_status').annotate(count=Count('id'))
@@ -147,7 +156,7 @@ class WorkOrderListView(LoginRequiredMixin, ListView):
         return context
 
 
-class WorkOrderCreateView(LoginRequiredMixin, CreateView):
+class WorkOrderCreateView(LoginRequiredMixin, StaffMixin, CreateView):
     model = WorkOrder
     form_class = WorkOrderForm
     template_name = 'orders/workorder_form.html'
@@ -184,8 +193,13 @@ class WorkOrderCreateView(LoginRequiredMixin, CreateView):
         form.instance.sales_rep = self.request.user
         return super().form_valid(form)
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
 
-class WorkOrderUpdateView(LoginRequiredMixin, UpdateView):
+
+class WorkOrderUpdateView(LoginRequiredMixin, StaffMixin, UpdateView):
     model = WorkOrder
     form_class = WorkOrderForm
     template_name = 'orders/workorder_form.html'
@@ -194,8 +208,13 @@ class WorkOrderUpdateView(LoginRequiredMixin, UpdateView):
     def get_queryset(self):
         return WorkOrder.objects.select_related('product__customer', 'branch')
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['request'] = self.request
+        return kwargs
 
-class WorkOrderDetailView(LoginRequiredMixin, DetailView):
+
+class WorkOrderDetailView(LoginRequiredMixin, StaffMixin, DetailView):
     model = WorkOrder
     template_name = 'orders/workorder_detail.html'
     context_object_name = 'order'
