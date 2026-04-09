@@ -17,3 +17,9 @@ Seguimiento de cambios globales de UI/UX, Tailwind tokens, CSS y fragments trans
 - **Industrial Hierarchy**: Mejoras en la legibilidad mediante el uso de `tracking-widest`, `uppercase` y contrastes tonales en lugar de grosor de fuente.
 - **Login UI**: Rediseño de la pantalla de acceso para alinearla con la estética premium VS Code del resto del sistema.
 
+## 2026-04-08 | Dashboard Hub Operativo | ✅
+- **Premium Layout**: Implementación de `dashboard/index.html` con grid asimétrico y KPIs horizontales.
+- **Fixed Semantic Classes**: Hardcoding de clases de estado (`text-blue-400`, etc.) para asegurar compatibilidad con el motor de purga de Tailwind v4 en modo CLI.
+- **UX**: Navegación rápida desde sidebar y redirección inteligente desde la raíz.
+- **Inline KPI Cards**: Diseño de alto impacto visual con íconos vectoriales y tipografía Encode Sans Light.
+

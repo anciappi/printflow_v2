@@ -102,3 +102,9 @@ Para detalle completo ver log-[modulo].md correspondiente.
 - products: Implementación de `ProductDetailView` y Hub Técnico 360°, Zoom Modal de diseños, visualización de OTs activas/histórico y navegación unificada ("Ver Ficha").
 - global-ui: Fase 1 Modernización Tipográfica — migración a **Encode Sans**, estandarización de pesos Normal/Light y remoción completa de fuentes mono en todo el sistema.
 - global-ui: Barrido quirúrgico de pesos en OTs, Clientes, Productos e Inventario para estética "Dark Industrial" premium.
+
+## 2026-04-08
+- dashboard: Lanzamiento de la App Dashboard — Hub Operativo 360°.
+- dashboard: Implementación de KPI Bar, Tablas de Clientes, Materiales y Producción Vigente.
+- dashboard: Estética Premium "Dark Industrial" con grid asimétrico y tags de prioridad.
+- core: Redirección raíz a dashboard y actualización de navegación sidebar.

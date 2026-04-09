@@ -95,18 +95,18 @@ User.objects.create_user(
 print('✅ Usuario velton_admin creado para Grupo Velton.')
 "
 
-
-# 7. Crear tenant Salleo SRL con sus branches
-echo "🏭  Creando tenant Salleo..."
+# 9. Crear tenant Salleo SRL con sus branches
+echo "🏭  Creando tenant Salleo SRL..."
 python manage.py shell -c "
 from tenants.models import PrintShop, Domain, Branch
-velton = PrintShop(schema_name='salleo', name='Salleo SRL', plan='pro')
-velton.save()
-Domain.objects.create(domain='salleo.localhost', tenant=velton, is_primary=True)
+salleo = PrintShop(schema_name='salleo', name='Salleo SRL', plan='pro')
+salleo.save()
+Domain.objects.create(domain='salleo.localhost', tenant=salleo, is_primary=True)
+Branch.objects.create(tenant=salleo, name='Salleo SRL')
 print('✅ Tenant Salleo SRL creado.')
 "
 
-# 8. Crear usuario operativo para Salleo
+# 10. Crear usuario operativo para Salleo
 echo "👤  Creando usuario operativo en Salleo..."
 python manage.py shell -c "
 from django.db import connection
@@ -128,7 +128,6 @@ User.objects.create_user(
 )
 print('✅ Usuario salleo_admin creado para Salleo SRL.')
 "
-
 
 
 echo ""

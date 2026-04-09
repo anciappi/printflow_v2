@@ -1,5 +1,7 @@
 from django import forms
 from django.forms import inlineformset_factory
+from django_tenants.utils import get_tenant
+from tenants.models import Branch
 # Models now live in this app
 from .models import PurchaseOrder, PurchaseOrderItem, Supplier
 
@@ -30,6 +32,16 @@ class PurchaseOrderForm(forms.ModelForm):
             'customer_name': 'Cliente Referencia',
             'order_date':    'Fecha de Emisión',
         }
+
+    def __init__(self, *args, **kwargs):
+        # Accept request to resolve the current tenant at form level.
+        request = kwargs.pop('request', None)
+        super().__init__(*args, **kwargs)
+        if request is not None:
+            current_tenant = get_tenant(request)
+            self.fields['branch'].queryset = Branch.objects.filter(
+                tenant=current_tenant, is_active=True
+            )
 
 
 class PurchaseOrderItemForm(forms.ModelForm):

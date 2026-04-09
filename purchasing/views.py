@@ -5,8 +5,14 @@ from django.http import HttpResponse
 from django.views.generic import ListView
 from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.messages.views import SuccessMessageMixin
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import login_required
+from users.models import User
+
+
+class StaffMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.role != User.Roles.PORTAL
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.db import transaction
@@ -53,9 +59,12 @@ class PurchaseOrderListView(LoginRequiredMixin, ListView):
 
 @login_required
 def create_purchase_order(request):
-    """Crear una nueva Orden de Compra con sus ítems."""
+    """Create a new Purchase Order with its items."""
+    if request.user.role == User.Roles.PORTAL:
+        return redirect('purchasing:oc_list')
+
     if request.method == 'POST':
-        form = PurchaseOrderForm(request.POST)
+        form = PurchaseOrderForm(request.POST, request=request)
         formset = PurchaseOrderItemFormSet(request.POST)
 
         if form.is_valid() and formset.is_valid():
@@ -73,7 +82,7 @@ def create_purchase_order(request):
             except Exception as e:
                 messages.error(request, f"Error al guardar: {e}")
     else:
-        form = PurchaseOrderForm()
+        form = PurchaseOrderForm(request=request)
         formset = PurchaseOrderItemFormSet()
 
     materials_json = json.dumps({m.id: float(m.length or 0) for m in Material.objects.all()})
@@ -89,7 +98,10 @@ def create_purchase_order(request):
 
 @login_required
 def edit_purchase_order(request, pk):
-    """Editar una OC en estado PENDING."""
+    """Edit a PENDING Purchase Order."""
+    if request.user.role == User.Roles.PORTAL:
+        return redirect('purchasing:oc_list')
+
     oc = get_object_or_404(PurchaseOrder, pk=pk)
 
     if oc.status != 'PENDING':
@@ -97,7 +109,7 @@ def edit_purchase_order(request, pk):
         return redirect('purchasing:oc_list')
 
     if request.method == 'POST':
-        form = PurchaseOrderForm(request.POST, instance=oc)
+        form = PurchaseOrderForm(request.POST, instance=oc, request=request)
         formset = PurchaseOrderItemFormSet(request.POST, instance=oc)
 
         if form.is_valid() and formset.is_valid():
@@ -107,7 +119,7 @@ def edit_purchase_order(request, pk):
                 messages.success(request, f"Orden {oc.remito_number} actualizada.")
                 return redirect('purchasing:oc_list')
     else:
-        form = PurchaseOrderForm(instance=oc)
+        form = PurchaseOrderForm(instance=oc, request=request)
         formset = PurchaseOrderItemFormSet(instance=oc)
 
     materials_json = json.dumps({m.id: float(m.length or 0) for m in Material.objects.all()})

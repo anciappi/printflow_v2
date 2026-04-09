@@ -869,3 +869,20 @@ Dark/Light theme — post-MVP
 9. Permisos granulares por rol de staff
 10. Dark/Light theme
 11. Documentación técnica + tutoriales para usuarios
+
+## Session: 2026-04-07
+**Tasks Completed:**
+- **WorkOrder Detail UI Polish**: Reestructuración y modernización de `workorder_detail.html` para cumplir con el estilo "Dark Industrial". Integración de las acciones y botones al nivel del encabezado, remoción de paneles redundantes, y conversión de la etiqueta de "Estado de Producción" en un componente compacto.
+- **Trazabilidad & Ficha Médica**: Adaptación visual completa de la tabla de logs de producción `log_feed.html` heredando el estilo implementado en el componente de consumos, logrando alta densidad de información.
+- **Optimización de Interfaz Dinámica**: Conversión de `product_details.html` a un componente de tabla condicional que oculta los atributos falsos, limpiando drásticamente el espacio vertical del formulario.
+- **Grillas Asimétricas**: Rediseño integral de `workorder_form.html` introduciendo un grid de 2 columnas donde los componentes anchos (Configuración de Postura) conviven en un balance 50/50 con las tarjetas estrechas (Cronograma y Observaciones), optimizando la densidad de la pantalla y arreglando bugs previos de overflow (`</div>` erróneos inyectados por HTMX).
+- **HTMX Architecture - JS Extraction**: Se identificó un anti-patrón de arquitectura donde la calculadora de materiales estaba hardcodeada en el bloque de scripts del template de `workorder_form.html`. Se extrajo exitosamente a un archivo externo estático modular (`static/js/workorder_layout_preview.js`) con una robusta inyección global de estado y estrategias auto-gestionadas de "cache busting".
+
+**Files Created/Modified:**
+- `templates/orders/workorder_detail.html`: Refactorización de layout.
+- `templates/orders/workorder_form.html`: Rejilla asimétrica y extracción de script.
+- `templates/orders/fragments/log_feed.html`: Remasterización de tabla Dark Industrial.
+- `templates/orders/fragments/product_details.html`: Limpieza visual condicional. Modificado bug de div huérfano.
+- `templates/orders/fragments/status_badge.html`: Modificación a layout de pastilla compacta.
+- `static/js/workorder_layout_preview.js`: **[NUEVO]** Script estático e independiente extraído desde los dominios del template.
+- `.antigravity/logs/log-orders.md`: Adición del registro del sprint actual.

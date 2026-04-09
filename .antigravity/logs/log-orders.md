@@ -98,3 +98,14 @@ orders/
 - **Status Pills**: Ajuste de contrastes en estados de producción para mantener la visibilidad con fuentes más delgadas.
 
 ```
+
+## Sprint: Orders Sprint 7 - UI Polish & JS Extraction | 2026-04-07 | CERRADO ✅
+- **Ficha Médica (log_feed)**: Estética unificada con el resto del tablero "Dark Industrial" (fondos `#0f1115`, bordes sutiles, hover states consistentes).
+- **WorkOrder Detail**: Cabecera simplificada a una tira compacta eliminando paneles huérfanos. Estado "Estado de Producción" compactado a pastilla ("pill") para optimizar espacio vertical.
+- **Product Details Preview**: Lógica condicional refinada para que oculte dinámicamente filas vacías/falsas y ocupe menos espacio.
+- **WorkOrder Form Layout**: Rediseño a un layout asimétrico balanceado (50/50 CSS Grid) apilando "Cronograma" y "Observaciones" a la derecha, frente a la "Configuración de Postura" a la izquierda. Reparado bug en `product_details.html` que provocaba overflow del contenedor rompiendo la experiencia visual.
+- **JS Extraction**: Extracción completa de script on-page para previsualización de material. Movido a `static/js/workorder_layout_preview.js` y refactorizado para tomar la URL base a través de una variable inyectada global en `window`, desacoplando completamente rutas estáticas y añadiendo caché-busting auto-gestionado.
+
+## Sprint: Dashboard Integration | 2026-04-08 | CERRADO ✅
+- **Active Orders Queryset**: Implementación de lógica en `DashboardView` para capturar solo órdenes vigentes (excluyendo entregadas/canceladas).
+- **Status Semantic UI**: Integración de la tabla de órdenes en el dashboard con mapeo visual de estados y prioridades Rush (rojo/bold) alineado al sistema de diseño.

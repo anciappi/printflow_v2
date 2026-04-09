@@ -1,0 +1,342 @@
+{% extends "base.html" %}
+
+{% block breadcrumbs %}Dashboard / General{% endblock %}
+
+{% block content %}
+
+<div class="space-y-6">
+
+    {# ─── HEADER ──────────────────────────────────────────────────────────────── #}
+    <div class="flex items-center justify-between">
+        <div>
+            <h2 class="text-xl font-normal text-white tracking-tight">Panel Principal</h2>
+            <p class="text-[11px] text-slate-500 mt-0.5 uppercase tracking-widest">Resumen operativo del sistema</p>
+        </div>
+    </div>
+
+    {# ─── KPI BAR ─────────────────────────────────────────────────────────────── #}
+    <div class="flex gap-4">
+
+        {# Clientes #}
+        <div class="flex-1 bg-[#1a1d23] border border-[#2d333b] flex items-center gap-3 px-4 py-2.5">
+            <div class="w-8 h-8 bg-orange-500/10 border border-orange-500/20 flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                </svg>
+            </div>
+            <span class="text-[10px] text-slate-500 uppercase tracking-widest">Clientes Activos</span>
+            <span class="text-lg font-light text-white ml-auto">{{ total_customers }}</span>
+        </div>
+
+        {# Materiales #}
+        <div class="flex-1 bg-[#1a1d23] border border-[#2d333b] flex items-center gap-3 px-4 py-2.5">
+            <div class="w-8 h-8 bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
+                </svg>
+            </div>
+            <span class="text-[10px] text-slate-500 uppercase tracking-widest">Materiales en Sistema</span>
+            <span class="text-lg font-light text-white ml-auto">{{ total_materials }}</span>
+        </div>
+
+        {# OTs Activas #}
+        <div class="flex-1 bg-[#1a1d23] border border-[#2d333b] flex items-center gap-3 px-4 py-2.5">
+            <div class="w-8 h-8 bg-blue-500/10 border border-blue-500/20 flex items-center justify-center flex-shrink-0">
+                <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                </svg>
+            </div>
+            <span class="text-[10px] text-slate-500 uppercase tracking-widest">OTs en Curso</span>
+            <span class="text-lg font-light text-white ml-auto">{{ total_active_ots }}</span>
+        </div>
+
+    </div>
+
+    {# ─── ÓRDENES VIGENTES ────────────────────────────────────────────────────── #}
+    <div class="bg-[#1a1d23] border border-[#2d333b] overflow-hidden">
+
+        {# Header #}
+        <div class="flex items-center justify-between px-4 py-2.5 border-b border-[#2d333b]">
+            <div class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                    Órdenes Vigentes
+                    <span class="ml-2 text-slate-600">{{ total_active_ots }}</span>
+                </span>
+            </div>
+            <a href="{% url 'orders:list' %}"
+               class="text-[10px] text-slate-500 hover:text-blue-400 uppercase tracking-wider transition-colors">
+                Ver tablero →
+            </a>
+        </div>
+
+        {# Tabla #}
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-[#0f1115]/50">
+                    <th class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">OT</th>
+                    <th class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">Producto</th>
+                    <th class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">Cliente</th>
+                    <th class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">Estado</th>
+                    <th class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">Prioridad</th>
+                    <th class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-500 text-right">Entrega</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-[#2d333b]">
+                {% for ot in active_orders %}
+                <tr class="hover:bg-[#2d333b]/30 transition-colors">
+
+                    {# OT Number #}
+                    <td class="px-4 py-1.5">
+                        <a href="{% url 'orders:detail' ot.pk %}"
+                           class="font-mono text-xs text-white hover:text-blue-400 transition-colors">
+                            {{ ot.ot_number }}
+                        </a>
+                    </td>
+
+                    {# Producto #}
+                    <td class="px-4 py-1.5 text-xs text-slate-300">{{ ot.product.name }}</td>
+
+                    {# Cliente #}
+                    <td class="px-4 py-1.5 text-[10px] text-slate-500">{{ ot.product.customer.name }}</td>
+
+                    {# Estado #}
+                    <td class="px-4 py-1.5">
+                        {% if ot.current_status == 'PENDING' %}
+                            <span class="text-[10px] text-slate-400">Pendiente</span>
+                        {% elif ot.current_status == 'PREPRESS' %}
+                            <span class="text-[10px] text-purple-400">Pre-Prensa</span>
+                        {% elif ot.current_status == 'PRODUCTION' %}
+                            <span class="text-[10px] text-blue-400">Producción</span>
+                        {% elif ot.current_status == 'FINISHING' %}
+                            <span class="text-[10px] text-amber-400">Terminaciones</span>
+                        {% elif ot.current_status == 'QUALITY_CONTROL' %}
+                            <span class="text-[10px] text-orange-400">Control Calidad</span>
+                        {% elif ot.current_status == 'READY' %}
+                            <span class="text-[10px] text-emerald-400">Listo Entrega</span>
+                        {% endif %}
+                    </td>
+
+                    {# Prioridad #}
+                    <td class="px-4 py-1.5">
+                        {% if ot.priority == 'URGENT' %}
+                            <span class="text-[10px] text-red-400 font-bold">Rush</span>
+                        {% elif ot.priority == 'HIGH' %}
+                            <span class="text-[10px] text-amber-500">Alta</span>
+                        {% else %}
+                            <span class="text-[10px] text-slate-600">Normal</span>
+                        {% endif %}
+                    </td>
+
+                    {# Fecha entrega #}
+                    <td class="px-4 py-1.5 text-right font-mono text-[10px] text-slate-500">{{ ot.due_date }}</td>
+
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="px-5 py-8 text-center text-xs text-slate-600">
+                        No hay órdenes vigentes.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {# Footer CTA #}
+        <div class="px-4 py-2.5 border-t border-[#2d333b]">
+            <a href="{% url 'orders:create' %}"
+               class="text-[10px] text-emerald-400 hover:text-emerald-300 uppercase tracking-wider transition-colors">
+                + Nueva OT
+            </a>
+        </div>
+
+    </div>{# end OTs card #}
+
+    {# ─── MAIN GRID ───────────────────────────────────────────────────────────── #}
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+        {# ── CLIENTES RECIENTES ─────────────────────────────────────────────── #}
+        <div class="bg-[#1a1d23] border border-[#2d333b] overflow-hidden">
+            {# Header #}
+            <div class="flex items-center justify-between px-4 py-2.5 border-b border-[#2d333b]">
+                <div class="flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 bg-orange-500 rounded-full"></span>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Clientes Recientes</span>
+                </div>
+                <a href="{% url 'customers:list' %}"
+                   class="text-[10px] text-slate-500 hover:text-blue-400 uppercase tracking-wider transition-colors">
+                    Ver todos →
+                </a>
+            </div>
+
+            {# Tabla #}
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-[#0f1115]/50">
+                        <th class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">Nombre</th>
+                        <th class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">Tipo</th>
+                        <th class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">Ciudad</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[#2d333b]">
+                    {% for customer in recent_customers %}
+                    <tr class="hover:bg-[#2d333b]/30 transition-colors">
+                        <td class="px-4 py-1.5">
+                            <a href="{% url 'customers:detail' customer.pk %}"
+                               class="text-xs text-white hover:text-blue-400 transition-colors">
+                                {{ customer.name }}
+                            </a>
+                        </td>
+                        <td class="px-4 py-1.5">
+                            <span class="text-[10px] text-slate-400">
+                                {% if customer.customer_type == 'COMPANY' %}Empresa{% else %}Persona{% endif %}
+                            </span>
+                        </td>
+                        <td class="px-4 py-1.5 text-[10px] text-slate-500">
+                            {{ customer.city|default:"—" }}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="px-5 py-6 text-center text-xs text-slate-600">
+                            No hay clientes registrados.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {# Footer CTA #}
+            <div class="px-4 py-2.5 border-t border-[#2d333b]">
+                <a href="{% url 'customers:create' %}"
+                   class="text-[10px] text-emerald-400 hover:text-emerald-300 uppercase tracking-wider transition-colors">
+                    + Agregar cliente
+                </a>
+            </div>
+        </div>
+
+        {# ── MATERIALES CON STOCK ───────────────────────────────────────────── #}
+        <div class="bg-[#1a1d23] border border-[#2d333b] overflow-hidden">
+            {# Header #}
+            <div class="flex items-center justify-between px-4 py-2.5 border-b border-[#2d333b]">
+                <div class="flex items-center gap-2">
+                    <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+                    <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Materiales con Stock</span>
+                </div>
+                <a href="{% url 'inventory:material_list' %}"
+                   class="text-[10px] text-slate-500 hover:text-blue-400 uppercase tracking-wider transition-colors">
+                    Ver todos →
+                </a>
+            </div>
+
+            {# Tabla #}
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-[#0f1115]/50">
+                        <th class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">Material</th>
+                        <th class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">Tipo</th>
+                        <th class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-500 text-right">Stock</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-[#2d333b]">
+                    {% for material in materials %}
+                    <tr class="hover:bg-[#2d333b]/30 transition-colors">
+                        <td class="px-4 py-1.5">
+                            <a href="{% url 'inventory:material_detail' material.pk %}"
+                               class="text-xs text-white hover:text-blue-400 transition-colors">
+                                {{ material.name }}
+                            </a>
+                            {% if material.brand %}
+                            <span class="text-[10px] text-slate-500 ml-1">{{ material.brand }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-1.5 text-[10px] text-slate-400">
+                            {{ material.get_material_type_display }}
+                        </td>
+                        <td class="px-4 py-1.5 text-right">
+                            <span class="font-mono text-xs text-emerald-400">
+                                {{ material.total_stock|floatformat:1 }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3" class="px-5 py-6 text-center text-xs text-slate-600">
+                            No hay materiales con stock activo.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {# Footer CTA #}
+            <div class="px-4 py-2.5 border-t border-[#2d333b]">
+                <a href="{% url 'inventory:material_create' %}"
+                   class="text-[10px] text-emerald-400 hover:text-emerald-300 uppercase tracking-wider transition-colors">
+                    + Cargar material
+                </a>
+            </div>
+        </div>
+
+
+    <div class="bg-[#1a1d23] border border-[#2d333b] overflow-hidden">
+        {# Header #}
+        <div class="flex items-center justify-between px-4 py-2.5 border-b border-[#2d333b]">
+            <div class="flex items-center gap-2">
+                <span class="w-1.5 h-1.5 bg-amber-500 rounded-full"></span>
+                <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Ingresos Pendientes</span>
+            </div>
+            <a href="{% url 'purchasing:oc_list' %}"
+               class="text-[10px] text-slate-500 hover:text-blue-400 uppercase tracking-wider transition-colors">
+                Ver todos →
+            </a>
+        </div>
+
+        {# Tabla #}
+        <table class="w-full text-left border-collapse">
+            <thead>
+                <tr class="bg-[#0f1115]/50">
+                    <th class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-500">OC / Proveedor</th>
+                    <th class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-500 text-center">Items</th>
+                    <th class="px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-slate-500 text-right">Entrega</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-[#2d333b]">
+                {% for po in pending_purchases %}
+                <tr class="hover:bg-[#2d333b]/30 transition-colors">
+                    <td class="px-4 py-1.5">
+                        <a href="{% url 'purchasing:oc_edit' po.pk %}"
+                           class="text-xs text-white hover:text-blue-400 transition-colors">
+                            {{ po.remito_number }}
+                        </a>
+                        <span class="block text-[9px] text-slate-500 mt-0.5">{{ po.supplier.name|truncatechars:20 }}</span>
+                    </td>
+                    <td class="px-4 py-1.5 text-center text-[10px] text-slate-400">
+                        {{ po.items.count }} art.
+                    </td>
+                    <td class="px-4 py-1.5 text-right font-mono text-[10px] text-slate-500">
+                        {{ po.delivery_date|default:"A conf." }}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" class="px-5 py-6 text-center text-xs text-slate-600">
+                        No hay ingresos pendientes registrados.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        {# Footer CTA #}
+        <div class="px-4 py-2.5 border-t border-[#2d333b]">
+            <a href="{% url 'purchasing:oc_create' %}"
+               class="text-[10px] text-emerald-400 hover:text-emerald-300 uppercase tracking-wider transition-colors">
+                + Nueva OC
+            </a>
+        </div>
+    </div>{# end main grid #}
+
+</div>{# end space-y-6 #}
+
+{% endblock %}
