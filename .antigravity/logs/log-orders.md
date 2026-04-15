@@ -137,3 +137,15 @@ orders/
 - **Urgency Highlights**: Implementación de micro-animación *pulse* en OTs urgentes para visibilidad inmediata.
 - **Filter Maintenance**: Preservación de la barra de filtros original (fiel al diseño pre-modernización) por requerimiento de UX técnica.
 
+## 2026-04-14 | OT Detail Modernization: Full-Width & High-Density UI | ✅
+- **Full-Width Layout**: El detalle de la OT (`workorder_detail.html`) y la ficha de producto (`product_detail.html`) ahora son `w-full` (eliminado `max-w-5xl`), maximizando el espacio en monitores industriales.
+- **Ultra-Compact Header**: 
+  - Rediseño de cabecera plana: eliminación de `bg-surface`, bordes y redondeados.
+  - Estructura **OT | Estado**: El badge de estado se movió junto al título para una lectura rápida.
+  - Tipografía refinada: Título en `text-xl` y estado en `text-sm font-light tracking-widest` para un look minimalista.
+- **Ficha Técnica Premium (Detalle OT)**:
+  - Integración del diseño de `product_detail.html` en el fragmento de la OT.
+  - **Grilla 2 Colores**: Diseño visual (anverso/reverso) y especificaciones técnicas posicionados lado a lado (`md:grid-cols-2`).
+  - **Zoom Interactivo**: Implementación de modal de zoom para inspección de diseños de pre-prensa.
+  - **Status Badge Flattening**: El fragmento `status_badge.html` ahora es totalmente plano (sin cajas ni bordes), consistente con el nuevo lenguaje visual.
+- **Fix Logística**: Alineación del título de cabecera con el contenido de las tarjetas inferiores mediante `px-6`.

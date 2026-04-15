@@ -31,3 +31,11 @@ Seguimiento de cambios globales de UI/UX, Tailwind tokens, CSS y fragments trans
   - `stock_panel.html`: Unificación de strings técnicos (Sustrato / Ancho / Gramaje) en una sola línea sutil.
   - Formulario de consumo simplificado con etiquetas en mayúsculas y tipografía `text-[9px]` font-bold (Dark Industrial Style).
   - Eliminación de glifos ruidosos (`#`) en el listado de unidades.
+
+## 2026-04-14 | Ultra-Flat Full Width Design | ✅
+- **Full Width Paradigm**: Transición de contenedores centrados (`max-w-5xl`) a layouts `w-full` en vistas de detalle críticas para maximizar la superficie útil.
+- **Header Flattening**: 
+  - Remoción de contenedores con fondo/borde para la cabecera de la OT, priorizando la tipografía y el espaciado sobre las cajas.
+  - Sincronización de alineación con contenido interno mediante `px-6`.
+- **Minimal Status Component**: Refactor de `status_badge.html` eliminando toda decoración visual (fondos/bordes) y estandarizando en `text-sm font-light tracking-widest`.
+- **Premium Detail Integration**: Unificación visual total entre productos y órdenes de trabajo mediante la reutilización de fragmentos técnicos de alta densidad.

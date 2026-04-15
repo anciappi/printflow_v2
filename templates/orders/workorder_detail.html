@@ -1,54 +1,56 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block breadcrumbs %}
 <span class="text-slate-500">Producción / Órdenes /</span> <span class="text-white ml-1">Detalle OT {{ object.ot_number }}</span>
 {% endblock %}
 
 {% block content %}
-<div class="max-w-5xl mx-auto space-y-6">
+<div class="w-full space-y-6">
 
     <!-- Header / Status Bar -->
-    <div class="bg-surface border border-border-default rounded-lg p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-4 px-6">
         <div>
-            <div class="flex items-center gap-3 mb-1">
-                <h2 class="text-2xl font-regular text-white">{{ object.ot_number }}</h2>
+            <div class="flex items-center gap-3 mb-0.5">
+                <h2 class="text-xl font-regular text-white">{{ object.ot_number }}</h2>
+                <span class="text-slate-700 mx-1">|</span>
+                {% include 'orders/fragments/status_badge.html' with order=object %}
                 {% if object.priority == 'URGENT' %}
-                <span class="px-2 py-0.5 text-[10px] font-regular bg-red-900/30 text-red-500 border border-red-800 rounded-sm italic uppercase tracking-tighter">Urgente</span>
+                <span class="px-2 py-0.5 text-[9px] font-regular bg-red-900/30 text-red-500 border border-red-800 rounded-sm italic uppercase tracking-tighter ml-1">Urgente</span>
                 {% endif %}
             </div>
-            <p class="text-slate-500 text-sm">Creada el {{ object.created_at|date:"d M Y, H:i" }} por {{ object.sales_rep.get_full_name|default:object.sales_rep.username }}</p>
+            <p class="text-slate-500 text-xs pl-0.5">
+                Creada el {{ object.created_at|date:"d M Y" }} 
+                <span class="text-slate-700 mx-1">·</span> 
+                {{ object.sales_rep.get_full_name|default:object.sales_rep.username }}
+            </p>
         </div>
 
-        <div class="flex items-center gap-2 w-full md:w-auto flex-wrap">
-            {% include 'orders/fragments/status_badge.html' with order=object %}
-            <div class="h-6 w-px bg-border-default mx-1 hidden md:block"></div>
-            <a href="{% url 'orders:list' %}" class="text-[9px] font-bold text-slate-400 hover:text-white uppercase tracking-widest transition-colors px-2">
-                Volver
-            </a>
-            <a href="{% url 'orders:update' object.pk %}" class="text-[9px] font-bold text-blue-400 hover:text-blue-300 uppercase tracking-widest transition-colors px-2">
-                Editar OT
-            </a>
-            <button class="bg-surface hover:bg-surface-hover border border-slate-700/50 text-slate-300 hover:text-white text-[9px] font-bold py-1.5 px-3 transition-colors uppercase tracking-widest rounded shadow-sm flex items-center gap-1.5 ml-2">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                Hoja de Ruta
-            </button>
+        <div class="flex items-center gap-3 w-full md:w-auto flex-wrap">
+            <div class="flex items-center gap-1">
+                <a href="{% url 'orders:list' %}" class="text-[10px] font-normal text-slate-400 hover:text-white uppercase tracking-widest transition-colors px-3 py-2 rounded hover:bg-surface-hover">
+                    Volver
+                </a>
+                <a href="{% url 'orders:update' object.pk %}" class="text-[10px] font-normal text-blue-400 hover:text-blue-300 uppercase tracking-widest transition-colors px-3 py-2 rounded hover:bg-blue-400/10">
+                    Editar
+                </a>
+                <button class="bg-surface-hover border border-slate-700/50 text-slate-300 hover:text-white text-[10px] font-bold py-2 px-4 transition-all uppercase tracking-widest rounded shadow-sm flex items-center gap-2 ml-1">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                    Hoja de Ruta
+                </button>
+            </div>
         </div>
-    </div>
-
-    <!-- Progress Bar (HTMX swappable) -->
-    <div id="progress-container" hx-get="{% url 'orders:progress_bar' object.pk %}" hx-trigger="statusUpdated from:body" hx-swap="innerHTML">
-        {% include 'orders/fragments/progress_bar.html' with order=object %}
     </div>
 
     
+    
     <div class="space-y-6">
         
-        <!-- Fila 1: Info Original y Estado (Grid 50/50) -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            
-            <!-- Columna Izquierda: Información del Trabajo y Logística -->
-            <div class="flex flex-col gap-6 h-full">
-                <div class="bg-surface border border-border-default rounded-lg overflow-hidden flex-1">
+        <!-- Fila 1: Información General y Logística (Full Width) -->
+        <div class="grid grid-cols-1 gap-6">
+            <div class="flex flex-col gap-6">
+                <!-- Tarjeta 1: Información del Trabajo -->
+                <div class="bg-surface border border-border-default rounded-lg overflow-hidden">
                     <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default flex items-center justify-between">
                         <h3 class="text-xs font-normal text-slate-400 uppercase tracking-widest">Información del Trabajo</h3>
                     </div>
@@ -82,6 +84,7 @@
                         </div>
                     </div>
 
+                    <!-- Dirección de Entrega -->
                     <div class="border-t border-border-default bg-surface-dark/20 p-6">
                         {% if object.product.customer.delivery_street %}
                         <div class="flex flex-row w-full gap-4 items-start">
@@ -119,8 +122,13 @@
                         {% endif %}
                     </div>
                 </div>
-
-                <!-- Estado de Producción (Movido y Potenciado) -->
+                
+                <!-- Progress Bar (HTMX swappable) -->
+                <div id="progress-container" hx-get="{% url 'orders:progress_bar' object.pk %}" hx-trigger="statusUpdated from:body" hx-swap="innerHTML">
+                    {% include 'orders/fragments/progress_bar.html' with order=object %}
+                </div>
+                
+                <!-- Tarjeta 2: Estado de Producción -->
                 <div class="bg-surface border border-border-default rounded-lg overflow-hidden relative">
                     <div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 to-blue-600"></div>
                     <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default flex items-center justify-between pl-6">
@@ -168,13 +176,12 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- Especificaciones del Producto (Anverso/Reverso y Ficha Técnica) -->
-            {% include 'orders/fragments/product_details.html' with product=object.product %}
 
-
-
-        </div> <!-- Fin Fila 1 -->
+            <!-- Fila 2: Diseño y Especificaciones Técnicas -->
+            <div class="w-full">
+                {% include 'orders/fragments/product_details.html' with product=object.product %}
+            </div>
+        </div> <!-- Fin Bloque Superior -->
 
         <!-- Fila 2: Stock y Tareas (Grid 50/50) -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
@@ -212,7 +219,18 @@
     </div>
 
 
+    </div>
+</div>
+
+<!-- Zoom Modal Overlay -->
+<div id="zoomModal" class="fixed inset-0 z-[100] hidden bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 sm:p-8" onclick="closeZoomModal()">
+    <button type="button" class="absolute top-6 right-6 text-white hover:text-red-400 bg-black/50 hover:bg-black/80 p-3 rounded-full transition-all" onclick="closeZoomModal()">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+    <img id="zoomModalImg" src="" class="max-w-full max-h-full object-contain shadow-2xl scale-95 opacity-0 transition-all duration-200 ease-out" onclick="event.stopPropagation()">
 </div>
 
 <div id="modal-container"></div>
+
+<script src="{% static 'js/product_detail.js' %}"></script>
 {% endblock %}
