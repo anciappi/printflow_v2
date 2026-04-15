@@ -6,112 +6,110 @@
 {% endblock %}
 
 {% block content %}
-<div class="w-full space-y-6">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4 pb-10">
 
     <!-- Header / Status Bar -->
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-4 px-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-4">
         <div>
-            <div class="flex items-center gap-3 mb-0.5">
-                <h2 class="text-xl font-regular text-white">{{ object.ot_number }}</h2>
-                <span class="text-slate-700 mx-1">|</span>
+            <div class="flex items-center gap-3 mb-1">
+                <h2 class="text-xl font-normal text-white tracking-tight">{{ object.ot_number }}</h2>
+                <span class="text-slate-700">|</span>
                 {% include 'orders/fragments/status_badge.html' with order=object %}
                 {% if object.priority == 'URGENT' %}
-                <span class="px-2 py-0.5 text-[9px] font-regular bg-red-900/30 text-red-500 border border-red-800 rounded-sm italic uppercase tracking-tighter ml-1">Urgente</span>
+                <span class="px-2 py-0.5 text-[9px] font-normal bg-red-900/30 text-red-500 border border-red-800 rounded-sm uppercase tracking-widest animate-pulse ml-1">Urgente</span>
                 {% endif %}
             </div>
-            <p class="text-slate-500 text-xs pl-0.5">
-                Creada el {{ object.created_at|date:"d M Y" }} 
+            <p class="text-[9px] text-slate-500 uppercase tracking-[0.2em] font-light">
+                Detalle de Orden de Trabajo · Creada el {{ object.created_at|date:"d M Y" }} 
                 <span class="text-slate-700 mx-1">·</span> 
                 {{ object.sales_rep.get_full_name|default:object.sales_rep.username }}
             </p>
         </div>
 
-        <div class="flex items-center gap-3 w-full md:w-auto flex-wrap">
-            <div class="flex items-center gap-1">
-                <a href="{% url 'orders:list' %}" class="text-[10px] font-normal text-slate-400 hover:text-white uppercase tracking-widest transition-colors px-3 py-2 rounded hover:bg-surface-hover">
-                    Volver
-                </a>
-                <a href="{% url 'orders:update' object.pk %}" class="text-[10px] font-normal text-blue-400 hover:text-blue-300 uppercase tracking-widest transition-colors px-3 py-2 rounded hover:bg-blue-400/10">
-                    Editar
-                </a>
-                <button class="bg-surface-hover border border-slate-700/50 text-slate-300 hover:text-white text-[10px] font-bold py-2 px-4 transition-all uppercase tracking-widest rounded shadow-sm flex items-center gap-2 ml-1">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                    Hoja de Ruta
-                </button>
-            </div>
+        <div class="flex items-center gap-2">
+            <a href="{% url 'orders:list' %}" class="bg-surface-dark border border-border-default text-slate-400 hover:text-white text-[10px] font-light py-2 px-4 transition-all uppercase tracking-widest rounded-sm hover:border-slate-500">
+                Volver
+            </a>
+            <a href="{% url 'orders:update' object.pk %}" class="bg-surface-dark border border-border-default text-blue-400 hover:text-blue-300 text-[10px] font-light py-2 px-4 transition-all uppercase tracking-widest rounded-sm hover:border-blue-400/50">
+                Editar
+            </a>
+            <button class="bg-orange-600 hover:bg-orange-500 text-white text-[10px] font-normal py-2 px-4 transition-all uppercase tracking-widest rounded-sm shadow-lg shadow-orange-900/20 flex items-center gap-2">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                Hoja de Ruta
+            </button>
         </div>
     </div>
 
     
     
-    <div class="space-y-6">
+    <div class="space-y-4">
         
         <!-- Fila 1: Información General y Logística (Full Width) -->
         <div class="grid grid-cols-1 gap-6">
             <div class="flex flex-col gap-6">
                 <!-- Tarjeta 1: Información del Trabajo -->
-                <div class="bg-surface border border-border-default rounded-lg overflow-hidden">
-                    <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default flex items-center justify-between">
-                        <h3 class="text-xs font-normal text-slate-400 uppercase tracking-widest">Información del Trabajo</h3>
+                <div class="bg-surface border border-border-default rounded-sm overflow-hidden">
+                    <div class="bg-surface-dark/50 px-6 py-2 border-b border-border-default flex items-center justify-between">
+                        <h3 class="text-xs font-light text-slate-400 uppercase tracking-widest">Información del Trabajo</h3>
                     </div>
                     <!-- Línea 1: Datos Originales -->
-                    <div class="p-6 flex flex-row w-full gap-4 items-start">
+                    <div class="px-6 py-4 flex flex-row w-full gap-4 items-start">
                         <div class="flex-1 flex flex-col min-w-0">
                             <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Cliente</span>
-                            <span class="text-sm text-white font-medium truncate" title="{{ object.product.customer.name }}">{{ object.product.customer.name }}</span>
+                            <span class="text-sm text-white font-light truncate" title="{{ object.product.customer.name }}">{{ object.product.customer.name }}</span>
                         </div>
                         <div class="flex-1 flex flex-col min-w-0">
                             <span class="text-[9px] text-slate-500 uppercase text-center tracking-widest mb-1">Producto</span>
-                            <span class="text-sm text-orange-400 font-bold text-center hover:underline cursor-pointer truncate"><a href="{% url 'products:detail' object.product.pk %}" title="{{ object.product.name }}">{{ object.product.name }}</a></span>
+                            <span class="text-sm text-orange-400 font-normal text-center hover:underline cursor-pointer truncate"><a href="{% url 'products:detail' object.product.pk %}" title="{{ object.product.name }}">{{ object.product.name }}</a></span>
                         </div>
                         <div class="flex-1 flex flex-col text-center min-w-0">
                             <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Cant. Solicitada</span>
-                            <span class="text-sm text-slate-300 font-medium">{{ object.quantity }}</span>
+                            <span class="text-sm text-slate-300 font-light">{{ object.quantity }}</span>
                         </div>
                         <div class="flex-1 flex flex-col text-center min-w-0">
                             <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Mat. Base</span>
-                            <span class="text-sm text-slate-300 font-medium">{{ object.estimated_material_base_usage|default:"--" }} ml</span>
+                            <span class="text-sm text-slate-300 font-light">{{ object.estimated_material_base_usage|default:"--" }} ml</span>
                         </div>
                         <div class="flex-1 flex flex-col text-center min-w-0">
                             <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Entrega</span>
-                            <span class="text-sm text-white font-bold">{{ object.due_date|date:"d/m/Y" }}</span>
+                            <span class="text-sm text-white font-normal">{{ object.due_date|date:"d/m/Y" }}</span>
                         </div>
                         <div class="flex-1 flex flex-col text-right min-w-0">
                             <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Prioridad</span>
-                            <span class="text-sm font-bold uppercase {% if object.priority == 'URGENT' %}text-red-500{% elif object.priority == 'HIGH' %}text-orange-500{% else %}text-slate-400{% endif %}">
+                            <span class="text-sm font-normal uppercase {% if object.priority == 'URGENT' %}text-red-500{% elif object.priority == 'HIGH' %}text-orange-500{% else %}text-slate-400{% endif %}">
                                 {{ object.get_priority_display }}
                             </span>
                         </div>
                     </div>
 
                     <!-- Dirección de Entrega -->
-                    <div class="border-t border-border-default bg-surface-dark/20 p-6">
+                    <div class="border-t border-border-default bg-surface-dark/20 px-6 py-4">
                         {% if object.product.customer.delivery_street %}
                         <div class="flex flex-row w-full gap-4 items-start">
                             <div class="flex-1 flex flex-col min-w-0">
                                 <div class="flex items-center gap-1.5 mb-1">
                                     <svg class="w-3.5 h-3.5 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-                                    <span class="text-[9px] text-blue-500 uppercase tracking-widest font-bold">Lugar de Entrega</span>
+                                    <span class="text-[9px] text-blue-500 uppercase tracking-widest font-normal">Lugar de Entrega</span>
                                 </div>
                                 <span class="text-[10px] text-slate-500 uppercase italic leading-none pl-5">Logística</span>
                             </div>
                             <div class="flex-1 flex flex-col min-w-0">
                                 <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Dirección</span>
-                                <span class="text-sm text-white font-medium truncate" title="{{ object.product.customer.delivery_street }} {{ object.product.customer.delivery_street_number }}">
+                                <span class="text-sm text-white font-light truncate" title="{{ object.product.customer.delivery_street }} {{ object.product.customer.delivery_street_number }}">
                                     {{ object.product.customer.delivery_street }} {{ object.product.customer.delivery_street_number }}{% if object.product.customer.delivery_floor_apt %} {{ object.product.customer.delivery_floor_apt }}{% endif %}
                                 </span>
                             </div>
                             <div class="flex-1 flex flex-col text-center min-w-0">
                                 <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Localidad</span>
-                                <span class="text-sm text-white font-medium">{{ object.product.customer.delivery_city|default:"--" }}</span>
+                                <span class="text-sm text-white font-light">{{ object.product.customer.delivery_city|default:"--" }}</span>
                             </div>
                             <div class="flex-1 flex flex-col text-center min-w-0">
                                 <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Provincia</span>
-                                <span class="text-sm text-white font-medium">{{ object.product.customer.delivery_province|default:"--" }}</span>
+                                <span class="text-sm text-white font-light">{{ object.product.customer.delivery_province|default:"--" }}</span>
                             </div>
                             <div class="flex-1 flex flex-col text-right min-w-0">
                                 <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">País</span>
-                                <span class="text-sm text-white font-medium">{{ object.product.customer.delivery_country|default:"--" }}</span>
+                                <span class="text-sm text-white font-light">{{ object.product.customer.delivery_country|default:"--" }}</span>
                             </div>
                         </div>
                         {% else %}
@@ -129,33 +127,33 @@
                 </div>
                 
                 <!-- Tarjeta 2: Estado de Producción -->
-                <div class="bg-surface border border-border-default rounded-lg overflow-hidden relative">
+                <div class="bg-surface border border-border-default rounded-sm overflow-hidden relative">
                     <div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 to-blue-600"></div>
-                    <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default flex items-center justify-between pl-6">
-                        <h3 class="text-xs font-normal text-slate-400 uppercase tracking-widest pl-2">Estado de Producción</h3>
-                        <span class="text-[10px] text-blue-400 font-normal uppercase tracking-widest bg-blue-900/30 px-2 py-0.5 rounded-sm italic">Control de Planta</span>
+                    <div class="bg-surface-dark/50 px-6 py-2 border-b border-border-default flex items-center justify-between pl-6">
+                        <h3 class="text-xs font-light text-slate-400 uppercase tracking-widest pl-2">Estado de Producción</h3>
+                        <span class="text-[10px] text-blue-400 font-light uppercase tracking-widest bg-blue-900/30 px-2 py-0.5 rounded-sm italic">Control de Planta</span>
                     </div>
                     
-                    <div class="p-6 pl-8 flex flex-row w-full gap-4 items-start">
+                    <div class="px-6 py-4 pl-8 flex flex-row w-full gap-4 items-start">
                         <div class="flex-1 flex flex-col text-left min-w-0">
                             <span class="text-[9px] text-blue-400 uppercase tracking-widest mb-1">Estado</span>
-                            <span class="text-sm text-blue-400 font-bold uppercase truncate" title="{{ object.get_current_status_display }}">{{ object.get_current_status_display }}</span>
+                            <span id="info-current-status" class="text-sm text-blue-400 font-normal uppercase truncate" title="{{ object.get_current_status_display }}">{{ object.get_current_status_display }}</span>
                         </div>
                         <div class="flex-1 flex flex-col min-w-0">
                             <span class="text-[9px] text-slate-500 text-center uppercase tracking-widest mb-1">Bocas</span>
-                            <span class="text-sm text-white text-center font-bold">{{ object.bocas|default:"--" }}</span>
+                            <span class="text-sm text-white text-center font-normal">{{ object.bocas|default:"--" }}</span>
                         </div>
                         <div class="flex-1 flex flex-col text-center min-w-0">
                             <span class="text-[9px] text-amber-500/70 uppercase tracking-widest mb-1">Cant. Producir</span>
-                            <span class="text-sm text-amber-500 font-bold">{{ object.quantity_with_waste }}</span>
+                            <span class="text-sm text-amber-500 font-normal">{{ object.quantity_with_waste }}</span>
                         </div>
                         <div class="flex-1 flex flex-col text-center min-w-0">
                             <span class="text-[9px] text-amber-500/70 uppercase tracking-widest mb-1">Mat. Total Est.</span>
-                            <span class="text-sm text-amber-500 font-bold">{{ object.estimated_material_usage|default:"--" }} ml</span>
+                            <span class="text-sm text-amber-500 font-normal">{{ object.estimated_material_usage|default:"--" }} ml</span>
                         </div>
                         <div class="flex-1 flex flex-col text-center min-w-0">
                             <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Última Cantidad</span>
-                            <span class="text-sm text-white font-medium">
+                            <span id="info-current-quantity" class="text-sm text-white font-light">
                                 {% if logs and logs.0.quantity_produced %}
                                 {{ logs.0.quantity_produced }}
                                 {% else %}
@@ -165,7 +163,7 @@
                         </div>
                         <div class="flex-1 flex flex-col text-center min-w-0">
                             <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Último Consumo</span>
-                            <span class="text-sm text-white font-medium">
+                            <span id="info-current-material" class="text-sm text-white font-light">
                                 {% if logs and logs.0.material_used %}
                                 {{ logs.0.material_used }} <span class="text-[8px] text-slate-500 font-normal">ml</span>
                                 {% else %}
@@ -192,11 +190,11 @@
             <div class="flex flex-col gap-6">
                 <!-- Notas de Producción -->
                 {% if object.production_notes %}
-                <div class="bg-surface border border-border-default rounded-lg overflow-hidden">
-                    <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default border-l-2 border-l-yellow-500">
-                        <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Notas de Producción</h3>
+                <div class="bg-surface border border-border-default rounded-sm overflow-hidden">
+                    <div class="bg-surface-dark/50 px-6 py-2 border-b border-border-default border-l-2 border-l-yellow-500">
+                        <h3 class="text-xs font-normal text-slate-400 uppercase tracking-widest">Notas de Producción</h3>
                     </div>
-                    <div class="p-4 bg-yellow-900/10 h-full min-h-[120px]">
+                    <div class="p-3 bg-yellow-900/10 h-full min-h-[100px]">
                         <p class="text-xs text-yellow-500/80 whitespace-pre-wrap leading-relaxed">{{ object.production_notes }}</p>
                     </div>
                 </div>

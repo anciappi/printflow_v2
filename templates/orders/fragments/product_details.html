@@ -1,14 +1,14 @@
 {% if product %}
 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
     <!-- Imágenes Diseño -->
-    <div class="bg-surface border border-border-default rounded-lg overflow-hidden">
-        <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default">
-            <h3 class="text-xs font-normal text-slate-400 uppercase tracking-widest">Diseño Visual</h3>
+    <div class="bg-surface border border-border-default rounded-sm overflow-hidden">
+        <div class="bg-surface-dark/50 px-6 py-2 border-b border-border-default">
+            <h3 class="text-xs font-light text-slate-400 uppercase tracking-widest">Diseño Visual</h3>
         </div>
-        <div class="p-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <!-- Anverso -->
             <div class="space-y-2">
-                <p class="text-[10px] text-slate-500 uppercase font-normal tracking-wider">Anverso</p>
+                <p class="text-[10px] text-slate-500 uppercase font-light tracking-wider">Anverso</p>
                 {% if product.design_front %}
                 <div class="relative group cursor-pointer rounded-md overflow-hidden border border-border-default bg-black/20 aspect-video shadow-inner" onclick="openZoomModal('{{ product.design_front.url }}')">
                     <img src="{{ product.design_front.url }}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" alt="Diseño Anverso">
@@ -31,7 +31,7 @@
             </div>
             <!-- Reverso -->
             <div class="space-y-2">
-                <p class="text-[10px] text-slate-500 uppercase font-normal tracking-wider">Reverso</p>
+                <p class="text-[10px] text-slate-500 uppercase font-light tracking-wider">Reverso</p>
                 {% if product.design_back %}
                 <div class="relative group cursor-pointer rounded-md overflow-hidden border border-border-default bg-black/20 aspect-video shadow-inner" onclick="openZoomModal('{{ product.design_back.url }}')">
                     <img src="{{ product.design_back.url }}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" alt="Diseño Reverso">
@@ -56,23 +56,23 @@
     </div>
 
     <!-- Especificaciones Técnicas -->
-    <div class="bg-surface border border-border-default rounded-lg overflow-hidden flex-1">
-        <div class="bg-surface-dark/50 px-6 py-3 border-b border-border-default">
-            <h3 class="text-xs font-normal text-slate-400 uppercase tracking-widest">Especificaciones Técnicas</h3>
+    <div class="bg-surface border border-border-default rounded-sm overflow-hidden flex-1">
+        <div class="bg-surface-dark/50 px-6 py-2 border-b border-border-default">
+            <h3 class="text-xs font-light text-slate-400 uppercase tracking-widest">Especificaciones Técnicas</h3>
         </div>
-        <div class="p-5 space-y-6">
+        <div class="p-4 space-y-6">
             <!-- Dimensiones y Sustrato -->
             <div class="flex items-start gap-8 border-b border-border-default/30 pb-4">
                 <div>
-                    <p class="text-[9px] text-slate-500 uppercase font-bold mb-1">Ancho</p>
-                    <p class="text-sm text-white font-medium">{{ product.width_mm|floatformat:2 }} mm</p>
+                    <p class="text-[9px] text-slate-500 uppercase font-light mb-1">Ancho</p>
+                    <p class="text-sm text-white font-light">{{ product.width_mm|floatformat:2 }} mm</p>
                 </div>
                 <div>
-                    <p class="text-[9px] text-slate-500 uppercase font-bold mb-1">Largo / Alto</p>
-                    <p class="text-sm text-white font-medium">{{ product.height_mm|floatformat:2 }} mm</p>
+                    <p class="text-[9px] text-slate-500 uppercase font-light mb-1">Largo / Alto</p>
+                    <p class="text-sm text-white font-light">{{ product.height_mm|floatformat:2 }} mm</p>
                 </div>
                 <div class="flex-1">
-                    <p class="text-[9px] text-slate-500 uppercase font-bold mb-1">Sustrato</p>
+                    <p class="text-[9px] text-slate-500 uppercase font-light mb-1">Sustrato</p>
                     <p class="text-sm text-slate-300 truncate" title="{{ product.substrate.name }}">{{ product.substrate.name }}</p>
                 </div>
             </div>
@@ -80,35 +80,35 @@
             <!-- Empaque -->
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <p class="text-[9px] text-slate-500 uppercase font-bold mb-1">Empaque</p>
+                    <p class="text-[9px] text-slate-500 uppercase font-light mb-1">Empaque</p>
                     <p class="text-sm text-slate-300">{{ product.get_packaging_type_display }}</p>
                 </div>
                 <div>
-                    <p class="text-[9px] text-slate-500 uppercase font-bold mb-1">Cant. por Caja</p>
-                    <p class="text-sm text-white font-medium">{{ product.qty_per_box|default:"--" }}</p>
+                    <p class="text-[9px] text-slate-500 uppercase font-light mb-1">Cant. por Caja</p>
+                    <p class="text-sm text-white font-light">{{ product.qty_per_box|default:"--" }}</p>
                 </div>
             </div>
 
             <!-- Terminaciones -->
             <div class="border-t border-border-default/30 pt-4">
-                <p class="text-[10px] text-slate-500 uppercase font-normal mb-3">Terminaciones Especiales</p>
+                <p class="text-[10px] text-slate-500 uppercase font-light mb-3">Terminaciones Especiales</p>
                 <div class="flex flex-wrap gap-2">
                     {% if product.has_laminate %}
-                    <span class="flex items-center gap-1.5 text-[10px] font-normal bg-blue-500/10 text-blue-400 border border-blue-800/50 px-2.5 py-1 rounded-full">
+                    <span class="flex items-center gap-1.5 text-[10px] font-light bg-blue-500/10 text-blue-400 border border-blue-800/50 px-2.5 py-1 rounded-full">
                         <span class="w-1 h-1 rounded-full bg-blue-400"></span>
                         Laminado {{ product.get_laminate_type_display }}
                         {% if product.laminate_front and product.laminate_back %}(A+R){% elif product.laminate_front %}(Anverso){% elif product.laminate_back %}(Reverso){% endif %}
                     </span>
                     {% endif %}
                     {% if product.has_varnish %}
-                    <span class="flex items-center gap-1.5 text-[10px] font-normal bg-purple-500/10 text-purple-400 border border-purple-800/50 px-2.5 py-1 rounded-full">
+                    <span class="flex items-center gap-1.5 text-[10px] font-light bg-purple-500/10 text-purple-400 border border-purple-800/50 px-2.5 py-1 rounded-full">
                         <span class="w-1 h-1 rounded-full bg-purple-400"></span>
                         Barniz {{ product.get_varnish_type_display }}
                         {% if product.varnish_front and product.varnish_back %}(A+R){% elif product.varnish_front %}(Anverso){% elif product.varnish_back %}(Reverso){% endif %}
                     </span>
                     {% endif %}
                     {% if product.has_troquelado %}
-                    <span class="flex items-center gap-1.5 text-[10px] font-normal bg-pink-500/10 text-pink-400 border border-pink-800/50 px-2.5 py-1 rounded-full">
+                    <span class="flex items-center gap-1.5 text-[10px] font-light bg-pink-500/10 text-pink-400 border border-pink-800/50 px-2.5 py-1 rounded-full">
                         <span class="w-1 h-1 rounded-full bg-pink-400"></span>
                         Troquelado
                     </span>
@@ -121,10 +121,10 @@
 
             <!-- Colores -->
             <div class="border-t border-border-default/30 pt-4">
-                <p class="text-[9px] text-slate-500 uppercase font-bold mb-3">Colores de Impresión</p>
+                <p class="text-[9px] text-slate-500 uppercase font-light mb-3">Colores de Impresión</p>
                 <div class="grid grid-cols-2 gap-3">
                     <div>
-                        <p class="text-[9px] text-slate-600 uppercase font-bold mb-2">Anverso</p>
+                        <p class="text-[9px] text-slate-600 uppercase font-light mb-2">Anverso</p>
                         <div class="flex flex-wrap gap-1">
                             {% for color in product.colors_front.all %}
                             <span class="text-[10px] px-2 py-0.5 rounded bg-surface-dark border border-border-default text-slate-400">{{ color.name }}</span>
@@ -134,7 +134,7 @@
                         </div>
                     </div>
                     <div>
-                        <p class="text-[9px] text-slate-600 uppercase font-bold mb-2">Reverso</p>
+                        <p class="text-[9px] text-slate-600 uppercase font-light mb-2">Reverso</p>
                         <div class="flex flex-wrap gap-1">
                             {% for color in product.colors_back.all %}
                             <span class="text-[10px] px-2 py-0.5 rounded bg-surface-dark border border-border-default text-slate-400">{{ color.name }}</span>

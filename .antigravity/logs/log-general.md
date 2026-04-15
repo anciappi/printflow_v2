@@ -123,3 +123,6 @@ Para detalle completo ver log-[modulo].md correspondiente.
 - frontend: Refactor de componentes en `stock_panel.html` para visibilidad de consumos y datos técnicos de bobinas.
 - core: Hotfix de compatibilidad CSS (Flex fallback).
 
+## 2026-04-15
+- orders: Modernización de `workorder_detail.html` (layout 7xl), restauración de HTMX OOB, modal de avance con desglose por etapa y lógica condicional de consumos.
+- frontend: Estandarización tipográfica "Dark Industrial" (Bold ➔ Normal, Regular ➔ Light) en toda la ficha de OT y fragmentos. Actualización de `STYLE_GUIDE.md`.

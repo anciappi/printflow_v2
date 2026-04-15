@@ -918,4 +918,30 @@ Dark/Light theme — post-MVP
 **Next Pending Tasks:**
 - Modernización de Fichas de Compra (Purchasing).
 - Implementación de Reportes Dinámicos (KPIs avanzados).
-- Fase 5: SaaS Super Admin Dashboard.
+- Fase 5: SaaS Super Admin Dashboard.
+
+---
+
+## Session: 2026-04-15
+**Tasks Completed:**
+- **Modernización "Dark Industrial" (Detalle OT):** 
+  - Rediseño de `workorder_detail.html` para unificar el lenguaje visual con el resto del sistema.
+  - Cambio de contenedor a `max-w-7xl` y bordes a `rounded-sm`.
+  - Aplicación sistemática de la regla: `font-bold` ➔ `font-normal` y `font-normal/medium` ➔ `font-light`.
+- **Correcciones HTMX:**
+  - Restauración de IDs y targets OOB para actualizaciones de estado en tiempo real.
+- **Refactor de Modal de Avance:**
+  - Lógica condicional para campo de consumo de material (solo visible al salir de Producción).
+  - Implementación de tabla de desglose por etapa en lugar de totales acumulados.
+  - Compresión de cabecera de datos originales a una sola línea.
+- **Documentación de Sistema:**
+  - Actualización de `STYLE_GUIDE.md` con los nuevos estándares tipográficos y de componentes.
+
+**Files Created/Modified:**
+- `orders/views.py`
+- `templates/orders/workorder_detail.html`
+- `templates/orders/fragments/` (`status_badge.html`, `status_update_modal.html`)
+- `.antigravity/` (`STYLE_GUIDE.md`, `SESSION_LOG.md`, `logs/log-orders.md`, `logs/log-frontend.md`, `logs/log-general.md`)
+
+**Status:** Completed. All UI components for Order Detail are now high-density and visually consistent.
+

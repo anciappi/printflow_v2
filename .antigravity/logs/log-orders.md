@@ -149,3 +149,16 @@ orders/
   - **Zoom Interactivo**: Implementación de modal de zoom para inspección de diseños de pre-prensa.
   - **Status Badge Flattening**: El fragmento `status_badge.html` ahora es totalmente plano (sin cajas ni bordes), consistente con el nuevo lenguaje visual.
 - **Fix Logística**: Alineación del título de cabecera con el contenido de las tarjetas inferiores mediante `px-6`.
+## 2026-04-15 | OT Detail Modernization: Layout & Functional Fixes | ✅
+- **UI Modernization**: 
+  - `workorder_detail.html` reestructurado a `max-w-7xl mx-auto` para alineación global.
+  - Estandarización de bordes a `rounded-sm`.
+  - Normalización tipográfica "Dark Industrial" en toda la ficha y fragmentos (`product_details`, `stock_panel`, `log_feed`, etc.).
+- **HTMX Dynamic Updates**: 
+  - Restauración de IDs (`info-current-status`, `info-current-quantity`, `info-current-material`) en la tarjeta de producción para permitir OOB swaps en tiempo real.
+  - Actualización de `status_badge.html` para soportar estos swaps con el nuevo look.
+- **Advance Modal Refactor**:
+  - **Gated Fields**: El campo `material_used` ahora solo es visible en la transición `PRODUCTION` → `FINISHING`.
+  - **Stage Breakdown**: Se reemplazaron los acumulados por una tabla de desglose por etapa (`logs_by_status`), mostrando exactamente cuánto se produjo y consumió en cada fase.
+  - **Compressed Header**: Datos originales de la OT reducidos a una sola línea técnica tipo "badge-row" para optimizar espacio vertical.
+- **Archivos modificados**: `orders/views.py`, `templates/orders/workorder_detail.html`, `templates/orders/fragments/status_update_modal.html`, `templates/orders/fragments/status_badge.html`, `STYLE_GUIDE.md`.

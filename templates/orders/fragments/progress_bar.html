@@ -1,6 +1,6 @@
-<div class="bg-surface border border-border-default rounded-lg p-4 transition-all duration-500">
+<div class="bg-surface border border-border-default rounded-sm p-4 transition-all duration-500">
     <div class="flex items-center justify-between mb-2">
-        <span class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Progreso de Producción</span>
+        <span class="text-[10px] text-slate-500 uppercase font-light tracking-widest">Progreso de Producción</span>
         
         <div class="flex items-center gap-3">
             {% with prev_status=order.get_previous_status_display %}
@@ -9,7 +9,7 @@
                         hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
                         hx-swap="none"
                         hx-confirm="¿Estás seguro de deshacer el avance y volver a {{ prev_status }}?"
-                        class="bg-transparent hover:bg-slate-800 border border-slate-700/50 hover:border-slate-500 text-slate-400 hover:text-slate-300 text-[9px] font-bold py-1 px-2.5 transition-colors uppercase tracking-widest rounded flex items-center gap-1.5"
+                        class="bg-transparent hover:bg-slate-800 border border-slate-700/50 hover:border-slate-500 text-slate-400 hover:text-slate-300 text-[9px] font-light py-1 px-2.5 transition-colors uppercase tracking-widest rounded flex items-center gap-1.5"
                         title="Deshacer avance, volver a {{ prev_status }}">
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 </button>
@@ -22,14 +22,14 @@
                 <button hx-post="{% url 'orders:status_update' order.pk %}" 
                         hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
                         hx-swap="none"
-                        class="bg-emerald-600/10 hover:bg-emerald-600/20 border border-emerald-500/50 hover:border-emerald-500 text-emerald-400 hover:text-emerald-300 text-[9px] font-bold py-1 px-3 transition-colors uppercase tracking-widest rounded shadow-sm flex items-center gap-1.5">
+                        class="bg-emerald-600/10 hover:bg-emerald-600/20 border border-emerald-500/50 hover:border-emerald-500 text-emerald-400 hover:text-emerald-300 text-[9px] font-normal py-1 px-3 transition-colors uppercase tracking-widest rounded shadow-sm flex items-center gap-1.5">
                     Avanzar: {{ next_statuses }}
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                 </button>
                 {% else %}
                 <button hx-get="{% url 'orders:status_update_modal' order.pk %}" 
                         hx-target="#modal-container" hx-swap="innerHTML" 
-                        class="bg-emerald-600/10 hover:bg-emerald-600/20 border border-emerald-500/50 hover:border-emerald-500 text-emerald-400 hover:text-emerald-300 text-[9px] font-bold py-1 px-3 transition-colors uppercase tracking-widest rounded shadow-sm flex items-center gap-1.5">
+                        class="bg-emerald-600/10 hover:bg-emerald-600/20 border border-emerald-500/50 hover:border-emerald-500 text-emerald-400 hover:text-emerald-300 text-[9px] font-normal py-1 px-3 transition-colors uppercase tracking-widest rounded shadow-sm flex items-center gap-1.5">
                     Avanzar: {{ next_statuses }}
                     <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7"></path></svg>
                 </button>
@@ -63,10 +63,10 @@
         {% endif %}
     </div>
     <div class="flex justify-between mt-2">
-        <span class="text-[12px] transition-colors {% if order.current_status == 'PENDING' %}text-orange-500 font-bold{% else %}text-slate-600{% endif %}">Pendiente</span>
-        <span class="text-[12px] transition-colors {% if order.current_status == 'PRODUCTION' %}text-orange-500 font-bold{% else %}text-slate-600{% endif %}">Producción</span>
-        <span class="text-[12px] transition-colors {% if order.current_status == 'FINISHING' %}text-orange-500 font-bold{% else %}text-slate-600{% endif %}">Terminaciones</span>
-        <span class="text-[12px] transition-colors {% if order.current_status == 'READY' %}text-orange-500 font-bold{% else %}text-slate-600{% endif %}">Listo</span>
-        <span class="text-[12px] transition-colors {% if order.current_status == 'DELIVERED' %}text-emerald-500 font-bold{% else %}text-slate-600{% endif %}">Entregado</span>
+        <span class="text-[12px] transition-colors {% if order.current_status == 'PENDING' %}text-orange-500 font-normal{% else %}text-slate-600{% endif %}">Pendiente</span>
+        <span class="text-[12px] transition-colors {% if order.current_status == 'PRODUCTION' %}text-orange-500 font-normal{% else %}text-slate-600{% endif %}">Producción</span>
+        <span class="text-[12px] transition-colors {% if order.current_status == 'FINISHING' %}text-orange-500 font-normal{% else %}text-slate-600{% endif %}">Terminaciones</span>
+        <span class="text-[12px] transition-colors {% if order.current_status == 'READY' %}text-orange-500 font-normal{% else %}text-slate-600{% endif %}">Listo</span>
+        <span class="text-[12px] transition-colors {% if order.current_status == 'DELIVERED' %}text-emerald-500 font-normal{% else %}text-slate-600{% endif %}">Entregado</span>
     </div>
 </div>

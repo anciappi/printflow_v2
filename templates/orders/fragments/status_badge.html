@@ -10,11 +10,11 @@
     </div>
 </div>
 {% if swap_oob %}
-<p id="info-current-status" hx-swap-oob="true" class="text-sm text-orange-500 font-bold uppercase transition-colors">{{ order.get_current_status_display }}</p>
+<span id="info-current-status" hx-swap-oob="true" class="text-sm text-blue-400 font-normal uppercase truncate" title="{{ order.get_current_status_display }}">{{ order.get_current_status_display }}</span>
 {% if last_log_quantity %}
-<p id="info-current-quantity" hx-swap-oob="true" class="text-sm text-white font-bold">{{ last_log_quantity }} <span class="text-xs font-normal text-slate-500">un. parciales</span></p>
+<span id="info-current-quantity" hx-swap-oob="true" class="text-sm text-white font-light">{{ last_log_quantity }}</span>
 {% endif %}
 {% if last_log_material %}
-<p id="info-current-material" hx-swap-oob="true" class="text-sm text-white font-bold">{{ last_log_material }} <span class="text-xs font-normal text-slate-500">ml parciales</span></p>
+<span id="info-current-material" hx-swap-oob="true" class="text-sm text-white font-light">{{ last_log_material }} <span class="text-[8px] text-slate-500 font-normal">ml</span></span>
 {% endif %}
 {% endif %}

@@ -39,3 +39,12 @@ Seguimiento de cambios globales de UI/UX, Tailwind tokens, CSS y fragments trans
   - Sincronización de alineación con contenido interno mediante `px-6`.
 - **Minimal Status Component**: Refactor de `status_badge.html` eliminando toda decoración visual (fondos/bordes) y estandarizando en `text-sm font-light tracking-widest`.
 - **Premium Detail Integration**: Unificación visual total entre productos y órdenes de trabajo mediante la reutilización de fragmentos técnicos de alta densidad.
+## 2026-04-15 | "Dark Industrial" Typography Standard | ✅
+- **Global Typography Rule**: Implementación del estándar de pesos tipográficos:
+  - **Bold (700)** ➔ `font-normal` (400)
+  - **Regular/Medium (400/500)** ➔ `font-light` (300)
+  - El objetivo es reducir la "pesadez" visual del tema oscuro y lograr un look más técnico/sofisticado.
+- **Header Alignment**: Migración de `w-full` a `max-w-7xl mx-auto` en el detalle de la OT para consistencia total con el listado principal y dashboard.
+- **Component Geometry**: Unificación de redondeados a `rounded-sm` (estilo industrial) en todos los paneles y tarjetas del detalle.
+- **Compressed Modal Design**: Rediseño del modal de avance con headers tipo "badge-row" y tablas de alta densidad de datos.
+- **Style Guide Update**: `STYLE_GUIDE.md` actualizado con los nuevos tokens de tipografía y reglas de botones.

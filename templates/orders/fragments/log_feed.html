@@ -1,16 +1,16 @@
-<div id="ficha-medica-container" class="mt-8 border-t border-border-default pt-8">
+<div id="ficha-medica-container" class="mt-4 border-t border-border-default pt-4">
     
     <!-- Título de Sección -->
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center justify-between mb-4">
         <div>
-            <h2 class="text-xl font-bold text-white tracking-tight">Trazabilidad</h2>
+            <h2 class="text-xl font-light text-white tracking-tight">Trazabilidad</h2>
             <p class="text-xs text-slate-500 mt-1">Registro de procesos, desvíos y cantidades parciales.</p>
         </div>
         <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-sm">{{ logs.count }} registros</span>
     </div>
 
     <!-- Formulario de Carga (Estilo Filtro Premium) -->
-    <div class="bg-surface border border-border-default p-4 mb-6 rounded-sm shadow-sm relative overflow-hidden">
+    <div class="bg-surface border border-border-default p-4 mb-4 rounded-sm shadow-sm relative overflow-hidden">
         <!-- Accent line -->
         <div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-orange-500 to-orange-600"></div>
         
@@ -19,17 +19,17 @@
             
 
             <div class="w-full sm:flex-1 min-w-[250px]">
-                <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1 tracking-widest">Observaciones / Novedades</label>
+                <label class="block text-[10px] font-light text-slate-500 uppercase mb-1 tracking-widest">Observaciones / Novedades</label>
                 {{ log_form.comment }}
             </div>
             
             <div class="hidden md:flex flex-col justify-center px-4 h-[34px] border-l border-border-default">
-                <span class="text-[8px] font-bold text-slate-500 uppercase mb-0.5 tracking-widest">Etapa Capturada</span>
-                <span class="text-[10px] font-bold text-blue-400 uppercase tracking-widest">{{ order.get_current_status_display }}</span>
+                <span class="text-[8px] font-light text-slate-500 uppercase mb-0.5 tracking-widest">Etapa Capturada</span>
+                <span class="text-[10px] font-light text-blue-400 uppercase tracking-widest">{{ order.get_current_status_display }}</span>
             </div>
 
             <div class="w-full sm:w-auto">
-                <button type="submit" class="w-full sm:w-auto bg-orange-600 hover:bg-orange-500 text-white text-[10px] font-bold py-2 px-6 transition-all uppercase tracking-widest rounded-sm flex items-center justify-center gap-2 h-[34px] shadow-lg shadow-orange-900/20">
+                <button type="submit" class="w-full sm:w-auto bg-orange-600 hover:bg-orange-500 text-white text-[10px] font-light py-2 px-6 transition-all uppercase tracking-widest rounded-sm flex items-center justify-center gap-2 h-[34px] shadow-lg shadow-orange-900/20">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"></path></svg>
                     Añadir Avance
                 </button>
@@ -38,16 +38,16 @@
     </div>
 
     <!-- Tabla de Registros Estilo Inventario -->
-    <div class="overflow-x-auto border border-border-default/50 rounded-lg">
+    <div class="overflow-x-auto border border-border-default/50 rounded-sm">
         <table class="w-full text-left border-collapse whitespace-nowrap">
             <thead class="bg-surface-dark/80">
                 <tr class="border-b border-border-default">
-                    <th class="py-2 px-4 text-[9px] font-bold text-slate-500 uppercase tracking-widest">Fecha / Hora</th>
-                    <th class="py-2 px-4 text-[9px] font-bold text-slate-500 uppercase tracking-widest">Estado Capturado</th>
-                    <th class="py-2 px-4 text-[9px] font-bold text-slate-500 uppercase tracking-widest">Usuario</th>
-                    <th class="py-2 px-4 text-[9px] font-bold text-slate-500 uppercase tracking-widest text-center">Cantidad</th>
-                    <th class="py-2 px-4 text-[9px] font-bold text-slate-500 uppercase tracking-widest">Novedades / Observaciones</th>
-                    <th class="py-2 px-4 text-[9px] font-bold text-slate-500 uppercase tracking-widest text-right">Acciones</th>
+                    <th class="py-2 px-4 text-[9px] font-light text-slate-500 uppercase tracking-widest">Fecha / Hora</th>
+                    <th class="py-2 px-4 text-[9px] font-light text-slate-500 uppercase tracking-widest">Estado Capturado</th>
+                    <th class="py-2 px-4 text-[9px] font-light text-slate-500 uppercase tracking-widest">Usuario</th>
+                    <th class="py-2 px-4 text-[9px] font-light text-slate-500 uppercase tracking-widest text-center">Cantidad</th>
+                    <th class="py-2 px-4 text-[9px] font-light text-slate-500 uppercase tracking-widest">Novedades / Observaciones</th>
+                    <th class="py-2 px-4 text-[9px] font-light text-slate-500 uppercase tracking-widest text-right">Acciones</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-border-default/50">
@@ -57,7 +57,7 @@
                     <td class="py-3 px-4 font-mono text-orange-400 text-[10px]">{{ log.get_status_display }}</td>
                     <td class="py-3 px-4">
                         <span class="flex items-center gap-2">
-                            <span class="w-4 h-4 rounded-full bg-slate-800 flex items-center justify-center text-[7px] font-bold text-slate-400 border border-slate-700">
+                            <span class="w-4 h-4 rounded-full bg-slate-800 flex items-center justify-center text-[7px] font-normal text-slate-400 border border-slate-700">
                                 {{ log.user.username|make_list|first|upper|default:"U" }}
                             </span>
                             <span class="text-[10px] text-slate-300">{{ log.user.get_full_name|default:log.user.username }}</span>
@@ -65,7 +65,7 @@
                     </td>
                     <td class="py-3 px-4 text-center font-mono text-[10px]">
                         {% if log.quantity_produced %}
-                        <span class="text-emerald-400 font-bold">+{{ log.quantity_produced }}</span>
+                        <span class="text-emerald-400 font-normal">+{{ log.quantity_produced }}</span>
                         {% else %}
                         <span class="text-slate-600">-</span>
                         {% endif %}
@@ -73,10 +73,10 @@
                     <td class="py-3 px-4 text-[10px] text-slate-300 whitespace-pre-wrap min-w-[200px]">{{ log.comment }}</td>
                     <td class="py-3 px-4 text-right">
                         <div class="flex justify-end gap-2">
-                            <button hx-get="{% url 'orders:edit_log' log.pk %}" hx-target="#modal-container" hx-swap="innerHTML" class="text-[9px] font-bold uppercase tracking-widest border border-slate-700/50 hover:bg-blue-600 hover:border-blue-600 text-slate-400 hover:text-white px-2 py-1 rounded transition-colors shadow-sm">
+                            <button hx-get="{% url 'orders:edit_log' log.pk %}" hx-target="#modal-container" hx-swap="innerHTML" class="text-[9px] font-normal uppercase tracking-widest border border-slate-700/50 hover:bg-blue-600 hover:border-blue-600 text-slate-400 hover:text-white px-2 py-1 rounded transition-colors shadow-sm">
                                 Editar
                             </button>
-                            <button type="button" hx-post="{% url 'orders:delete_log' log.pk %}" hx-confirm="¿Seguro que deseas eliminar este registro?" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-target="closest tr" hx-swap="outerHTML swap:0.2s" class="text-[9px] font-bold uppercase tracking-widest border border-slate-700/50 hover:bg-red-700 hover:border-red-700 text-slate-400 hover:text-white px-2 py-1 rounded transition-colors shadow-sm">
+                            <button type="button" hx-post="{% url 'orders:delete_log' log.pk %}" hx-confirm="¿Seguro que deseas eliminar este registro?" hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-target="closest tr" hx-swap="outerHTML swap:0.2s" class="text-[9px] font-normal uppercase tracking-widest border border-slate-700/50 hover:bg-red-700 hover:border-red-700 text-slate-400 hover:text-white px-2 py-1 rounded transition-colors shadow-sm">
                                 Borrar
                             </button>
                         </div>

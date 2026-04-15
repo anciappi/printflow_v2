@@ -159,7 +159,7 @@ npm run watch   # watch mode
 ```
 inventory   ✅ HTMX complete, fragments, modal patterns established
 purchasing  ✅ HTMX complete
-orders      ✅ clean, born with correct architecture
+orders      ✅ Rediseño "Dark Industrial" completo, layout 7xl, modal de avance con desglose por etapa.
 products    ✅ functional (product_form.html JS extraction pending)
 quotes      🔄 backend complete, card_job_form UI in progress
 customers   ✅ functional

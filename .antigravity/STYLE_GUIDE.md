@@ -29,15 +29,28 @@ The project uses a dark, "High-Tech" corporate aesthetic.
 
 ## 2. Typography
 
+### Regla General: Dark Industrial Font Weights
+> **Bold** → `font-normal` | **Regular/Medium** → `font-light`
+> El objetivo es reducir el ruido visual y lograr un look técnico y premium.
+
 ### Headings
-- **Main Titles:** `text-xl sm:text-2xl font-bold text-white tracking-tight`
-- **Subtitles:** `text-sm font-medium text-slate-400`
+- **Main Titles (OT number, page title):** `text-xl font-normal text-white tracking-tight`
+- **Section Headers:** `text-xs font-light text-slate-400 uppercase tracking-widest`
+- **Subtitles/Descriptions:** `text-[10px] font-light text-slate-500 uppercase tracking-[0.2em]`
 
 ### Data & Tables
-- **Table Headers:** `text-[10px] font-bold uppercase tracking-widest text-slate-500`
-- **Table Body:** `text-xs` or `text-sm`
-- **Technical/Numbers:** `font-mono text-blue-300` or `text-white`
-- **Micro-labels:** `text-[9px]` or `text-[10px]`
+- **Table Headers (`th`):** `text-[9px] font-light text-slate-500 uppercase tracking-widest`
+- **Data values (primary):** `text-sm font-light text-white`
+- **Data values (accent):** `text-sm font-normal text-orange-400` or `text-blue-400`
+- **Micro-labels:** `text-[9px] text-slate-500 uppercase tracking-widest`
+- **Monospaced data (IDs, dates):** `font-mono text-blue-300 text-[10px]`
+
+### Form Labels
+- `text-[10px] font-light text-slate-500 uppercase tracking-widest`
+
+### Buttons
+- **Primary (CTA):** `font-normal`
+- **Secondary/Ghost:** `font-light`
 
 ---
 
@@ -61,18 +74,16 @@ Tables follow a structured, high-density layout.
 
 ---
 
-## 4. Buttons
-
 ### Action (In-Table/Small)
-`bg-[#2d333b] px-2 py-0.5 rounded text-[10px] transition-colors`
+`bg-[#2d333b] px-2 py-0.5 rounded text-[10px] font-light transition-colors`
 - **Modifier (Danger):** `hover:text-red-400`
 - **Modifier (Action):** `hover:text-amber-500`
 
 ### Main (Modal/Form)
-`text-xs font-bold uppercase px-4 py-2 rounded-sm transition-all`
-- **Primary Action (Confirm):** `bg-blue-600 text-white hover:bg-blue-700`
+`text-xs font-normal uppercase px-4 py-2 rounded-sm transition-all`
+- **Primary Action (Confirm):** `bg-orange-600 text-white hover:bg-orange-500`
 - **Danger Action:** `bg-red-600 text-white hover:bg-red-700`
-- **Secondary (Cancel):** `text-slate-500 hover:text-white`
+- **Secondary (Cancel):** `text-slate-500 font-light hover:text-white`
 
 ---
 

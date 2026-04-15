@@ -68,6 +68,13 @@ templates/
 └── <app_name>/   ← one folder per app
 ```
 
+### Dark Industrial UI (New)
+- **Geometry:** Always use `rounded-sm` for panels/cards.
+- **Typography:** Mandatory downgrade of weights:
+  - `font-bold` ➔ `font-normal`
+  - `font-normal`/`font-medium` ➔ `font-light`
+- **Density:** Favor high-density layouts (compact headers, flex-rows with separators).
+
 ## Human Approval Required Before
 - Any changes to models or migrations
 - Any changes to authentication or permissions logic

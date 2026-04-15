@@ -245,24 +245,40 @@ class WorkOrderStatusUpdateModalView(LoginRequiredMixin, View):
             
         next_status_label = dict(WorkOrder.STATUS_CHOICES).get(next_status)
         
-        # Calculamos acumulados de avance para mostrar al usuario
+        # Calculamos desglose de avance por etapa
+        from collections import defaultdict
         logs = order.logs.all()
-        total_quantity = sum(log.quantity_produced for log in logs if log.quantity_produced)
-        total_material = sum(log.material_used for log in logs if log.material_used)
-        
+        stage_data = defaultdict(lambda: {'quantity': 0, 'material': 0})
+        for log in logs:
+            if log.quantity_produced:
+                stage_data[log.status]['quantity'] += log.quantity_produced
+            if log.material_used:
+                stage_data[log.status]['material'] += log.material_used
+
+        status_labels = dict(WorkOrder.STATUS_CHOICES)
+        logs_by_status = [
+            {
+                'label': status_labels.get(status, status),
+                'quantity': data['quantity'] or None,
+                'material': data['material'] or None,
+            }
+            for status, data in stage_data.items()
+            if data['quantity'] or data['material']
+        ]
+
         # Removemos el initial data para que el campo cargue en blanco
         form = WorkOrderAdvanceForm()
         # Colocamos la cantidad esperada en el placeholder tal como pidió el usuario
         form.fields['quantity_produced'].widget.attrs['placeholder'] = str(order.quantity_with_waste)
-        
+
         html = render_to_string(
             'orders/fragments/status_update_modal.html',
             {
                 'order': order,
+                'next_status': next_status,
                 'next_status_label': next_status_label,
                 'form': form,
-                'total_quantity': total_quantity,
-                'total_material': total_material,
+                'logs_by_status': logs_by_status,
             },
             request=request
         )
@@ -362,6 +378,7 @@ class WorkOrderStatusUpdateView(LoginRequiredMixin, View):
                     'orders/fragments/status_update_modal.html',
                     {
                         'order': order,
+                        'next_status': next_status,
                         'next_status_label': next_status_label,
                         'form': form
                     },
