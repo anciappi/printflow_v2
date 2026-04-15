@@ -23,11 +23,13 @@
         <div class="flex items-start justify-between gap-4 mb-5">
             <div>
                 <p class="text-[10px] text-slate-500 uppercase font-bold mb-0.5">Sustrato Asignado</p>
-                <p class="text-sm text-white font-semibold">{{ material.name }}</p>
-                <p class="text-[10px] text-slate-400 mt-1">
-                    {{ material.get_material_type_display }}
-                    {% if material.width %} · {{ material.width }} cm{% endif %}
-                    {% if material.grammage %} · {{ material.grammage }} g/m²{% endif %}
+                <p class="text-sm text-white font-semibold">
+                    {{ material.name }}
+                    <span class="text-[11px] font-normal text-slate-400 ml-1">
+                        / {{ material.get_material_type_display }}
+                        {% if material.width %} / {{ material.width }} cm{% endif %}
+                        {% if material.grammage %} / {{ material.grammage }} g/m²{% endif %}
+                    </span>
                 </p>
             </div>
             {% if stock_units %}
@@ -66,7 +68,7 @@
                         {% for unit in stock_units %}
                         {% if unit.current_quantity > 0 %}
                         <option value="{{ unit.pk }}">
-                            #{{ unit.unit_number }} — {{ unit.current_quantity|floatformat:2 }} ml disp.
+                            {{ unit.unit_number }} — {{ unit.get_width }} cm ancho — {{ unit.current_quantity|floatformat:2 }} ml disp.
                         </option>
                         {% endif %}
                         {% endfor %}
@@ -88,6 +90,33 @@
             <p class="text-[10px] text-slate-500 italic text-center">
                 El formulario de consumo se habilitará al pasar la orden a "En Producción".
             </p>
+        </div>
+        {% endif %}
+
+        {# ── Historial de Consumos (Siempre Visible) ── #}
+        {% if consumos_ot %}
+        <div class="mt-4 pt-4 border-t border-border-default/30">
+            <p class="text-[9px] text-slate-500 uppercase font-bold tracking-widest mb-2 mt-2">Historial de Consumos en esta OT</p>
+            <div class="overflow-x-auto border border-border-default/50 rounded-lg">
+                <table class="w-full text-left border-collapse whitespace-nowrap">
+                    <thead class="bg-surface-dark/50">
+                        <tr class="border-b border-border-default">
+                            <th class="py-2 px-4 text-[9px] font-bold text-slate-500 uppercase tracking-widest">Fecha</th>
+                            <th class="py-2 px-4 text-[9px] font-bold text-slate-500 uppercase tracking-widest text-center">Nº de Bobina</th>
+                            <th class="py-2 px-4 text-[9px] font-bold text-slate-500 uppercase tracking-widest text-right">Descontado</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-border-default/30">
+                        {% for consumo in consumos_ot %}
+                        <tr class="hover:bg-white/[0.02] transition-colors">
+                            <td class="py-2 px-4 text-[10px] text-slate-400">{{ consumo.date|date:"d/m H:i" }}</td>
+                            <td class="py-2 px-4 font-mono text-[10px] text-blue-300 text-center">{{ consumo.inventory_unit.unit_number }}</td>
+                            <td class="py-2 px-4 text-[10px] font-bold text-red-500 text-right">-{{ consumo.quantity_used|floatformat:2 }} ml</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
         {% endif %}
 
@@ -117,33 +146,6 @@
                                     {{ unit.current_quantity|floatformat:2 }} ml
                                 </td>
                                 <td class="py-2 px-4 text-right text-slate-400 text-[10px]">{{ unit.get_width }} cm</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            {% endif %}
-
-            {# ── Consumption history for this OT ── #}
-            {% if consumos_ot %}
-            <div>
-                <p class="text-[9px] text-slate-500 uppercase font-bold tracking-widest mb-2 mt-2">Historial de Consumos</p>
-                <div class="overflow-x-auto border border-border-default/50 rounded-lg">
-                    <table class="w-full text-left border-collapse whitespace-nowrap">
-                        <thead class="bg-surface-dark/50">
-                            <tr class="border-b border-border-default">
-                                <th class="py-2 px-4 text-[9px] font-bold text-slate-500 uppercase tracking-widest">Fecha</th>
-                                <th class="py-2 px-4 text-[9px] font-bold text-slate-500 uppercase tracking-widest">Bobina</th>
-                                <th class="py-2 px-4 text-[9px] font-bold text-slate-500 uppercase tracking-widest text-right">Descontado</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-border-default/30">
-                            {% for consumo in consumos_ot %}
-                            <tr class="hover:bg-white/[0.02] transition-colors">
-                                <td class="py-2 px-4 text-[10px] text-slate-400">{{ consumo.date|date:"d/m H:i" }}</td>
-                                <td class="py-2 px-4 font-mono text-[10px] text-blue-300">#{{ consumo.inventory_unit.unit_number }}</td>
-                                <td class="py-2 px-4 text-[10px] font-bold text-red-500 text-right">-{{ consumo.quantity_used|floatformat:2 }} ml</td>
                             </tr>
                             {% endfor %}
                         </tbody>

@@ -109,3 +109,31 @@ orders/
 ## Sprint: Dashboard Integration | 2026-04-08 | CERRADO ✅
 - **Active Orders Queryset**: Implementación de lógica en `DashboardView` para capturar solo órdenes vigentes (excluyendo entregadas/canceladas).
 - **Status Semantic UI**: Integración de la tabla de órdenes en el dashboard con mapeo visual de estados y prioridades Rush (rojo/bold) alineado al sistema de diseño.
+
+---
+
+## 2026-04-09 | OTs Hotfix & Customer Onboarding | ✅
+- **Alta Rápida de Cliente**: Habilitación nativa de anclaje `+ Crear Cliente` embebido paramétricamente dentro del formulario de Alta de OT (`workorder_form.html`) contiguo a la selección del cliente, resolviendo fricción productiva para comerciales.
+
+- **UI Real-time**: Inclusión del input de demasía en `workorder_form.html` con reactividad instantánea vía `hx-include` y visualización desglosada en el fragmento `material_preview.html`.
+
+## 2026-04-12 | OT Detail Redesign & Stock UX Polish | ✅
+- **Layout 60/40**: Rediseño integral de `workorder_detail.html` adoptando el patrón de "Ficha de Cliente". Estructura segmentada en dos columnas para mejorar la densidad de información técnica.
+- **Data Split**: Segmentación visual entre "Solicitado por Cliente" y "Cálculo de Planta" para transparencia en el uso de demasía.
+- **Logistics Integration**: Inclusión de tarjeta de "Contacto y Envío" con datos directos del cliente (email, tel, dirección de entrega) para agilidad en despacho.
+- **Stock Panel UX**: 
+  - Historial de consumos movido fuera del acordeón para visibilidad inmediata tras registrar.
+  - Inclusión de **ancho de bobina** en el selector de unidades para evitar errores de operario.
+  - Normalización tipográfica: eliminación de hashtags (`#`) en nombres de unidades para limpieza visual.
+  - Unificación de descripción de sustrato en una sola línea (Nombre / Tipo / Ancho / Gramaje).
+- **CSS Hotfix**: Reemplazo de grids de 5 columnas por contenedores `flex` y grids estándar de 2 columnas para compatibilidad con el build actual de Tailwind.
+
+## 2026-04-12 | Modernización de Listado & Alta Densidad | ✅
+- **UI Consistency**: Refactorización de `workorder_list.html` bajo el estándar "Dark Industrial".
+  - Contenedor ajustado a `max-w-7xl` para alineación global.
+  - Header y Breadcrumbs simplificados con enfoque en tipografía técnica.
+- **Badge-Style Actions**: Reemplazo de iconos de acción por botones tipo badge (`Ver`, `Editar`) unificando el patrón visual de los listados maestros.
+- **Historical Toggle**: Rediseño del botón de "Órdenes Finalizadas" inspirado en el Dashboard, eliminando el estilo previo de acordeón.
+- **Urgency Highlights**: Implementación de micro-animación *pulse* en OTs urgentes para visibilidad inmediata.
+- **Filter Maintenance**: Preservación de la barra de filtros original (fiel al diseño pre-modernización) por requerimiento de UX técnica.
+

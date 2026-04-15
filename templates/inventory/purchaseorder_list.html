@@ -105,4 +105,11 @@
 </div>
 
 <div id="modal-container"></div>
+
+<script>
+    document.body.addEventListener('ocUpdated', function() {
+        // Recargar la página automáticamente para actualizar la lista y remover las tarjetas procesadas
+        window.location.reload();
+    });
+</script>
 {% endblock %}

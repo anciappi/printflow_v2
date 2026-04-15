@@ -46,7 +46,11 @@
         <div class="{% if width_warning %}bg-red-900/10 border-red-700/30{% else %}bg-emerald-900/30 border-emerald-700/50{% endif %} border rounded p-3 text-center">
             <p class="text-2xl font-bold {% if width_warning %}text-red-300{% else %}text-emerald-300{% endif %}">{{ metros }}</p>
             <p class="text-[9px] {% if width_warning %}text-red-500{% else %}text-emerald-500{% endif %} uppercase font-bold mt-1">Metros lineales est.</p>
+            {% if waste_pct and metros_waste %}
+            <p class="text-[9px] text-slate-500 mt-0.5">{{ metros_base }}m base + {{ waste_pct }}% ({{ metros_waste }}m)</p>
+            {% else %}
             <p class="text-[9px] {% if width_warning %}text-red-700{% else %}text-emerald-700{% endif %} mt-0.5">{{ orientation }}</p>
+            {% endif %}
         </div>
     </div>
 

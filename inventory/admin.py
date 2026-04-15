@@ -20,13 +20,13 @@ class MaterialStockSummaryAdmin(admin.ModelAdmin):
     # Añadimos 'technology' a la vista principal
     list_display = (
         'name', 
-        'material_type', 
+        'category', 
         'get_specs', 
         'technology',  # <-- Crucial para los Chips
         'total_units', 
         'total_stock_qty'
     )
-    list_filter = ('material_type', 'technology', 'brand')
+    list_filter = ('category', 'technology', 'brand')
     search_fields = ('name', 'technology', 'brand')
 
     def get_specs(self, obj):
@@ -114,15 +114,20 @@ class InventoryUnitAdmin(admin.ModelAdmin):
 
 # --- 4. (Purchasing now handled in purchasing/admin.py) ---
 
-# --- 5. Definición de Materiales con Especificaciones ---
+# --- 5. Definición de Categorías y Materiales ---
+@admin.register(MaterialCategory)
+class MaterialCategoryAdmin(admin.ModelAdmin):
+    list_display = ('name', 'allows_fractioning', 'description')
+    search_fields = ('name',)
+
 @admin.register(Material)
 class MaterialAdmin(admin.ModelAdmin):
-    list_display = ('name', 'material_type', 'brand', 'get_specs', 'technology')
-    list_filter = ('material_type', 'brand', 'technology')
+    list_display = ('name', 'category', 'unit_of_measure', 'brand', 'get_specs', 'technology')
+    list_filter = ('category', 'unit_of_measure', 'brand', 'technology')
     
     fieldsets = (
-        ('Información Básica', {'fields': ('name', 'material_type', 'brand', 'standard_quantity')}),
-        ('Especificaciones Físicas', {'fields': ('grammage', 'width', 'length')}),
+        ('Información Básica', {'fields': ('name', 'category', 'unit_of_measure', 'brand', 'standard_quantity')}),
+        ('Especificaciones Físicas y Empaque', {'fields': ('grammage', 'width', 'length', 'package_weight', 'sheets_per_package', 'stack_height_cm')}),
         ('Atributos Chips/Bandas', {'classes': ('collapse',), 'fields': ('mag_stripe_width', 'technology', 'position')}),
     )
 

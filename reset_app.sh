@@ -60,6 +60,7 @@ User.objects.create_superuser(
 print('✅ Superusuario global creado (tenant=None).')
 "
 
+
 # 7. Crear tenant Grupo Velton con sus branches
 echo "🏭  Creando tenant Grupo Velton..."
 python manage.py shell -c "
@@ -95,6 +96,7 @@ User.objects.create_user(
 print('✅ Usuario velton_admin creado para Grupo Velton.')
 "
 
+
 # 9. Crear tenant Salleo SRL con sus branches
 echo "🏭  Creando tenant Salleo SRL..."
 python manage.py shell -c "
@@ -129,6 +131,40 @@ User.objects.create_user(
 print('✅ Usuario salleo_admin creado para Salleo SRL.')
 "
 
+# 11. Crear tenant Martu Print con sus branches
+echo "🏭  Creando tenant Martu Print..."
+python manage.py shell -c "
+from tenants.models import PrintShop, Domain, Branch
+martu = PrintShop(schema_name='martu', name='Martu Print', plan='pro')
+martu.save()
+Domain.objects.create(domain='martu.localhost', tenant=martu, is_primary=True)
+Branch.objects.create(tenant=martu, name='Martu Print')
+print('✅ Tenant Martu Print creado.')
+"
+
+# 12. Crear usuario operativo para Martu
+echo "👤  Creando usuario operativo en Martu..."
+python manage.py shell -c "
+from django.db import connection
+from users.models import User
+from tenants.models import PrintShop
+
+martu = PrintShop.objects.get(schema_name='martu')
+
+# Set RLS context before creating user
+with connection.cursor() as cursor:
+    cursor.execute(\"SELECT set_config('app.current_tenant_id', %s, false)\", [str(martu.id)])
+
+User.objects.create_user(
+    username='martu_admin',
+    email='admin@martu.com',
+    password='martu1234',
+    role='ADMIN',
+    tenant=martu,
+)
+print('✅ Usuario martu_admin creado para Martu Print.')
+"
+
 
 echo ""
 echo "✅  ¡LISTO! Sistema reseteado y configurado para desarrollo."
@@ -137,7 +173,9 @@ echo "   Accesos disponibles:"
 echo "   → Admin público:  http://localhost:8001/admin/"
 echo "   → Grupo Velton:   http://velton.localhost:8001/"
 echo "   → Salleo SRL:   http://salleo.localhost:8001/"
+echo "   → Martu Print:   http://martu.localhost:8001/"
 echo ""
 echo "   Recordá agregar a /etc/hosts:"
 echo "   127.0.0.1  velton.localhost"
 echo "   127.0.0.1  salleo.localhost"
+echo "   127.0.0.1  martu.localhost"

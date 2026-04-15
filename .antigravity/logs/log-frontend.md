@@ -23,3 +23,11 @@ Seguimiento de cambios globales de UI/UX, Tailwind tokens, CSS y fragments trans
 - **UX**: Navegación rápida desde sidebar y redirección inteligente desde la raíz.
 - **Inline KPI Cards**: Diseño de alto impacto visual con íconos vectoriales y tipografía Encode Sans Light.
 
+## 2026-04-12 | OT Detail Visual Overhaul | ✅
+- **Pattern Replication**: Adopción del layout **60/40** de la Ficha de Cliente en `workorder_detail.html`.
+- **Industrial Hierarchy**: Segmentación por bloques horizontales con títulos en colores semánticos (Esmeralda para solicitado, Ámbar para planta, Púrpura para logística).
+- **Flex Fallback System**: Implementación de contenedores `flex` con `min-w` porcentual en lugar de `grid-cols-X` dinámicas para garantizar compatibilidad con el caché de Tailwind CSS en entornos sin watch activo.
+- **Micro-UX Polish**:
+  - `stock_panel.html`: Unificación de strings técnicos (Sustrato / Ancho / Gramaje) en una sola línea sutil.
+  - Formulario de consumo simplificado con etiquetas en mayúsculas y tipografía `text-[9px]` font-bold (Dark Industrial Style).
+  - Eliminación de glifos ruidosos (`#`) en el listado de unidades.

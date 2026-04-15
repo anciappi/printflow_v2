@@ -25,6 +25,35 @@
 
         <!-- Body -->
         <div class="p-6 overflow-y-auto custom-scrollbar bg-surface-dark">
+            <div class="grid grid-cols-2 gap-4 mb-5 pb-5 border-b border-border-default bg-surface rounded-lg p-4">
+                <div class="space-y-2">
+                    <h5 class="text-[9px] font-bold text-slate-500 uppercase tracking-widest border-b border-slate-700/50 pb-1 mb-2">Original / Objetivo</h5>
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-slate-400">Cant. Producir:</span>
+                        <span class="text-white font-medium">{{ order.quantity_with_waste }}</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-slate-400">Bocas:</span>
+                        <span class="text-white font-medium">{{ order.bocas|default:"--" }}</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-slate-400">Mat. Estimado:</span>
+                        <span class="text-white font-medium">{{ order.estimated_material_usage|default:"--" }} ml</span>
+                    </div>
+                </div>
+                <div class="space-y-2 border-l border-border-default pl-4">
+                    <h5 class="text-[9px] font-bold text-blue-400 uppercase tracking-widest border-b border-slate-700/50 pb-1 mb-2">Avance Reportado</h5>
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-slate-400">Cant. Parcial:</span>
+                        <span class="text-blue-400 font-bold">{{ total_quantity|default:"0" }}</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-slate-400">Mat. Usado:</span>
+                        <span class="text-blue-400 font-bold">{{ total_material|default:"0"|floatformat:2 }} ml</span>
+                    </div>
+                </div>
+            </div>
+
             <form hx-post="{% url 'orders:status_update' order.pk %}" 
                   hx-target="#modal-container" 
                   hx-swap="innerHTML" 
@@ -39,19 +68,11 @@
                     <p class="text-[10px] text-slate-600 mt-1">Se requiere reportar la cantidad al finalizar esta etapa.</p>
                 </div>
                 
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1 tracking-widest">
-                            Bocas Utilizadas
-                        </label>
-                        {{ form.bocas }}
-                    </div>
-                    <div>
-                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1 tracking-widest">
-                            Material Usado (ml)
-                        </label>
-                        {{ form.material_used }}
-                    </div>
+                <div>
+                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1 tracking-widest">
+                        Material Usado (ml)
+                    </label>
+                    {{ form.material_used }}
                 </div>
 
                 <div>

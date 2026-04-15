@@ -23,12 +23,13 @@ class WorkOrderForm(forms.ModelForm):
             'orientation', 'layout_rows', 'layout_cols',
             'gap_horizontal_mm', 'gap_vertical_mm',
             'margin_lateral_mm', 'margin_top_mm', 'margin_bottom_mm',
-            'bobina_width_mm',
+            'bobina_width_mm', 'waste_percentage',
         ]
         widgets = {
             'production_notes': forms.Textarea(attrs={'rows': 3}),
-            'start_date': forms.DateInput(attrs={'type': 'date'}),
-            'due_date': forms.DateInput(attrs={'type': 'date'}),
+            'start_date': forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
+            'due_date': forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
+            'waste_percentage': forms.NumberInput(attrs={'step': '0.1', 'placeholder': 'Ej. 5'}),
         }
 
     def __init__(self, *args, **kwargs):
@@ -102,17 +103,13 @@ class WorkOrderLogForm(forms.ModelForm):
 class WorkOrderAdvanceForm(forms.ModelForm):
     class Meta:
         model = WorkOrderLog
-        fields = ['quantity_produced', 'bocas', 'material_used', 'comment']
+        fields = ['quantity_produced', 'material_used', 'comment']
         widgets = {
             'quantity_produced': forms.NumberInput(attrs={
                 'class': 'w-full bg-surface-dark border border-border-default text-white text-xs px-3 py-2.5 focus:border-orange-500 outline-none transition-colors rounded-sm',
                 'placeholder': 'Cantidad',
                 'min': '1',
                 'required': True
-            }),
-            'bocas': forms.NumberInput(attrs={
-                'class': 'w-full bg-surface-dark border border-border-default text-white text-xs px-3 py-2.5 focus:border-orange-500 outline-none transition-colors rounded-sm',
-                'placeholder': 'Ej. 4'
             }),
             'material_used': forms.NumberInput(attrs={
                 'class': 'w-full bg-surface-dark border border-border-default text-white text-xs px-3 py-2.5 focus:border-orange-500 outline-none transition-colors rounded-sm',

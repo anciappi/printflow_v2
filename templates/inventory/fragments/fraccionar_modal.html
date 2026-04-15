@@ -1,11 +1,14 @@
+{% load static %}
 <div class="fixed inset-0 z-50">
     <div class="fixed inset-0 bg-black/80 backdrop-blur-sm"></div>
     <div class="fixed inset-0 z-10 flex items-center justify-center p-4">
-        <div class="bg-surface border border-border-default w-full max-w-md p-6 shadow-2xl">
+        <div class="bg-surface border border-border-default w-full max-w-md p-6 shadow-2xl rounded-sm">
             <form hx-post="{% url 'inventory:fraccionar_unidad' unit.id %}" hx-target="#modal-container" hx-swap="innerHTML">
                 {% csrf_token %}
+                <input type="hidden" name="tipo_corte" id="tipo_corte" value="{{ active_tab|default:'ancho' }}">
+                
                 <h3 class="text-lg font-bold text-white mb-1">✂ Fraccionar Bobina</h3>
-                <p class="text-xs text-slate-400 mb-6">Unidad: <span class="text-amber-400 font-mono">{{ unit.unit_number }}</span> | Ancho: <span class="text-white">{{ unit.get_width }}</span>cm</p>
+                <p class="text-[11px] text-slate-400 mb-4">Unidad: <span class="text-amber-400 font-mono">{{ unit.unit_number }}</span> | Disponible: <span class="text-emerald-400 font-mono">{{ unit.current_quantity|floatformat:2 }}</span></p>
                 
                 {% if error %}
                 <div class="bg-red-900/20 border border-red-500/30 text-red-400 text-xs px-4 py-2 mb-4 rounded-sm">
@@ -13,18 +16,46 @@
                 </div>
                 {% endif %}
 
-                <div class="mb-6">
-                    <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Ancho del Primer Corte (Corte A)</label>
-                    <div class="flex items-center gap-2">
-                        <input type="number" step="0.01" name="ancho_hija_a" required class="w-full bg-surface-dark border border-amber-500/50 text-white font-mono text-lg px-4 py-3 outline-none">
-                        <span class="text-slate-500 font-bold">cm</span>
+                <!-- TABS HEADER -->
+                <div class="flex border-b border-border-default mb-6">
+                    <button type="button" onclick="switchTab('ancho')" id="tab-btn-ancho" class="flex-1 py-2 text-xs font-bold uppercase transition-colors {% if active_tab|default:'ancho' == 'ancho' %}text-amber-500 border-b-2 border-amber-500{% else %}text-slate-500 hover:text-slate-300{% endif %}">
+                        Por Ancho
+                    </button>
+                    <button type="button" onclick="switchTab('largo')" id="tab-btn-largo" class="flex-1 py-2 text-xs font-bold uppercase transition-colors {% if active_tab == 'largo' %}text-amber-500 border-b-2 border-amber-500{% else %}text-slate-500 hover:text-slate-300{% endif %}">
+                        Por Largo
+                    </button>
+                </div>
+
+                <!-- TABS CONTENT -->
+                <div id="tab-content-ancho" class="{% if active_tab == 'largo' %}hidden{% endif %}">
+                    <div class="mb-6">
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Ancho del Corte (Hija A)</label>
+                        <p class="text-[10px] text-slate-400 mb-2 leading-tight">La unidad actual tiene <span class="text-white">{{ unit.get_width }}cm</span>. Ingresá el ancho de la primera parte. El remanente formará la Hija B.</p>
+                        <div class="flex items-center gap-2">
+                            <input type="number" step="0.01" name="ancho_hija_a" id="input_ancho" class="w-full bg-surface-dark border border-amber-500/50 text-white font-mono text-lg px-4 py-3 outline-none focus:border-amber-500">
+                            <span class="text-slate-500 font-bold">cm</span>
+                        </div>
                     </div>
                 </div>
-                <div class="flex justify-end gap-3">
-                    <button type="button"  hx-get="{% url 'inventory:close_modal' %}" hx-target="#modal-container" hx-swap="innerHTML" class="text-xs font-bold text-slate-500 uppercase px-4 py-2">Cancelar</button>
-                    <button type="submit" class="bg-amber-600 text-white text-xs font-bold uppercase px-6 py-2 rounded-sm">Confirmar Corte</button>
+
+                <div id="tab-content-largo" class="{% if active_tab|default:'ancho' != 'largo' %}hidden{% endif %}">
+                    <div class="mb-6">
+                        <label class="block text-[10px] font-bold text-slate-500 uppercase mb-2">Longitudes (Separadas por coma)</label>
+                        <p class="text-[10px] text-slate-400 mb-2 leading-tight">Ingresá los largos a cortar (ej: <span class="bg-black text-amber-500 px-1 rounded font-mono">1000, 500</span>). Si la suma es menor a la cantidad disponible, el resto formará una hija automáticamente.</p>
+                        <div class="flex items-center gap-2">
+                            <input type="text" name="largos_hijas" id="input_largo" class="w-full bg-surface-dark border border-amber-500/50 text-white font-mono text-lg px-4 py-3 outline-none focus:border-amber-500" placeholder="Ej: 1000, 500">
+                            <span class="text-slate-500 font-bold">{{ unit.material.get_unit_of_measure_display }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-end gap-3 mt-4">
+                    <button type="button" hx-get="{% url 'inventory:close_modal' %}" hx-target="#modal-container" hx-swap="innerHTML" class="text-xs font-bold text-slate-500 uppercase px-4 py-2 hover:text-white transition-colors">Cancelar</button>
+                    <button type="submit" class="bg-amber-600 text-white text-xs font-bold uppercase px-6 py-2 rounded-sm hover:bg-amber-500 transition-colors" onclick="prepareSubmit()">Confirmar Corte</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<script src="{% static 'js/fraccionar_modal.js' %}"></script>

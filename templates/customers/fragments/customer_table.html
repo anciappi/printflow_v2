@@ -1,0 +1,63 @@
+<table class="w-full text-left border-collapse">
+    <thead>
+        <tr class="border-b border-border-default bg-[#0f1115]/80 text-[9px] font-bold text-slate-500 uppercase tracking-widest">
+            <th class="px-4 py-3">Razón Social</th>
+            <th class="px-4 py-3">CUIT / ID Fiscal</th>
+            <th class="px-4 py-3">Email de Contacto</th>
+            <th class="px-4 py-3">Teléfono</th>
+            <th class="px-4 py-3 text-center">Estado</th>
+            <th class="px-4 py-3 text-right">Acciones</th>
+        </tr>
+    </thead>
+    <tbody class="divide-y divide-[#2d333b]">
+        {% for customer in customers %}
+        <tr class="hover:bg-surface-hover/20 transition-colors group">
+            <td class="px-4 py-2.5">
+                <span class="text-[12px] font-medium text-white group-hover:text-blue-400 transition-colors">{{ customer.name }}</span>
+            </td>
+
+            <td class="px-4 py-2.5">
+                <span class="text-[11px] text-emerald-500/80 font-mono">{{ customer.tax_id }}</span>
+            </td>
+
+            <td class="px-4 py-2.5">
+                <div class="text-[11px] text-slate-400 font-light truncate max-w-[200px]" title="{{ customer.email }}">
+                    {{ customer.email }}
+                </div>
+            </td>
+
+            <td class="px-4 py-2.5">
+                <span class="text-slate-500 font-mono text-[10px]">{{ customer.phone }}</span>
+            </td>
+
+            <td class="px-4 py-2.5 text-center">
+                {% if customer.is_active %}
+                <span class="text-[9px] text-emerald-500 font-bold uppercase tracking-widest">Activo</span>
+                {% else %}
+                <span class="text-[9px] text-slate-500 font-bold uppercase tracking-widest">Inactivo</span>
+                {% endif %}
+            </td>
+
+            <td class="px-4 py-2.5 text-right">
+                <div class="flex justify-end gap-2">
+                    <a href="{% url 'customers:detail' customer.pk %}" class="bg-surface-hover text-slate-400 hover:text-white px-2 py-0.5 rounded text-[10px] transition-colors">
+                        Ver
+                    </a>
+                    <a href="{% url 'customers:update' customer.pk %}" class="bg-surface-hover text-slate-400 hover:text-white px-2 py-0.5 rounded text-[10px] transition-colors">
+                        Editar
+                    </a>
+                    <a href="{% url 'customers:delete' customer.pk %}" class="bg-red-900/40 text-red-500 hover:text-red-300 px-2 py-0.5 rounded text-[10px] transition-colors">
+                        Eliminar
+                    </a>
+                </div>
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="6" class="px-6 py-12 text-center text-slate-500 text-xs italic">
+                No se encontraron clientes con los criterios de búsqueda.
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

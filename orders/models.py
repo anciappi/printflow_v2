@@ -8,10 +8,8 @@ class WorkOrder(models.Model):
     # Estados del Flujo de Trabajo (Workflow)
     STATUS_CHOICES = [
         ('PENDING', 'Pendiente Planificación'),
-        ('PREPRESS', 'Pre-Prensa / Diseño'),
         ('PRODUCTION', 'En Producción'),
         ('FINISHING', 'Terminaciones / Corte'),
-        ('QUALITY_CONTROL', 'Control de Calidad'),
         ('READY', 'Listo para Entrega'),
         ('DELIVERED', 'Entregado'),
         ('CANCELLED', 'Anulada'),
@@ -69,6 +67,7 @@ class WorkOrder(models.Model):
     margin_bottom_mm    = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True, verbose_name="Margen Inferior (mm)")
     orientation         = models.CharField(max_length=10, choices=ORIENTATION_CHOICES, default='PORTRAIT', verbose_name="Orientación en Bobina")
     bobina_width_mm     = models.DecimalField(max_digits=7, decimal_places=2, null=True, blank=True, verbose_name="Ancho de Bobina disponible (mm)", help_text="Ancho útil del rollo o máquina. Se usará para validar que la postura entre.")
+    waste_percentage    = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, verbose_name="Porcentaje de Demasía (%)", help_text="Porcentaje adicional para mermas o desperdicios de máquina.")
 
     # Resultado calculado automáticamente
     estimated_material_usage = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Material Estimado (metros lineales)")
@@ -84,12 +83,21 @@ class WorkOrder(models.Model):
     def get_next_status_display(self):
         """Returns the display label of the next status, or None if at end of flow."""
         transitions = {
-            'PENDING':         ('PREPRESS', 'Enviar a Pre-Prensa'),
-            'PREPRESS':        ('PRODUCTION', 'Iniciar Producción'),
+            'PENDING':         ('PRODUCTION', 'Iniciar Producción'),
             'PRODUCTION':      ('FINISHING', 'Pasar a Terminaciones'),
-            'FINISHING':       ('QUALITY_CONTROL', 'Control de Calidad'),
-            'QUALITY_CONTROL': ('READY', 'Marcar como Listo'),
+            'FINISHING':       ('READY', 'Marcar como Listo'),
             'READY':           ('DELIVERED', 'Confirmar Entrega'),
+        }
+        result = transitions.get(self.current_status)
+        return result[1] if result else None
+
+    def get_previous_status_display(self):
+        """Returns the display label of the previous status, or None if at start of flow or cancelled."""
+        transitions = {
+            'DELIVERED':       ('READY', 'Revertir a Listo'),
+            'READY':           ('FINISHING', 'Revertir a Terminaciones'),
+            'FINISHING':       ('PRODUCTION', 'Revertir a Producción'),
+            'PRODUCTION':      ('PENDING', 'Revertir a Pendiente'),
         }
         result = transitions.get(self.current_status)
         return result[1] if result else None
@@ -136,8 +144,35 @@ class WorkOrder(models.Model):
         largo_postura = (filas * largo_mm) + ((filas - 1) * gap_v) + m_top + m_bot
         bocas_totales = self.layout_rows * self.layout_cols
         pasadas       = ceil(self.quantity / bocas_totales)
-        metros        = (Decimal(pasadas) * largo_postura) / Decimal('1000')
+        metros_base   = (Decimal(pasadas) * largo_postura) / Decimal('1000')
+
+        if self.waste_percentage:
+            metros = metros_base * (Decimal('1') + (Decimal(str(self.waste_percentage)) / Decimal('100')))
+        else:
+            metros = metros_base
+
         return metros.quantize(Decimal('0.01'))
+
+    @property
+    def quantity_with_waste(self):
+        """Retorna la cantidad a producir sumando la demasía (truncado a entero)."""
+        if self.waste_percentage:
+            from decimal import Decimal
+            factor = Decimal('1') + (Decimal(str(self.waste_percentage)) / Decimal('100'))
+            return int(Decimal(self.quantity) * factor)
+        return self.quantity
+
+    @property
+    def estimated_material_base_usage(self):
+        """Retorna el estimado de material SIN considerar la demasía."""
+        if not self.estimated_material_usage:
+            return None
+        if not self.waste_percentage:
+            return self.estimated_material_usage
+        
+        from decimal import Decimal
+        factor = Decimal('1') + (Decimal(str(self.waste_percentage)) / Decimal('100'))
+        return (self.estimated_material_usage / factor).quantize(Decimal('0.01'))
 
     def save(self, *args, **kwargs):
         # Generar número de OT atómicamente para prevenir condiciones de carrera

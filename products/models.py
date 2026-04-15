@@ -27,6 +27,8 @@ class Product(models.Model):
         ('VOTO', 'Voto'),
         ('TICKET', 'Ticket'),
         ('ETIQUETA', 'Etiqueta'),
+        ('PACKAGING', 'Packaging'),
+        ('FOLLETO', 'Folleto'),
     ]
     name = models.CharField(max_length=200, verbose_name="Nombre")
     product_type = models.CharField(
@@ -41,7 +43,7 @@ class Product(models.Model):
     # --- Dimensiones y Sustrato ---
     width_mm = models.DecimalField(max_digits=10, decimal_places=2)
     height_mm = models.DecimalField(max_digits=10, decimal_places=2)
-    substrate = models.ForeignKey(Material, on_delete=models.PROTECT, limit_choices_to={'material_type__in': ['PAPER', 'CARTULINA', 'ADHESIVO', 'PLIEGO_CHIP']})
+    substrate = models.ForeignKey(Material, on_delete=models.PROTECT, verbose_name="Sustrato / Material")
 
     # --- 2. Colores (Many to Many) ---
     colors_front = models.ManyToManyField(Color, related_name='products_front', blank=True, verbose_name="Colores Frente")

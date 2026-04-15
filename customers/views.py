@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Customer
 from .forms import CustomerForm
 from orders.models import WorkOrder
+from django.db.models import Q
 
 class CustomerDetailView(LoginRequiredMixin, DetailView):
     model = Customer
@@ -31,8 +32,19 @@ class CustomerListView(LoginRequiredMixin, ListView):
     context_object_name = 'customers'
     paginate_by = 20
 
+    def get_template_names(self):
+        if self.request.htmx:
+            return ['customers/fragments/customer_table.html']
+        return ['customers/customer_list.html']
+
     def get_queryset(self):
-        return Customer.objects.filter(is_active=True)
+        queryset = Customer.objects.filter(is_active=True)
+        q = self.request.GET.get('q')
+        if q:
+            queryset = queryset.filter(
+                Q(name__icontains=q) | Q(tax_id__icontains=q)
+            )
+        return queryset
 
 class CustomerCreateView(LoginRequiredMixin, CreateView):
     model = Customer

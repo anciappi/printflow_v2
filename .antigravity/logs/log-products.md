@@ -61,3 +61,12 @@ Seguimiento de cambios en la app Products (Maestro de Productos), modelo de nego
     - Inclusión de botones "Ver Ficha" en el catálogo general y en el detalle de cliente.
     - Vinculación directa para creación de nuevas OTs pre-cargando el producto seleccionado.
 
+---
+
+## 2026-04-09 | Compatibilidad Sustrativa Dinámica (Multi-Material) | ✅
+- **Desacople en FK (`Product.substrate`)**: Se eliminó la validación estricta y hardcodeada `limit_choices_to` originaria del sistema exclusivo de bobinas, confiriendo libertad de asociación inter-módulo hacia el nuevo estándar `MaterialCategory`, posibilitando el alta de cualquier insumo físico en catálogos y erradicando el drop-down vacío en OTs operativas.
+
+## 2026-04-12 | Reestructuración de Columnas & UX | ✅
+- **Column Splitting**: División de la columna combinada "Cód. / Nombre" en dos columnas independientes (**Código** y **Nombre del Producto**) en la tabla desplegable de Fichas Técnicas.
+- **Micro-Layout Adjustments**: Alineación de anchos y simplificación de textos en acciones (`Ver`, `Editar`) para mejorar la legibilidad en pantallas de alta resolución.
+

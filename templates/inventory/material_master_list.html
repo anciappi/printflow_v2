@@ -37,7 +37,7 @@
 
                     <!-- Categoría -->
                     <td class="px-6 py-3">
-                        <span class="px-2 py-1 text-[10px] uppercase font-bold text-slate-300 bg-surface-hover rounded border border-slate-600"> {{ item.get_material_type_display }} </span>
+                        <span class="px-2 py-1 text-[10px] uppercase font-bold text-slate-300 bg-surface-hover rounded border border-slate-600"> {{ item.category.name|default:item.material_type|default:"Sin Categoría" }} </span>
                     </td>
 
                     <!-- Especificaciones -->

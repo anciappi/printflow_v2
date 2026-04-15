@@ -7,31 +7,65 @@ from tenants.models import Branch
 
 
 # ---------------------------------------------------------------------------
+# MATERIAL CATEGORY
+# ---------------------------------------------------------------------------
+
+class MaterialCategory(models.Model):
+    name = models.CharField(max_length=50, unique=True, verbose_name="Nombre de la Categoría")
+    description = models.TextField(blank=True, verbose_name="Descripción")
+    allows_fractioning = models.BooleanField(default=False, verbose_name="Permite Fraccionamiento", help_text="Solo aplicable para bobinas que pueden dividirse en anchos menores.")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['name']
+        verbose_name = "Categoría de Material"
+        verbose_name_plural = "Categorías de Materiales"
+
+    def __str__(self):
+        return self.name
+
+
+# ---------------------------------------------------------------------------
 # MATERIAL (Materia Prima)
 # ---------------------------------------------------------------------------
 
 class Material(models.Model):
-    TYPE_CHOICES = [
-        ('PAPER', 'Papel'),
-        ('MAG_STRIPE', 'Banda Magnética'),
-        ('PAPEL_SEMI', 'Papel Semielaborado'),
-        ('PLIEGO_CHIP', 'Pliego con Chip'),
-        ('ADHESIVO', 'Adhesivo'),
-        ('CHIP_INLAI', 'Chip INLAI'),
-        ('CARTULINA', 'Cartulina'),
-        ('OTHER', 'Otros'),
+    UNIT_CHOICES = [
+        ('M', 'mts.'),
+        ('M2', 'mts2.'),
+        ('KG', 'kgs.'),
+        ('LT', 'lts.'),
+        ('UN', 'uni.'),
     ]
+
     name = models.CharField(max_length=100)
     brand = models.CharField(max_length=50, blank=True)
-    material_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
+    category = models.ForeignKey(MaterialCategory, on_delete=models.PROTECT, related_name='materials', null=True, blank=True, verbose_name="Categoría")
+    unit_of_measure = models.CharField(max_length=5, choices=UNIT_CHOICES, default='UN', verbose_name="Unidad de Medida base")
+    
+    # (LEGACY) Mantener por compatibilidad temporal
+    material_type = models.CharField(max_length=20, null=True, blank=True)
+    
+    # Propiedades genéricas
     grammage = models.IntegerField(null=True, blank=True, verbose_name="Gramaje (g/m2)")
+    
+    # Dimensiones (Bobinas y Pliegos)
     width = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Ancho (cm)")
     length = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Largo/Desarrollo (cm)")
+    
+    # Atributos específicos para Pliegos
+    sheets_per_package = models.IntegerField(null=True, blank=True, verbose_name="Hojas por Paquete (Cerrado)")
+    stack_height_cm = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Espesor del Bancal/Pallet (cm)")
+    package_weight = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Peso Bulto/Bancal (Kg)")
+
+    # Específicos magnéticos/chip
     mag_stripe_width = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     technology = models.CharField(max_length=100, null=True, blank=True)
     position = models.CharField(max_length=100, null=True, blank=True)
-    standard_quantity = models.DecimalField(max_digits=12, decimal_places=2, default=0)
-    package_weight = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Peso Bulto (Kg)")
+    
+    standard_quantity = models.DecimalField(max_digits=12, decimal_places=2, default=0, verbose_name="Stock Ideal")
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -39,9 +73,10 @@ class Material(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        tech = f" | {self.technology}" if self.technology else ""
-        specs = f"{self.width or 0}x{self.length or 0} | {self.grammage or 0}g"
-        return f"{self.get_material_type_display()} - {self.name} ({specs}{tech})"
+        specs = f" | {self.width or 0}x{self.length or 0}cm" if self.width else ""
+        cat = self.category.name if self.category else (self.material_type or '')
+        return f"[{cat}] {self.name} {specs}"
+
 
 
 # ---------------------------------------------------------------------------
@@ -83,6 +118,9 @@ class InventoryUnit(models.Model):
         return self.width_override if self.width_override else self.material.width
 
     def fraccionar(self, ancho_a: Decimal):
+        if not self.material.category or not self.material.category.allows_fractioning:
+            raise ValueError("Este material no permite fraccionamiento. Verifica la categoría.")
+            
         ancho_padre = self.get_width()
 
         if ancho_a >= ancho_padre or ancho_a <= 0:
@@ -119,17 +157,65 @@ class InventoryUnit(models.Model):
 
         return hija_a, hija_b
 
+    def fraccionar_por_largo(self, cortes: list[Decimal]):
+        if not self.material.category or not self.material.category.allows_fractioning:
+            raise ValueError("Este material no permite fraccionamiento. Verifica la categoría.")
+
+        suma_cortes = sum(cortes)
+        if suma_cortes <= 0:
+            raise ValueError("Las longitudes a cortar deben ser mayores a 0.")
+            
+        if suma_cortes > self.current_quantity:
+            raise ValueError(f"La suma de los cortes ({suma_cortes}) excede el largo disponible ({self.current_quantity}).")
+
+        remanente = self.current_quantity - suma_cortes
+        lotes_a_crear = list(cortes)
+        if remanente > 0:
+            lotes_a_crear.append(remanente)
+
+        hijas = []
+        with transaction.atomic():
+            for i, largo in enumerate(lotes_a_crear, start=1):
+                hija = InventoryUnit.objects.create(
+                    material=self.material,
+                    purchase_order=self.purchase_order,
+                    unit_number=f"{self.unit_number}.L{i}",
+                    branch=self.branch,
+                    initial_quantity=largo,
+                    current_quantity=largo,
+                    width_override=self.get_width(),
+                    parent_unit=self,
+                    status='AVAILABLE',
+                )
+                hijas.append(hija)
+                
+            self.status = 'EXHAUSTED'
+            self.current_quantity = Decimal('0')
+            self.save()
+
+        return hijas
+
     def deshacer_fraccionamiento(self):
         hermanas = InventoryUnit.objects.filter(parent_unit=self)
+        
+        if not hermanas.exists():
+            raise ValueError("No hay bobinas hijas para restaurar.")
 
         for h in hermanas:
             if h.current_quantity < h.initial_quantity:
                 raise ValueError(f"No se puede deshacer: La unidad {h.unit_number} ya tuvo consumo.")
 
+        is_length_split = hermanas.first().unit_number.split('.')[-1].startswith('L')
+
         with transaction.atomic():
+            if is_length_split:
+                restored_quantity = sum((h.initial_quantity for h in hermanas), Decimal('0'))
+            else:
+                restored_quantity = hermanas.first().initial_quantity
+
             hermanas.delete()
             self.status = 'AVAILABLE'
-            self.current_quantity = self.initial_quantity
+            self.current_quantity = restored_quantity
             self.save()
 
 

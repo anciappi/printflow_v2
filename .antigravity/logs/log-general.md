@@ -110,9 +110,16 @@ Para detalle completo ver log-[modulo].md correspondiente.
 - core: Redirección raíz a dashboard y actualización de navegación sidebar.
 
 ## 2026-04-09
-- security: Auditoría multi-tenant completa — descubierta fuga crítica de Branch entre tenants.
-- security: purchasing, orders, quotes, inventory — `branch` filtrado por tenant en todos los forms y contextos.
-- security: `StaffMixin` aplicado a todas las views de orders que solo tenían `LoginRequiredMixin`.
-- infra: Salleo SRL agregado como segundo tenant en `reset_app.sh` para testing de aislamiento.
 - infra: `inventory/forms.py` — `PurchaseOrderForm` duplicado eliminado; imports redirigidos a `purchasing/forms.py`.
 - Ver detalle: log-purchasing.md, log-tenants.md, log-orders.md
+
+## 2026-04-10
+- inventory: Multi-fraccionamiento longitudinal (L1, L2...), bug fix stock fantasma, modal tabs e integración JS en `fraccionar_modal.js`.
+- orders: Implementación de Demasía (%) en OTs, actualización de calculadora en tiempo real y UI de preview.
+- core: Auditoría de seguridad e higiene de scripts.
+
+## 2026-04-12
+- orders: Rediseño integral de Ficha de OT (Layout 60/40) con integración de logística y KPIs.
+- frontend: Refactor de componentes en `stock_panel.html` para visibilidad de consumos y datos técnicos de bobinas.
+- core: Hotfix de compatibilidad CSS (Flex fallback).
+

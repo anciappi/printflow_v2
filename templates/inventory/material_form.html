@@ -34,29 +34,35 @@
         <div class="bg-surface border border-border-default p-6 shadow-lg mb-6">
             <h3 class="text-xs font-bold text-blue-400 uppercase tracking-widest mb-4 border-b border-border-default pb-2">Identificación Básica</h3>
             <!-- Cambiamos a 3 columnas para que entre el nuevo campo -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
             
-            <!-- Columna 1: Tipo -->
+            <!-- Columna 1: Categoría -->
             <div>
-                <label class="block text-[10px] text-slate-500 uppercase mb-2">{{ form.material_type.label }}</label>
-                {{ form.material_type }}
+                <label class="block text-[10px] text-slate-500 uppercase mb-2">{{ form.category.label }}</label>
+                {{ form.category }}
             </div>
 
-            <!-- Columna 2: Marca -->
+            <!-- Columna 2: Unidad de Medida -->
+            <div>
+                <label class="block text-[10px] text-slate-500 uppercase mb-2">{{ form.unit_of_measure.label }}</label>
+                {{ form.unit_of_measure }}
+            </div>
+
+            <!-- Columna 3: Marca -->
             <div>
                 <label class="block text-[10px] text-slate-500 uppercase mb-2">{{ form.brand.label }}</label>
                 {{ form.brand }}
             </div>
 
-            <!-- Columna 3: STOCK MÍNIMO (El que faltaba) -->
+            <!-- Columna 4: STOCK MÍNIMO -->
             <div>
                 <label class="block text-[10px] text-slate-500 uppercase mb-2">{{ form.standard_quantity.label }}</label>
                 {{ form.standard_quantity }}
-                <p class="text-[9px] text-slate-600 mt-1">Punto de reposición ideal.</p>
+                <p class="text-[9px] text-slate-600 mt-1">Punto de reposición.</p>
             </div>
 
             <!-- Fila completa: Nombre -->
-            <div class="md:col-span-3">
+            <div class="md:col-span-4">
                 <label class="block text-[10px] text-slate-500 uppercase mb-2">{{ form.name.label }}</label>
                 {{ form.name }}
             </div>
@@ -64,7 +70,7 @@
 
         <!-- SECCIÓN 2: Especificaciones Físicas -->
         <div class="bg-surface border border-border-default p-6 shadow-lg mb-6 mt-6">
-            <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-4 border-b border-border-default pb-2">Dimensiones</h3>
+            <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-widest mb-4 border-b border-border-default pb-2">Especificaciones Físicas y Empaque</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
                     <label class="block text-[10px] text-slate-500 uppercase mb-2">{{ form.width.label }}</label>
@@ -81,6 +87,14 @@
                 <div>
                     <label class="block text-[10px] text-slate-500 uppercase mb-2">{{ form.package_weight.label }}</label>
                     {{ form.package_weight }}
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-500 uppercase mb-2">{{ form.sheets_per_package.label }}</label>
+                    {{ form.sheets_per_package }}
+                </div>
+                <div>
+                    <label class="block text-[10px] text-slate-500 uppercase mb-2">{{ form.stack_height_cm.label }}</label>
+                    {{ form.stack_height_cm }}
                 </div>
             </div>
         </div>

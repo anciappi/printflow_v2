@@ -886,3 +886,36 @@ Dark/Light theme — post-MVP
 - `templates/orders/fragments/status_badge.html`: Modificación a layout de pastilla compacta.
 - `static/js/workorder_layout_preview.js`: **[NUEVO]** Script estático e independiente extraído desde los dominios del template.
 - `.antigravity/logs/log-orders.md`: Adición del registro del sprint actual.
+
+---
+
+## Session: 2026-04-12
+**Tasks Completed:**
+- **UI Modernization Sprint ("Dark Industrial" Consolidation)**: Refactorización integral de los cuatro módulos principales (Inventarios, Clientes, Órdenes de Trabajo y Productos) para alcanzar un estándar de alta densidad y estética técnica premium.
+- **Customer List Refactor**:
+  - Eliminación de acordeones legacy en favor de una lista plana y rápida.
+  - Implementación de **Búsqueda HTMX en tiempo real** por Nombre/CUIT con filtrado asíncrono.
+  - Estructuración de tabla de 6 columnas con anchos optimizados.
+- **Dashboard Stock Optimization**: Rediseño del listado de materiales en el dashboard para mostrar toda la información (Categoría, Nombre, Cantidad, Medidas) en una sola línea de alta densidad (`text-[10px]`).
+- **Work Order List Polish**:
+  - Modernización de `workorder_list.html` con herencia visual del dashboard.
+  - Implementación de **Badge-Style Actions** (`Ver`, `Editar`) reemplazando iconos genéricos.
+  - Rediseño del toggle de histórico de órdenes para consistencia con el componente de stock agotado.
+- **Product Technical Sheets Update**:
+  - División de la columna "Cód. / Nombre" en dos columnas independientes para mejor organización de especificaciones técnicas.
+  - Ajuste de anchos y alineaciones en la vista desplegable por cliente.
+
+**Files Created/Modified:**
+- `templates/customers/`: `customer_list.html`, `fragments/customer_table.html` **[NUEVO]**
+- `templates/orders/`: `workorder_list.html`, `fragments/workorder_row.html`
+- `templates/inventory/`: `dashboard.html`
+- `templates/products/`: `product_list.html`
+- `.antigravity/logs/`: `log-customers.md`, `log-orders.md`, `log-products.md`, `log-inventory.md`
+- `.antigravity/`: `SESSION_LOG.md`
+
+**Status:** Sprint de modernización de listados maestros completado al 100%.
+
+**Next Pending Tasks:**
+- Modernización de Fichas de Compra (Purchasing).
+- Implementación de Reportes Dinámicos (KPIs avanzados).
+- Fase 5: SaaS Super Admin Dashboard.

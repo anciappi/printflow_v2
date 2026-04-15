@@ -245,20 +245,24 @@ class WorkOrderStatusUpdateModalView(LoginRequiredMixin, View):
             
         next_status_label = dict(WorkOrder.STATUS_CHOICES).get(next_status)
         
-        # Pre-fill modal with existing order quantity or sensible defaults
-        initial_data = {
-            'quantity_produced': order.quantity,
-            'bocas': order.bocas,
-        }
+        # Calculamos acumulados de avance para mostrar al usuario
+        logs = order.logs.all()
+        total_quantity = sum(log.quantity_produced for log in logs if log.quantity_produced)
+        total_material = sum(log.material_used for log in logs if log.material_used)
         
-        form = WorkOrderAdvanceForm(initial=initial_data)
+        # Removemos el initial data para que el campo cargue en blanco
+        form = WorkOrderAdvanceForm()
+        # Colocamos la cantidad esperada en el placeholder tal como pidió el usuario
+        form.fields['quantity_produced'].widget.attrs['placeholder'] = str(order.quantity_with_waste)
         
         html = render_to_string(
             'orders/fragments/status_update_modal.html',
             {
                 'order': order,
                 'next_status_label': next_status_label,
-                'form': form
+                'form': form,
+                'total_quantity': total_quantity,
+                'total_material': total_material,
             },
             request=request
         )
@@ -271,11 +275,9 @@ class WorkOrderStatusUpdateView(LoginRequiredMixin, View):
     Saves new Log entry, updates WorkOrder, and triggers events.
     """
     TRANSITIONS = {
-        'PENDING':         'PREPRESS',
-        'PREPRESS':        'PRODUCTION',
+        'PENDING':         'PRODUCTION',
         'PRODUCTION':      'FINISHING',
-        'FINISHING':       'QUALITY_CONTROL',
-        'QUALITY_CONTROL': 'READY',
+        'FINISHING':       'READY',
         'READY':           'DELIVERED',
     }
 
@@ -284,11 +286,37 @@ class WorkOrderStatusUpdateView(LoginRequiredMixin, View):
         next_status = self.TRANSITIONS.get(order.current_status)
 
         if next_status:
+            # Bypass form si solo estamos arrancando la producción (PENDING -> PRODUCTION)
+            if order.current_status == 'PENDING' and next_status == 'PRODUCTION':
+                order.current_status = next_status
+                order.save()
+                
+                WorkOrderLog.objects.create(
+                    work_order=order,
+                    user=request.user,
+                    status=next_status,
+                    comment="Inicio de Producción / Confirmación"
+                )
+                
+                html_badge = render_to_string(
+                    'orders/fragments/status_badge.html',
+                    {
+                        'order': order, 
+                        'swap_oob': True,
+                    },
+                    request=request
+                )
+                # Al no haber modal abierto, no necesitamos reemplazar algo vacío, pero mandamos igual el trigger
+                response = HttpResponse(html_badge)
+                response['HX-Trigger'] = 'statusUpdated'
+                return response
+
+            # Para el resto de los estados (PRODUCTION -> FINISHING, etc), validamos el form
             form = WorkOrderAdvanceForm(request.POST)
             if form.is_valid():
                 # Extract clean data
                 quantity = form.cleaned_data.get('quantity_produced')
-                bocas = form.cleaned_data.get('bocas')
+                bocas = order.bocas
                 material_used = form.cleaned_data.get('material_used')
                 comment = form.cleaned_data.get('comment')
                 
@@ -342,6 +370,52 @@ class WorkOrderStatusUpdateView(LoginRequiredMixin, View):
                 return HttpResponse(html_modal)
         
         # If no valid transition, just close the modal
+        return HttpResponse("")
+
+
+class WorkOrderStatusRevertView(LoginRequiredMixin, View):
+    """
+    Handles backward status transitions via HTMX POST.
+    Saves new Log entry clarifying the reversion, updates WorkOrder.
+    """
+    REVERSE_TRANSITIONS = {
+        'DELIVERED':       'READY',
+        'READY':           'FINISHING',
+        'FINISHING':       'PRODUCTION',
+        'PRODUCTION':      'PENDING',
+    }
+
+    def post(self, request, pk):
+        order = get_object_or_404(WorkOrder, pk=pk)
+        prev_status = self.REVERSE_TRANSITIONS.get(order.current_status)
+
+        if prev_status:
+            order.current_status = prev_status
+            if prev_status != 'DELIVERED':
+                order.finished_at = None
+            order.save()
+            
+            status_label = dict(WorkOrder.STATUS_CHOICES).get(prev_status)
+            
+            WorkOrderLog.objects.create(
+                work_order=order,
+                user=request.user,
+                status=order.current_status,
+                comment=f"Reversión de estado: {status_label}"
+            )
+            
+            html_badge = render_to_string(
+                'orders/fragments/status_badge.html',
+                {
+                    'order': order, 
+                    'swap_oob': True,
+                },
+                request=request
+            )
+            response = HttpResponse(html_badge)
+            response['HX-Trigger'] = 'statusUpdated'
+            return response
+            
         return HttpResponse("")
 
 
@@ -429,17 +503,18 @@ class LayoutPreviewView(LoginRequiredMixin, View):
             except (InvalidOperation, TypeError):
                 return None
 
-        product_id   = request.GET.get('product')
-        quantity     = to_decimal(request.GET.get('quantity'))
-        rows         = request.GET.get('layout_rows')
-        cols         = request.GET.get('layout_cols')
-        gap_v        = to_decimal(request.GET.get('gap_vertical_mm'))
-        gap_h        = to_decimal(request.GET.get('gap_horizontal_mm'))
-        margin_top   = to_decimal(request.GET.get('margin_top_mm'))
-        margin_bot   = to_decimal(request.GET.get('margin_bottom_mm'))
-        margin_lat   = to_decimal(request.GET.get('margin_lateral_mm'))
-        orientation  = request.GET.get('orientation', 'PORTRAIT')
-        bobina_width = to_decimal(request.GET.get('bobina_width_mm'))
+        product_id    = request.GET.get('product')
+        quantity      = to_decimal(request.GET.get('quantity'))
+        rows          = request.GET.get('layout_rows')
+        cols          = request.GET.get('layout_cols')
+        gap_v         = to_decimal(request.GET.get('gap_vertical_mm'))
+        gap_h         = to_decimal(request.GET.get('gap_horizontal_mm'))
+        margin_top    = to_decimal(request.GET.get('margin_top_mm'))
+        margin_bot    = to_decimal(request.GET.get('margin_bottom_mm'))
+        margin_lat    = to_decimal(request.GET.get('margin_lateral_mm'))
+        orientation   = request.GET.get('orientation', 'PORTRAIT')
+        bobina_width  = to_decimal(request.GET.get('bobina_width_mm'))
+        waste_pct     = to_decimal(request.GET.get('waste_percentage'))
 
         ctx = {'ready': False}
 
@@ -483,7 +558,13 @@ class LayoutPreviewView(LoginRequiredMixin, View):
         ancho_postura  = (d_cols * ancho_mm) + ((d_cols - 1) * d_gap_h) + (d_margin_lat * 2)
         bocas_totales  = rows * cols
         pasadas        = ceil(int(quantity) / bocas_totales)
-        metros         = (Decimal(pasadas) * largo_postura) / Decimal('1000')
+        metros_base    = (Decimal(pasadas) * largo_postura) / Decimal('1000')
+
+        metros_waste = Decimal('0')
+        if waste_pct and waste_pct > 0:
+            metros_waste = (metros_base * waste_pct / Decimal('100')).quantize(Decimal('0.01'))
+
+        metros_total = (metros_base + metros_waste).quantize(Decimal('0.01'))
 
         ctx = {
             'ready':           True,
@@ -495,7 +576,10 @@ class LayoutPreviewView(LoginRequiredMixin, View):
             'pasadas':         pasadas,
             'largo_postura':   largo_postura.quantize(Decimal('0.1')),
             'ancho_postura':   ancho_postura.quantize(Decimal('0.1')),
-            'metros':          metros.quantize(Decimal('0.01')),
+            'metros_base':     metros_base.quantize(Decimal('0.01')),
+            'metros_waste':    metros_waste,
+            'metros':          metros_total,
+            'waste_pct':       waste_pct,
             'quantity':        int(quantity),
             'bobina_width':    bobina_width,
             'width_warning':   (bobina_width is not None and ancho_postura > bobina_width),

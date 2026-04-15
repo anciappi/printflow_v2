@@ -33,8 +33,7 @@
 
         <!-- SECCIÓN 1: PRODUCTO Y CANTIDAD -->
         <div class="bg-surface border border-border-default rounded-lg p-6">
-            <h3 class="text-lg font-medium text-orange-500 mb-4 border-b border-border-default pb-2">Identificación del
-                Trabajo</h3>
+            <h3 class="text-lg font-medium text-orange-500 mb-4 border-b border-border-default pb-2">Identificación del Trabajo</h3>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <!-- Cliente -->
@@ -44,7 +43,10 @@
                     {% if form.customer.errors %}
                     <p class="text-red-500 text-xs mt-1">{{ form.customer.errors.0 }}</p>
                     {% endif %}
-                    <p class="text-[10px] text-slate-600 mt-1">Selecciona un cliente para ver sus productos asociados.</p>
+                    <div class="flex items-center justify-between mt-1">
+                        <p class="text-sm text-slate-500">¿No existe? <a href="{% url 'customers:create' %}" class="text-blue-600 hover:text-blue-500 transition-colors">Crear Cliente</a></p>
+                        <p class="text-[10px] text-slate-600">Selecciona un cliente para ver sus productos asociados.</p>
+                    </div>
                 </div>
 
                 <!-- Producto -->
@@ -146,13 +148,18 @@
                     <label class="block mb-2 text-sm font-medium text-slate-400">Margen Inferior (mm)</label>
                     {{ form.margin_bottom_mm }}
                 </div>
+                <div class="md:col-span-2">
+                    <label class="block mb-2 text-sm font-medium text-slate-400">Demasía <span class="text-amber-500">%</span></label>
+                    {{ form.waste_percentage }}
+                    <p class="text-[10px] text-slate-600 mt-1">% adicional por arranques, mermas o setup de máquina</p>
+                </div>
             </div>
 
             <!-- HTMX Preview Panel -->
             <div id="material-preview-container"
                  hx-get="{% url 'orders:layout_preview' %}"
                  hx-trigger="load"
-                 hx-include="#id_product, #id_quantity, #id_layout_rows, #id_layout_cols, #id_gap_horizontal_mm, #id_gap_vertical_mm, #id_margin_lateral_mm, #id_margin_top_mm, #id_margin_bottom_mm, #id_orientation, #id_bobina_width_mm"
+                 hx-include="#id_product, #id_quantity, #id_layout_rows, #id_layout_cols, #id_gap_horizontal_mm, #id_gap_vertical_mm, #id_margin_lateral_mm, #id_margin_top_mm, #id_margin_bottom_mm, #id_orientation, #id_bobina_width_mm, #id_waste_percentage"
                  hx-vals='{"product": "{{ form.instance.product.id|default:"" }}"}'
                 >
                 <div class="border border-dashed border-slate-700 rounded-lg p-4 text-center text-slate-600 text-xs">

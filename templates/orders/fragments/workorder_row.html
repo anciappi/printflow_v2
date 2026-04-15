@@ -1,54 +1,49 @@
-<tr class="hover:bg-surface-dark/30 transition-colors group">
-    <td class="px-6 py-4">
-        <div class="text-sm font-normal text-orange-500">{{ order.ot_number }}</div>
-        <div class="text-[10px] text-slate-500 font-light">{{ order.created_at|date:"d/m/Y H:i" }}</div>
+<tr class="hover:bg-surface-hover/20 transition-colors group">
+    <td class="px-4 py-2.5">
+        <div class="text-[12px] font-medium text-orange-500 group-hover:text-orange-400 transition-colors">{{ order.ot_number }}</div>
+        <div class="text-[9px] text-slate-600 font-light mt-0.5 tracking-wider uppercase font-mono">{{ order.created_at|date:"d/m/Y H:i" }}</div>
     </td>
-    <td class="px-6 py-4">
-        <div class="text-sm font-light text-slate-200">{{ order.product.customer.name }}</div>
-        <div class="text-[10px] text-slate-500 font-light">{{ order.product.name }}</div>
+    <td class="px-4 py-2.5">
+        <div class="text-[12px] font-medium text-slate-200">{{ order.product.customer.name }}</div>
+        <div class="text-[10px] text-slate-500 font-light mt-0.5">{{ order.product.name }}</div>
     </td>
-    <td class="px-6 py-4">
-        <div class="text-xs text-slate-300">{{ order.quantity }} unidades</div>
-        <div class="text-[10px] text-slate-500">Vence: {{ order.due_date|date:"d/m/Y" }}</div>
+    <td class="px-4 py-2.5">
+        <div class="text-[11px] text-slate-300 tabular-nums">{{ order.quantity }} unidades</div>
+        <div class="text-[9px] text-slate-600 font-medium uppercase mt-0.5">Vence: <span class="text-slate-400">{{ order.due_date|date:"d/m/Y" }}</span></div>
     </td>
-    <td class="px-6 py-4 text-center">
+    <td class="px-4 py-2.5 text-center">
         {% if order.current_status == 'PENDING' %}
-        <span class="px-2 py-0.5 text-[9px] font-normal bg-slate-800 text-slate-400 border border-slate-700 rounded-full">PENDIENTE</span>
+        <span class="px-2 py-0.5 text-[8px] font-bold bg-slate-800 text-slate-500 border border-slate-700 rounded-sm tracking-widest">PENDIENTE</span>
         {% elif order.current_status == 'PRODUCTION' %}
-        <span class="px-2 py-0.5 text-[9px] font-normal bg-blue-900/30 text-blue-400 border border-blue-800 rounded-full">PRODUCCIÓN</span>
+        <span class="px-2 py-0.5 text-[8px] font-bold bg-blue-900/20 text-blue-400 border border-blue-500/20 rounded-sm tracking-widest">PRODUCCIÓN</span>
         {% elif order.current_status == 'READY' %}
-        <span class="px-2 py-0.5 text-[9px] font-normal bg-emerald-900/30 text-emerald-400 border border-emerald-800 rounded-full">LISTO</span>
+        <span class="px-2 py-0.5 text-[8px] font-bold bg-emerald-900/20 text-emerald-400 border border-emerald-500/20 rounded-sm tracking-widest">LISTO</span>
         {% elif order.current_status == 'DELIVERED' %}
-        <span class="px-2 py-0.5 text-[9px] font-normal bg-slate-700 text-slate-300 border border-slate-600 rounded-full">ENTREGADO</span>
+        <span class="px-2 py-0.5 text-[8px] font-bold bg-[#0f1115] text-slate-600 border border-slate-800 rounded-sm tracking-widest">ENTREGADO</span>
         {% else %}
-        <span class="px-2 py-0.5 text-[9px] font-normal bg-purple-900/30 text-purple-400 border border-purple-800 rounded-full">{{ order.get_current_status_display|upper }}</span>
+        <span class="px-2 py-0.5 text-[8px] font-bold bg-purple-900/20 text-purple-400 border border-purple-800/20 rounded-sm tracking-widest">{{ order.get_current_status_display|upper }}</span>
         {% endif %}
     </td>
-    <td class="px-6 py-4 text-center">
+    <td class="px-4 py-2.5 text-center">
         {% if order.priority == 'URGENT' %}
-        <span class="text-red-500 flex justify-center">
-            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+        <span class="text-red-500 flex justify-center animate-pulse">
+            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
             </svg>
         </span>
         {% elif order.priority == 'HIGH' %}
-        <span class="text-orange-500 text-[10px] font-normal uppercase">Alta</span>
+        <span class="text-orange-500 text-[9px] font-bold uppercase tracking-wider">Alta</span>
         {% else %}
-        <span class="text-slate-500 text-[10px] font-normal uppercase">Normal</span>
+        <span class="text-slate-600 text-[9px] font-medium uppercase tracking-wider">Normal</span>
         {% endif %}
     </td>
-    <td class="px-6 py-4 text-right">
-        <div class="flex justify-end gap-3">
-            <a href="{% url 'orders:update' order.pk %}" class="text-blue-500 hover:text-blue-400 transition-colors p-1" title="Editar">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                </svg>
+    <td class="px-4 py-2.5 text-right">
+        <div class="flex justify-end gap-2">
+            <a href="{% url 'orders:detail' order.pk %}" class="bg-surface-hover text-slate-400 hover:text-white px-2 py-0.5 rounded text-[10px] transition-colors border border-transparent hover:border-slate-700">
+                Ver
             </a>
-            <a href="{% url 'orders:detail' order.pk %}" class="text-slate-400 hover:text-white transition-colors p-1" title="Ver Detalle">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                </svg>
+            <a href="{% url 'orders:update' order.pk %}" class="bg-surface-hover text-slate-400 hover:text-white px-2 py-0.5 rounded text-[10px] transition-colors border border-transparent hover:border-slate-700">
+                Editar
             </a>
         </div>
     </td>

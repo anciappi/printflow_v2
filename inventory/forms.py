@@ -10,33 +10,39 @@ class MaterialForm(forms.ModelForm):
     class Meta:
         model = Material
         fields = [
-            'name', 'brand', 'material_type', 'standard_quantity', # Info Básica
-            'width', 'length', 'grammage', 'package_weight', # Dimensiones
+            'name', 'brand', 'category', 'unit_of_measure', 'standard_quantity', # Info Básica
+            'width', 'length', 'grammage', 'package_weight', 'sheets_per_package', 'stack_height_cm', # Características
             'technology', 'position', 'mag_stripe_width' # Tecnología
         ]
         widgets = {
             'name': forms.TextInput(attrs={'class': INPUT_CLASSES, 'placeholder': 'Ej: termoticket kls ff 166'}),
             'brand': forms.TextInput(attrs={'class': INPUT_CLASSES, 'placeholder': 'Ej: Mitsbishi'}),
-            'material_type': forms.Select(attrs={'class': SELECT_CLASSES}),
+            'category': forms.Select(attrs={'class': SELECT_CLASSES}),
+            'unit_of_measure': forms.Select(attrs={'class': SELECT_CLASSES}),
             'standard_quantity': forms.NumberInput(attrs={'class': INPUT_CLASSES}),
             
             # Dimensiones
-            'width': forms.NumberInput(attrs={'class': INPUT_CLASSES, 'placeholder': 'cm'}),
-            'length': forms.NumberInput(attrs={'class': INPUT_CLASSES, 'placeholder': 'mts'}),
+            'width': forms.NumberInput(attrs={'class': INPUT_CLASSES, 'placeholder': 'cm', 'step': '0.01'}),
+            'length': forms.NumberInput(attrs={'class': INPUT_CLASSES, 'placeholder': 'mts/cm', 'step': '0.01'}),
             'grammage': forms.NumberInput(attrs={'class': INPUT_CLASSES, 'placeholder': 'g/m2'}),
-            'package_weight': forms.NumberInput(attrs={'class': INPUT_CLASSES, 'placeholder': 'Kg'}),
+            'package_weight': forms.NumberInput(attrs={'class': INPUT_CLASSES, 'placeholder': 'Kg', 'step': '0.01'}),
+            'sheets_per_package': forms.NumberInput(attrs={'class': INPUT_CLASSES, 'placeholder': 'Ej: 500'}),
+            'stack_height_cm': forms.NumberInput(attrs={'class': INPUT_CLASSES, 'placeholder': 'cm', 'step': '0.01'}),
             
             # Chips / Bandas
             'technology': forms.TextInput(attrs={'class': INPUT_CLASSES, 'placeholder': 'Ej: HICO'}),
             'position': forms.TextInput(attrs={'class': INPUT_CLASSES, 'placeholder': 'Ej: Central' }),
-            'mag_stripe_width': forms.NumberInput(attrs={'class': INPUT_CLASSES, 'placeholder': 'Ej: 5'}),
+            'mag_stripe_width': forms.NumberInput(attrs={'class': INPUT_CLASSES, 'placeholder': 'Ej: 5', 'step': '0.01'}),
         }
         labels = {
-            'name': 'Tipo material',
-            'material_type': 'Categoría',
+            'name': 'Nombre Identificatorio',
+            'category': 'Categoría',
+            'unit_of_measure': 'Unidad Base de Control',
             'standard_quantity': 'Stock Mínimo Ideal',
             'width': 'Ancho (cm)',
-            'length': 'Largo (mts)',
+            'length': 'Largo / Desarrollo',
             'grammage': 'Gramaje',
-            'technology': 'Coercitiv',
+            'sheets_per_package': 'Hojas x Paquete',
+            'stack_height_cm': 'Espesor Bancal (cm)',
+            'technology': 'Tecnología/Coercitividad',
         }

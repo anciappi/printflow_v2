@@ -117,26 +117,42 @@ def fraccionar_unidad(request, unit_id):
     parent = get_object_or_404(InventoryUnit, pk=unit_id)
     
     if request.method == 'POST':
+        tipo_corte = request.POST.get('tipo_corte', 'ancho')
         try:
-            ancho_a = Decimal(request.POST.get('ancho_hija_a'))
-            hija_a, hija_b = parent.fraccionar(ancho_a)
+            if tipo_corte == 'ancho':
+                ancho_a = Decimal(request.POST.get('ancho_hija_a'))
+                hija_a, hija_b = parent.fraccionar(ancho_a)
+                msg = f"Bobina fraccionada en anchos: {hija_a.width_override}cm y {hija_b.width_override}cm"
+            elif tipo_corte == 'largo':
+                largos_raw = request.POST.get('largos_hijas', '')
+                cortes_list = [Decimal(l.strip()) for l in largos_raw.split(',') if l.strip()]
+                if not cortes_list:
+                    raise ValueError("Debes ingresar al menos una longitud válida.")
+                hijas = parent.fraccionar_por_largo(cortes_list)
+                msg = f"Bobina fraccionada en {len(hijas)} tramos de longitud."
+            else:
+                raise ValueError("Tipo de corte no reconocido.")
+
             if request.htmx:
                 response = HttpResponse("")
                 response['HX-Trigger'] = 'inventoryUpdated'
                 return response
-            messages.success(request, f"Bobina fraccionada en: {hija_a.width_override}cm y {hija_b.width_override}cm")
+            messages.success(request, msg)
+
         except ValueError as e:
             if request.htmx:
                 return render(request, 'inventory/fragments/fraccionar_modal.html', {
                     'unit': parent,
-                    'error': str(e)
+                    'error': str(e),
+                    'active_tab': tipo_corte
                 })
             messages.error(request, str(e))
         except Exception as e:
             if request.htmx:
                 return render(request, 'inventory/fragments/fraccionar_modal.html', {
                     'unit': parent,
-                    'error': str(e)
+                    'error': str(e),
+                    'active_tab': tipo_corte
                 })
             messages.error(request, f"Error inesperado al fraccionar: {e}")
             
@@ -363,7 +379,7 @@ class MaterialCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     template_name = 'inventory/material_form.html'
     
     # A dónde ir después de guardar (vuelve a la lista para ver que se creó)
-    success_url = reverse_lazy('inventory:inventory_list') 
+    success_url = reverse_lazy('inventory:material_list') 
     
     # El mensaje que pediste
     success_message = "El material '%(name)s' fue cargado con éxito."

@@ -25,3 +25,10 @@ Módulo de gestión de clientes (CRM básico), asignación comercial y vinculaci
 - **Typography Overhaul**: Estandarización a Encode Sans / font-light en el dashboard de clientes y listados de OTs vinculadas.
 - **Mono-Removal**: Limpieza de fuentes monospace en CUITs y datos de contacto para mayor elegancia visual.
 
+## 2026-04-12 | Modernización "Dark Industrial" & Búsqueda HTMX | ✅
+- **Flat UI Refactor**: Eliminación de acordeones agrupados en favor de una lista plana de alta densidad para mayor rapidez de acceso.
+- **HTMX Real-Time Search**: Implementación de búsqueda asíncrona por Nombre o CUIT en `customer_list.html`.
+  - Integración de fragmentos (`customer_table.html`) para actualizaciones parciales del DOM.
+- **Layout Consistency**: Estructura de 6 columnas (**Razón Social**, **CUIT**, **Email**, **Teléfono**, **Estado**, **Acciones**) con anchos optimizados y tipografía de alta densidad.
+- **Actions & Styling**: Unificación de botones de acción tipo badge (`Ver`, `Editar`) en lugar de iconos, alineado con el estándar del Dashboard.
+
