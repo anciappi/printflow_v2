@@ -162,3 +162,11 @@ orders/
   - **Stage Breakdown**: Se reemplazaron los acumulados por una tabla de desglose por etapa (`logs_by_status`), mostrando exactamente cuánto se produjo y consumió en cada fase.
   - **Compressed Header**: Datos originales de la OT reducidos a una sola línea técnica tipo "badge-row" para optimizar espacio vertical.
 - **Archivos modificados**: `orders/views.py`, `templates/orders/workorder_detail.html`, `templates/orders/fragments/status_update_modal.html`, `templates/orders/fragments/status_badge.html`, `STYLE_GUIDE.md`.
+
+## 2026-04-15 | Material Auto-Calculator en Modal de Avance | ✅
+- **Feature**: Al tipear la cantidad producida en la transición PRODUCTION → FINISHING, el campo "Material Usado (ml)" se pre-calcula automáticamente.
+- **Fórmula**: `metros = ceil(qty / bocas) × largo_postura / 1000 × (1 + waste%)` — mirror exact de `WorkOrder.calculate_material()`.
+- **Arquitectura**: cero cambios en backend. Los parámetros de postura se inyectan como `data-*` attributes en el template via Django context. El campo sigue siendo editable (el valor calculado es sugerido, no bloqueado).
+- **Archivos**: `static/js/workorder_status_modal.js` [NEW], `templates/orders/fragments/status_update_modal.html`, `templates/orders/workorder_detail.html`.
+- **Reglas respetadas**: sin JS inline en templates, sin hex hardcodeados, `closeModal()` movido al JS externo.
+

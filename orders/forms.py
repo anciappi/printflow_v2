@@ -103,8 +103,13 @@ class WorkOrderLogForm(forms.ModelForm):
 class WorkOrderAdvanceForm(forms.ModelForm):
     class Meta:
         model = WorkOrderLog
-        fields = ['quantity_produced', 'material_used', 'comment']
+        fields = ['production_date', 'quantity_produced', 'material_used', 'comment']
         widgets = {
+            'production_date': forms.DateTimeInput(attrs={
+                'class': 'w-full bg-surface-dark border border-border-default text-white text-xs px-3 py-2.5 focus:border-orange-500 outline-none transition-colors rounded-sm',
+                'type': 'datetime-local',
+                'placeholder': 'Dejar vacío para usar fecha/hora actuales',
+            }),
             'quantity_produced': forms.NumberInput(attrs={
                 'class': 'w-full bg-surface-dark border border-border-default text-white text-xs px-3 py-2.5 focus:border-orange-500 outline-none transition-colors rounded-sm',
                 'placeholder': 'Cantidad',
@@ -113,8 +118,8 @@ class WorkOrderAdvanceForm(forms.ModelForm):
             }),
             'material_used': forms.NumberInput(attrs={
                 'class': 'w-full bg-surface-dark border border-border-default text-white text-xs px-3 py-2.5 focus:border-orange-500 outline-none transition-colors rounded-sm',
-                'placeholder': 'Ej. 1500.5',
-                'step': '0.01'
+                'placeholder': 'Ej. 1500',
+                'step': '1',
             }),
             'comment': forms.Textarea(attrs={
                 'class': 'w-full bg-surface-dark border border-border-default text-white text-xs px-3 py-2 focus:border-orange-500 outline-none transition-colors rounded-sm resize-none',

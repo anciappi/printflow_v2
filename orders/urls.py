@@ -18,6 +18,7 @@ urlpatterns = [
     path('<int:pk>/log/', views.WorkOrderLogCreateView.as_view(), name='add_log'),
     path('log/<int:pk>/edit/', views.WorkOrderLogUpdateView.as_view(), name='edit_log'),
     path('log/<int:pk>/delete/', views.WorkOrderLogDeleteView.as_view(), name='delete_log'),
+    path('<int:pk>/partial-log/', views.WorkOrderPartialLogView.as_view(), name='partial_log'),
     path('<int:pk>/stock/', views.WorkOrderStockPanelView.as_view(), name='stock_panel'),
     path('<int:pk>/progress/', views.WorkOrderProgressView.as_view(), name='progress_bar'),
 ]

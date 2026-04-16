@@ -232,56 +232,69 @@ class WorkOrderDetailView(LoginRequiredMixin, StaffMixin, DetailView):
         return context
 
 
+def _build_status_modal_context(order, request, form=None):
+    """Refactored helper to ensure the dashboard modal always has full context."""
+    from collections import defaultdict
+    from django.utils import timezone as tz
+
+    next_status = WorkOrderStatusUpdateView.TRANSITIONS.get(order.current_status)
+    next_status_label = dict(WorkOrder.STATUS_CHOICES).get(next_status)
+
+    # Calculate stage summary
+    logs = order.logs.all()
+    stage_data = defaultdict(lambda: {'quantity': 0, 'material': 0})
+    for log in logs:
+        if log.quantity_produced:
+            stage_data[log.status]['quantity'] += log.quantity_produced
+        if log.material_used:
+            stage_data[log.status]['material'] += log.material_used
+
+    status_labels = dict(WorkOrder.STATUS_CHOICES)
+    logs_by_status = [
+        {
+            'label': status_labels.get(status, status),
+            'quantity': data['quantity'] or None,
+            'material': data['material'] or None,
+        }
+        for status, data in stage_data.items()
+        if data['quantity'] or data['material']
+    ]
+
+    if not form:
+        form = WorkOrderAdvanceForm()
+        # Initial placeholder based on user preference
+        form.fields['quantity_produced'].widget.attrs['placeholder'] = str(order.quantity_with_waste)
+
+    # Detailed logs for the current stage
+    # NOTE: Crashes if migrations haven't run yet!
+    try:
+        current_logs = order.logs.filter(status=order.current_status).select_related('user').order_by('-production_date', '-created_at')
+    except Exception:
+        # Fallback if field doesn't exist yet to avoid 500 during update
+        current_logs = order.logs.filter(status=order.current_status).select_related('user').order_by('-created_at')
+
+    return {
+        'order': order,
+        'next_status': next_status,
+        'next_status_label': next_status_label,
+        'form': form,
+        'logs_by_status': logs_by_status,
+        'current_logs': current_logs,
+    }
+
+
 class WorkOrderStatusUpdateModalView(LoginRequiredMixin, View):
     """
-    Returns the modal for advancing the status of a work order.
+    Returns the modal dashboard for advancing the status of a work order.
     """
     def get(self, request, pk):
         order = get_object_or_404(WorkOrder, pk=pk)
-        next_status = WorkOrderStatusUpdateView.TRANSITIONS.get(order.current_status)
+        context = _build_status_modal_context(order, request)
         
-        if not next_status:
+        if not context['next_status'] and order.current_status != 'DELIVERED':
             return HttpResponse("No valid transition", status=400)
             
-        next_status_label = dict(WorkOrder.STATUS_CHOICES).get(next_status)
-        
-        # Calculamos desglose de avance por etapa
-        from collections import defaultdict
-        logs = order.logs.all()
-        stage_data = defaultdict(lambda: {'quantity': 0, 'material': 0})
-        for log in logs:
-            if log.quantity_produced:
-                stage_data[log.status]['quantity'] += log.quantity_produced
-            if log.material_used:
-                stage_data[log.status]['material'] += log.material_used
-
-        status_labels = dict(WorkOrder.STATUS_CHOICES)
-        logs_by_status = [
-            {
-                'label': status_labels.get(status, status),
-                'quantity': data['quantity'] or None,
-                'material': data['material'] or None,
-            }
-            for status, data in stage_data.items()
-            if data['quantity'] or data['material']
-        ]
-
-        # Removemos el initial data para que el campo cargue en blanco
-        form = WorkOrderAdvanceForm()
-        # Colocamos la cantidad esperada en el placeholder tal como pidió el usuario
-        form.fields['quantity_produced'].widget.attrs['placeholder'] = str(order.quantity_with_waste)
-
-        html = render_to_string(
-            'orders/fragments/status_update_modal.html',
-            {
-                'order': order,
-                'next_status': next_status,
-                'next_status_label': next_status_label,
-                'form': form,
-                'logs_by_status': logs_by_status,
-            },
-            request=request
-        )
+        html = render_to_string('orders/fragments/status_update_modal.html', context, request=request)
         return HttpResponse(html)
 
 
@@ -345,10 +358,13 @@ class WorkOrderStatusUpdateView(LoginRequiredMixin, View):
                 order.save()
                 
                 # Create the Work Order Log for the completed status
+                from django.utils import timezone as tz
+                prod_date = form.cleaned_data.get('production_date') or tz.now()
                 WorkOrderLog.objects.create(
                     work_order=order,
                     user=request.user,
                     status=next_status,
+                    production_date=prod_date,
                     quantity_produced=quantity,
                     bocas=bocas,
                     material_used=material_used,
@@ -372,22 +388,48 @@ class WorkOrderStatusUpdateView(LoginRequiredMixin, View):
                 response['HX-Trigger'] = 'statusUpdated'
                 return response
             else:
-                # Form is invalid, return the modal with errors to #modal-container
-                next_status_label = dict(WorkOrder.STATUS_CHOICES).get(next_status)
-                html_modal = render_to_string(
-                    'orders/fragments/status_update_modal.html',
-                    {
-                        'order': order,
-                        'next_status': next_status,
-                        'next_status_label': next_status_label,
-                        'form': form
-                    },
-                    request=request
-                )
+                # Form is invalid, return the modal dashboard with errors
+                context = _build_status_modal_context(order, request, form=form)
+                html_modal = render_to_string('orders/fragments/status_update_modal.html', context, request=request)
                 return HttpResponse(html_modal)
         
         # If no valid transition, just close the modal
         return HttpResponse("")
+
+
+class WorkOrderPartialLogView(LoginRequiredMixin, View):
+    """
+    POST: Saves a partial production log for the current status
+    WITHOUT advancing the WorkOrder status.
+    Returns an updated modal fragment so the operator can keep adding records.
+    """
+    def post(self, request, pk):
+        from django.utils import timezone as tz
+        from collections import defaultdict
+
+        order = get_object_or_404(WorkOrder, pk=pk)
+        form = WorkOrderAdvanceForm(request.POST)
+
+        if form.is_valid():
+            prod_date = form.cleaned_data.get('production_date') or tz.now()
+            WorkOrderLog.objects.create(
+                work_order=order,
+                user=request.user,
+                status=order.current_status,
+                production_date=prod_date,
+                quantity_produced=form.cleaned_data.get('quantity_produced'),
+                bocas=order.bocas,
+                material_used=form.cleaned_data.get('material_used'),
+                comment=form.cleaned_data.get('comment', ''),
+            )
+
+        # Re-build modal context using the helper
+        context = _build_status_modal_context(order, request)
+        html = render_to_string('orders/fragments/status_update_modal.html', context, request=request)
+        response = HttpResponse(html)
+        # Refresh the log feed and status card in the background
+        response['HX-Trigger'] = 'logUpdated'
+        return response
 
 
 class WorkOrderStatusRevertView(LoginRequiredMixin, View):

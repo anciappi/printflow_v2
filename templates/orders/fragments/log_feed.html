@@ -53,7 +53,13 @@
             <tbody class="divide-y divide-border-default/50">
                 {% for log in logs %}
                 <tr class="hover:bg-white/[0.02] transition-colors group">
-                    <td class="py-3 px-4 font-mono text-blue-300 text-[10px]">{{ log.created_at|date:"d M Y, H:i" }}</td>
+                    <td class="py-3 px-4 font-mono text-blue-300 text-[10px]">
+                        {% if log.production_date %}
+                        <span title="Fecha de producción registrada">{{ log.production_date|date:"d M Y, H:i" }}</span>
+                        {% else %}
+                        {{ log.created_at|date:"d M Y, H:i" }}
+                        {% endif %}
+                    </td>
                     <td class="py-3 px-4 font-mono text-orange-400 text-[10px]">{{ log.get_status_display }}</td>
                     <td class="py-3 px-4">
                         <span class="flex items-center gap-2">

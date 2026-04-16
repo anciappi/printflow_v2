@@ -68,7 +68,7 @@
                         </div>
                         <div class="flex-1 flex flex-col text-center min-w-0">
                             <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Mat. Base</span>
-                            <span class="text-sm text-slate-300 font-light">{{ object.estimated_material_base_usage|default:"--" }} ml</span>
+                            <span class="text-sm text-slate-300 font-light">{{ object.estimated_material_base_usage|floatformat:0|default:"--" }} ml</span>
                         </div>
                         <div class="flex-1 flex flex-col text-center min-w-0">
                             <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Entrega</span>
@@ -149,7 +149,7 @@
                         </div>
                         <div class="flex-1 flex flex-col text-center min-w-0">
                             <span class="text-[9px] text-amber-500/70 uppercase tracking-widest mb-1">Mat. Total Est.</span>
-                            <span class="text-sm text-amber-500 font-normal">{{ object.estimated_material_usage|default:"--" }} ml</span>
+                            <span class="text-sm text-amber-500 font-normal">{{ object.estimated_material_usage|floatformat:0|default:"--" }} ml</span>
                         </div>
                         <div class="flex-1 flex flex-col text-center min-w-0">
                             <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Última Cantidad</span>
@@ -165,7 +165,7 @@
                             <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Último Consumo</span>
                             <span id="info-current-material" class="text-sm text-white font-light">
                                 {% if logs and logs.0.material_used %}
-                                {{ logs.0.material_used }} <span class="text-[8px] text-slate-500 font-normal">ml</span>
+                                {{ logs.0.material_used|floatformat:0 }} <span class="text-[8px] text-slate-500 font-normal">ml</span>
                                 {% else %}
                                 <span class="text-slate-500 italic">--</span>
                                 {% endif %}
@@ -231,4 +231,5 @@
 <div id="modal-container"></div>
 
 <script src="{% static 'js/product_detail.js' %}"></script>
+<script src="{% static 'js/workorder_status_modal.js' %}"></script>
 {% endblock %}

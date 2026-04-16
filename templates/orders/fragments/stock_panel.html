@@ -10,7 +10,7 @@
         <span class="text-[9px] font-light uppercase tracking-widest
             {% if stock_total > 0 %}text-emerald-500{% else %}text-red-500{% endif %}">
             {% if stock_total > 0 %}
-                ▲ {{ stock_total|floatformat:2 }} ml disponibles
+                ▲ {{ stock_total|floatformat:0 }} ml disponibles
             {% else %}
                 ✕ Sin stock
             {% endif %}
@@ -68,7 +68,7 @@
                         {% for unit in stock_units %}
                         {% if unit.current_quantity > 0 %}
                         <option value="{{ unit.pk }}">
-                            {{ unit.unit_number }} — {{ unit.get_width }} cm ancho — {{ unit.current_quantity|floatformat:2 }} ml disp.
+                            {{ unit.unit_number }} — {{ unit.get_width }} cm ancho — {{ unit.current_quantity|floatformat:0 }} ml disp.
                         </option>
                         {% endif %}
                         {% endfor %}
@@ -111,7 +111,7 @@
                         <tr class="hover:bg-white/[0.02] transition-colors">
                             <td class="py-2 px-4 text-[10px] text-slate-400">{{ consumo.date|date:"d/m H:i" }}</td>
                             <td class="py-2 px-4 font-mono text-[10px] text-blue-300 text-center">{{ consumo.inventory_unit.unit_number }}</td>
-                            <td class="py-2 px-4 text-[10px] font-normal text-red-500 text-right">-{{ consumo.quantity_used|floatformat:2 }} ml</td>
+                            <td class="py-2 px-4 text-[10px] font-normal text-red-500 text-right">-{{ consumo.quantity_used|floatformat:0 }} ml</td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -143,7 +143,7 @@
                                     {% if unit.current_quantity > 500 %}text-emerald-400
                                     {% elif unit.current_quantity > 0 %}text-amber-400
                                     {% else %}text-slate-500{% endif %}">
-                                    {{ unit.current_quantity|floatformat:2 }} ml
+                                    {{ unit.current_quantity|floatformat:0 }} ml
                                 </td>
                                 <td class="py-2 px-4 text-right text-slate-400 text-[10px]">{{ unit.get_width }} cm</td>
                             </tr>

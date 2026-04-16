@@ -195,6 +195,7 @@ class WorkOrderLog(models.Model):
     work_order = models.ForeignKey(WorkOrder, on_delete=models.CASCADE, related_name='logs', verbose_name="Orden de Trabajo")
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='work_order_logs', verbose_name="Usuario")
     status = models.CharField(max_length=20, choices=WorkOrder.STATUS_CHOICES, verbose_name="Etapa")
+    production_date = models.DateTimeField(null=True, blank=True, verbose_name="Fecha de Producción", help_text="Si se deja vacío, se usa la fecha y hora actuales.")
     quantity_produced = models.PositiveIntegerField(null=True, blank=True, verbose_name="Cantidad Parcial Producción")
     bocas = models.PositiveIntegerField(null=True, blank=True, verbose_name="Bocas (Poses)")
     material_used = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, verbose_name="Material Utilizado (ml)")

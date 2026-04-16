@@ -44,6 +44,7 @@ The project uses a dark, "High-Tech" corporate aesthetic.
 - **Data values (accent):** `text-sm font-normal text-orange-400` or `text-blue-400`
 - **Micro-labels:** `text-[9px] text-slate-500 uppercase tracking-widest`
 - **Monospaced data (IDs, dates):** `font-mono text-blue-300 text-[10px]`
+- **Material Consumption (ml/m):** Always round to the nearest integer (`|floatformat:0`) for readability, as centimeters are not relevant in production charts.
 
 ### Form Labels
 - `text-[10px] font-light text-slate-500 uppercase tracking-widest`
