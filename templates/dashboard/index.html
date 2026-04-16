@@ -103,17 +103,17 @@
                     {# Estado #}
                     <td class="px-4 py-1.5">
                         {% if ot.current_status == 'PENDING' %}
-                            <span class="text-[10px] text-slate-400">Pendiente</span>
-                        {% elif ot.current_status == 'PREPRESS' %}
-                            <span class="text-[10px] text-purple-400">Pre-Prensa</span>
+                            <span class="text-[10px] text-slate-500 uppercase tracking-widest font-medium">Pendiente</span>
                         {% elif ot.current_status == 'PRODUCTION' %}
-                            <span class="text-[10px] text-blue-400">Producción</span>
+                            <span class="text-[10px] text-blue-400 uppercase tracking-widest font-medium">En Producción</span>
                         {% elif ot.current_status == 'FINISHING' %}
-                            <span class="text-[10px] text-amber-400">Terminaciones</span>
-                        {% elif ot.current_status == 'QUALITY_CONTROL' %}
-                            <span class="text-[10px] text-orange-400">Control Calidad</span>
+                            <span class="text-[10px] text-orange-500 uppercase tracking-widest font-medium">Terminaciones</span>
                         {% elif ot.current_status == 'READY' %}
-                            <span class="text-[10px] text-emerald-400">Listo Entrega</span>
+                            <span class="text-[10px] text-emerald-500 uppercase tracking-widest font-medium">Listo para Entrega</span>
+                        {% elif ot.current_status == 'DELIVERED' %}
+                            <span class="text-[10px] text-indigo-400 uppercase tracking-widest font-medium">Entregado</span>
+                        {% else %}
+                            <span class="text-[10px] text-slate-400 uppercase tracking-widest font-medium">{{ ot.get_current_status_display }}</span>
                         {% endif %}
                     </td>
 

@@ -226,10 +226,41 @@ class WorkOrderDetailView(LoginRequiredMixin, StaffMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context.update(_build_stock_context(self.object))
+        order = self.object
+        context.update(_build_stock_context(order))
         context['log_form'] = WorkOrderLogForm()
-        context['logs'] = self.object.logs.select_related('user').all()
+        context['logs'] = order.logs.select_related('user').all()
+
+        # Totales acumulados por etapa actual
+        aggregates = order.logs.filter(status=order.current_status).aggregate(
+            total_qty=Sum('quantity_produced'),
+            total_material=Sum('material_used')
+        )
+        context['current_stage_total_qty'] = aggregates['total_qty'] or 0
+        context['current_stage_total_material'] = aggregates['total_material'] or 0
+        
         return context
+
+
+class WorkOrderProductionStatusCardView(LoginRequiredMixin, StaffMixin, View):
+    """
+    HTMX endpoint that returns the production status card fragment.
+    Refreshes whenever logUpdated or statusUpdated triggers from the body.
+    """
+    def get(self, request, pk):
+        order = get_object_or_404(WorkOrder, pk=pk)
+        
+        aggregates = order.logs.filter(status=order.current_status).aggregate(
+            total_qty=Sum('quantity_produced'),
+            total_material=Sum('material_used')
+        )
+        ctx = {
+            'order': order,
+            'current_stage_total_qty': aggregates['total_qty'] or 0,
+            'current_stage_total_material': aggregates['total_material'] or 0,
+        }
+        html = render_to_string('orders/fragments/production_status_card.html', ctx, request=request)
+        return HttpResponse(html)
 
 
 def _build_status_modal_context(order, request, form=None):
@@ -273,6 +304,10 @@ def _build_status_modal_context(order, request, form=None):
         # Fallback if field doesn't exist yet to avoid 500 during update
         current_logs = order.logs.filter(status=order.current_status).select_related('user').order_by('-created_at')
 
+    current_produced = stage_data[order.current_status]['quantity'] or 0
+    target_quantity = order.quantity_with_waste or 0
+    remaining_quantity = max(0, target_quantity - current_produced)
+
     return {
         'order': order,
         'next_status': next_status,
@@ -280,6 +315,7 @@ def _build_status_modal_context(order, request, form=None):
         'form': form,
         'logs_by_status': logs_by_status,
         'current_logs': current_logs,
+        'remaining_quantity': remaining_quantity,
     }
 
 

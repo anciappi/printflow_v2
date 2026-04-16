@@ -170,3 +170,24 @@ orders/
 - **Archivos**: `static/js/workorder_status_modal.js` [NEW], `templates/orders/fragments/status_update_modal.html`, `templates/orders/workorder_detail.html`.
 - **Reglas respetadas**: sin JS inline en templates, sin hex hardcodeados, `closeModal()` movido al JS externo.
 
+## 2026-04-15 | Dashboard de Producción & Registros Parciales | ✅
+- **Dashboard Modal (3 Columnas)**: Reubicación de la interfaz de avance a un layout de ancho completo (`max-w-7xl`).
+    - **Panel Contexto**: KPIs de OT, historial acumulado y tabla de registros detallados de la etapa actual.
+    - **Panel Avance Parcial**: Registro de producción sin avance de estado.
+    - **Panel Cierre**: Transición formal a la siguiente etapa.
+- **Registros Parciales**: Nuevo campo `production_date` en `WorkOrderLog`. Nueva vista `WorkOrderPartialLogView` que permite múltiples ingresos por etapa con fecha manual o automática.
+- **Calculador Sincronizado**: El calculador de material en JS ahora sincroniza ambos formularios del modal simultáneamente.
+- **Estandarización de Estados**: Actualización de etiquetas y badge colors en `dashboard/index.html` y `workorder_row.html` para cumplir con el flujo simplificado (Producción, Terminaciones, Listo para Entrega) y el estilo "Dark Industrial".
+- **Archivos**: `orders/models.py`, `orders/views.py`, `orders/forms.py`, `orders/urls.py`, `templates/orders/fragments/status_update_modal.html`, `templates/dashboard/index.html`, `templates/orders/fragments/workorder_row.html`, `templates/orders/fragments/log_feed.html`.
+- **Robustez UI**: Contexto del modal centralizado en `_build_status_modal_context` para prevenir errores de renderizado en formularios inválidos.
+
+## 2026-04-15 | Optimización de UX & Trazabilidad Dinámica | ✅
+- **Cálculo de Totales por Etapa**: Refactorización de `WorkOrderDetailView` para mostrar la suma acumulada de producción y material consumido en la tarjeta de estado, eliminando la confusión de mostrar solo el último registro.
+- **Card Dinámica (HTMX)**: Creación del fragmento `production_status_card.html`. Ahora se refresca automáticamente mediante triggers de HTMX (`logUpdated`, `statusUpdated`) sin recargar la página.
+- **KPI "Faltante" en Modal**: Nuevo indicador en el panel de control que calcula en tiempo real cuánto resta para cumplir el objetivo de producción. Color dinámico (Naranja -> Verde al cumplir cuota).
+- **Densidad UI "High-Density"**:
+    - Reducción de altura de campos de formulario (`py-2.5` -> `py-1.5`) y botones (`py-3` -> `py-2`).
+    - Nivelación de botones al fondo de las columnas mediante `flex flex-col` y `mt-auto`.
+    - Unificación estética de tablas principales (Dashboard y Listado OT) con puntos de pulso y diseño minimalista sin bordes pesados.
+- **Layout Simétrico**: Transición del modal a un layout de 3 columnas de ancho igual (`w-1/3`) y centrado, mejorando el balance visual.
+- **Archivos**: `orders/views.py`, `orders/urls.py`, `templates/orders/workorder_detail.html`, `templates/orders/fragments/production_status_card.html` [NEW], `templates/orders/fragments/status_update_modal.html`.

@@ -1,0 +1,38 @@
+<div id="production-status-card" hx-get="{% url 'orders:production_status_card' order.pk %}" hx-trigger="logUpdated from:body, statusUpdated from:body" hx-swap="outerHTML" class="bg-surface border border-border-default rounded-sm overflow-hidden relative shadow-sm transition-all">
+    <div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 to-blue-600"></div>
+    <div class="bg-surface-dark/50 px-6 py-2 border-b border-border-default flex items-center justify-between pl-6">
+        <h3 class="text-xs font-light text-slate-400 uppercase tracking-widest pl-2">Estado de Producción</h3>
+        <span class="text-[10px] text-blue-400 font-light uppercase tracking-widest bg-blue-900/30 px-2 py-0.5 rounded-sm italic">Control de Planta</span>
+    </div>
+    
+    <div class="px-6 py-4 pl-8 flex flex-row w-full gap-4 items-start">
+        <div class="flex-1 flex flex-col text-left min-w-0">
+            <span class="text-[9px] text-blue-400 uppercase tracking-widest mb-1">Estado Actual</span>
+            <span id="info-current-status" class="text-sm text-blue-400 font-normal uppercase truncate" title="{{ order.get_current_status_display }}">{{ order.get_current_status_display }}</span>
+        </div>
+        <div class="flex-1 flex flex-col min-w-0">
+            <span class="text-[9px] text-slate-500 text-center uppercase tracking-widest mb-1">Bocas</span>
+            <span class="text-sm text-white text-center font-normal">{{ order.bocas|default:"--" }}</span>
+        </div>
+        <div class="flex-1 flex flex-col text-center min-w-0">
+            <span class="text-[9px] text-amber-500/70 uppercase tracking-widest mb-1">Cant. Objetivo</span>
+            <span class="text-sm text-amber-500 font-normal">{{ order.quantity_with_waste }}</span>
+        </div>
+        <div class="flex-1 flex flex-col text-center min-w-0">
+            <span class="text-[9px] text-amber-500/70 uppercase tracking-widest mb-1">Mat. Planificado</span>
+            <span class="text-sm text-amber-500 font-normal">{{ order.estimated_material_usage|floatformat:0|default:"--" }} ml</span>
+        </div>
+        <div class="flex-1 flex flex-col text-center min-w-0">
+            <span class="text-[9px] text-emerald-500 uppercase tracking-widest mb-1">Cant. Producida</span>
+            <span id="info-current-quantity" class="text-sm text-emerald-400 font-medium">
+                {{ current_stage_total_qty|default:"0" }}
+            </span>
+        </div>
+        <div class="flex-1 flex flex-col text-center min-w-0">
+            <span class="text-[9px] text-indigo-400 uppercase tracking-widest mb-1">Mat. Consumido</span>
+            <span id="info-current-material" class="text-sm text-indigo-300 font-medium">
+                {{ current_stage_total_material|floatformat:0|default:"0" }} <span class="text-[8px] text-slate-500 font-normal uppercase">ml</span>
+            </span>
+        </div>
+    </div>
+</div>

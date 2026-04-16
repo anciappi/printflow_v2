@@ -126,53 +126,8 @@
                     {% include 'orders/fragments/progress_bar.html' with order=object %}
                 </div>
                 
-                <!-- Tarjeta 2: Estado de Producción -->
-                <div class="bg-surface border border-border-default rounded-sm overflow-hidden relative">
-                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-500 to-blue-600"></div>
-                    <div class="bg-surface-dark/50 px-6 py-2 border-b border-border-default flex items-center justify-between pl-6">
-                        <h3 class="text-xs font-light text-slate-400 uppercase tracking-widest pl-2">Estado de Producción</h3>
-                        <span class="text-[10px] text-blue-400 font-light uppercase tracking-widest bg-blue-900/30 px-2 py-0.5 rounded-sm italic">Control de Planta</span>
-                    </div>
-                    
-                    <div class="px-6 py-4 pl-8 flex flex-row w-full gap-4 items-start">
-                        <div class="flex-1 flex flex-col text-left min-w-0">
-                            <span class="text-[9px] text-blue-400 uppercase tracking-widest mb-1">Estado</span>
-                            <span id="info-current-status" class="text-sm text-blue-400 font-normal uppercase truncate" title="{{ object.get_current_status_display }}">{{ object.get_current_status_display }}</span>
-                        </div>
-                        <div class="flex-1 flex flex-col min-w-0">
-                            <span class="text-[9px] text-slate-500 text-center uppercase tracking-widest mb-1">Bocas</span>
-                            <span class="text-sm text-white text-center font-normal">{{ object.bocas|default:"--" }}</span>
-                        </div>
-                        <div class="flex-1 flex flex-col text-center min-w-0">
-                            <span class="text-[9px] text-amber-500/70 uppercase tracking-widest mb-1">Cant. Producir</span>
-                            <span class="text-sm text-amber-500 font-normal">{{ object.quantity_with_waste }}</span>
-                        </div>
-                        <div class="flex-1 flex flex-col text-center min-w-0">
-                            <span class="text-[9px] text-amber-500/70 uppercase tracking-widest mb-1">Mat. Total Est.</span>
-                            <span class="text-sm text-amber-500 font-normal">{{ object.estimated_material_usage|floatformat:0|default:"--" }} ml</span>
-                        </div>
-                        <div class="flex-1 flex flex-col text-center min-w-0">
-                            <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Última Cantidad</span>
-                            <span id="info-current-quantity" class="text-sm text-white font-light">
-                                {% if logs and logs.0.quantity_produced %}
-                                {{ logs.0.quantity_produced }}
-                                {% else %}
-                                <span class="text-slate-500 italic">--</span>
-                                {% endif %}
-                            </span>
-                        </div>
-                        <div class="flex-1 flex flex-col text-center min-w-0">
-                            <span class="text-[9px] text-slate-500 uppercase tracking-widest mb-1">Último Consumo</span>
-                            <span id="info-current-material" class="text-sm text-white font-light">
-                                {% if logs and logs.0.material_used %}
-                                {{ logs.0.material_used|floatformat:0 }} <span class="text-[8px] text-slate-500 font-normal">ml</span>
-                                {% else %}
-                                <span class="text-slate-500 italic">--</span>
-                                {% endif %}
-                            </span>
-                        </div>
-                    </div>
-                </div>
+                <!-- Tarjeta 2: Estado de Producción (Refrescable via HTMX) -->
+                {% include 'orders/fragments/production_status_card.html' %}
             </div>
 
             <!-- Fila 2: Diseño y Especificaciones Técnicas -->

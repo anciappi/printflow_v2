@@ -93,7 +93,7 @@ class WorkOrderLogForm(forms.ModelForm):
         fields = ['comment']
         widgets = {
             'comment': forms.Textarea(attrs={
-                'class': 'w-full bg-surface-dark border border-border-default text-white text-xs px-3 py-2 focus:border-orange-500 outline-none transition-colors rounded-sm resize-none',
+                'class': 'w-full bg-surface-dark border border-border-default text-white text-[11px] px-3 py-1.5 focus:border-orange-500 outline-none transition-colors rounded-sm resize-none',
                 'placeholder': 'Escribí aquí observaciones, novedades o desvíos...',
                 'rows': 1,
                 'required': True
@@ -106,24 +106,24 @@ class WorkOrderAdvanceForm(forms.ModelForm):
         fields = ['production_date', 'quantity_produced', 'material_used', 'comment']
         widgets = {
             'production_date': forms.DateTimeInput(attrs={
-                'class': 'w-full bg-surface-dark border border-border-default text-white text-xs px-3 py-2.5 focus:border-orange-500 outline-none transition-colors rounded-sm',
+                'class': 'w-full bg-surface-dark border border-border-default text-white text-[11px] px-3 py-1.5 focus:border-orange-500 outline-none transition-colors rounded-sm',
                 'type': 'datetime-local',
                 'placeholder': 'Dejar vacío para usar fecha/hora actuales',
             }),
             'quantity_produced': forms.NumberInput(attrs={
-                'class': 'w-full bg-surface-dark border border-border-default text-white text-xs px-3 py-2.5 focus:border-orange-500 outline-none transition-colors rounded-sm',
+                'class': 'w-full bg-surface-dark border border-border-default text-white text-[11px] px-3 py-1.5 focus:border-orange-500 outline-none transition-colors rounded-sm',
                 'placeholder': 'Cantidad',
                 'min': '1',
                 'required': True
             }),
             'material_used': forms.NumberInput(attrs={
-                'class': 'w-full bg-surface-dark border border-border-default text-white text-xs px-3 py-2.5 focus:border-orange-500 outline-none transition-colors rounded-sm',
+                'class': 'w-full bg-surface-dark border border-border-default text-white text-[11px] px-3 py-1.5 focus:border-orange-500 outline-none transition-colors rounded-sm',
                 'placeholder': 'Ej. 1500',
                 'step': '1',
             }),
             'comment': forms.Textarea(attrs={
-                'class': 'w-full bg-surface-dark border border-border-default text-white text-xs px-3 py-2 focus:border-orange-500 outline-none transition-colors rounded-sm resize-none',
+                'class': 'w-full bg-surface-dark border border-border-default text-white text-[11px] px-3 py-1.5 focus:border-orange-500 outline-none transition-colors rounded-sm resize-none',
                 'placeholder': 'Escribí aquí observaciones...',
-                'rows': 3,
+                'rows': 2,
             }),
         }
